@@ -14,16 +14,41 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import loginSchema from "@/schemas/login.schema";
+import { useRouter } from "next/navigation";
+import { loginUser } from "@/api/login.api";
+import { useAuth } from "@/lib/auth/authContext";
 
 
 const LoginForm = () => {
 
+    const router = useRouter();
+    const { login } = useAuth();
+
     const form = useForm<z.infer<typeof loginSchema>>({
-        resolver: zodResolver(loginSchema)
+        resolver: zodResolver(loginSchema),
+        defaultValues: {
+            email: "",
+            password: ""
+        }
     });
 
-    function onSubmit(values: z.infer<typeof loginSchema>) {
-        console.log(values);
+    async function onSubmit(values: z.infer<typeof loginSchema>) {
+        try {
+            console.log(values);
+            const response = await loginUser(values);
+
+            if (response === null) {
+                console.log("Error");
+                return;
+            }
+
+            login(response.access_token);
+            router.push('/dashboard');
+
+
+        } catch (error: any) {
+            console.log(error);
+        }
     }
 
     return (

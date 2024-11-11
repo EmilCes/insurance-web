@@ -1,7 +1,21 @@
+"use client"
+
 import LoginForm from "@/components/forms/login.form";
+import { useAuth } from "@/lib/auth/authContext";
 import Image from "next/image";
+import { redirect } from "next/navigation";
+import { useEffect } from "react";
 
 const SignIn = () => {
+
+    const { isAuthenticated } = useAuth();
+    
+    useEffect(() => {
+        if (isAuthenticated) {
+          return redirect('/dashboard');
+        }
+      }, [isAuthenticated]);
+
     return (
         <div className="min-h-screen grid grid-cols-1 md:grid-cols-2">
             
