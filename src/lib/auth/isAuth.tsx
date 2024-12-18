@@ -21,9 +21,9 @@ export default function isAuth(Component: any) {
       return <div>Cargando...</div>;
     }
 
-    if (!isAuthenticated) {
+    /*if (!isAuthenticated) {
       return null;
-    }
+    }*/
 
     return <Component {...props} />;
   };
