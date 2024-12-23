@@ -22,19 +22,44 @@ import {
 } from "@/components/ui/select"
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
+import confirmationPolicySchema from "@/schemas/confirmationPaymentPolicy.schema";
+import { useState } from "react";
+import { PolicyPlanItem } from "@/api/policyplan.api";
 
-const PaymentForm = () => {
-
+const PaymentForm = ({ policyPlan }: { policyPlan: PolicyPlanItem | undefined }) => {
     const router = useRouter();
+    const [isMonthlyPayment, setIsMonthlyPayment] = useState(false);
+    const [selectedPayment, setSelectedPayment] = useState<string | undefined>("");
 
-    const form = useForm<z.infer<typeof vehicleSchema>>({
-        resolver: zodResolver(vehicleSchema),
+    const form = useForm<z.infer<typeof confirmationPolicySchema>>({
+        resolver: zodResolver(confirmationPolicySchema),
         defaultValues: {
-            brand: ""
+            monthsOfPayments: 0
         }
     });
 
-    async function onSubmit(values: z.infer<typeof vehicleSchema>) {
+    const toogleMonthPayment = (type: "single" | "monthly") => {
+        if (type === "single") {
+            setSelectedPayment("");
+            setIsMonthlyPayment(false);
+        } else {
+            setIsMonthlyPayment(true);
+        }
+    };
+
+
+    const onMonthsValueChanged = (value: number) => {
+        if (isMonthlyPayment) {
+            setSelectedPayment(value + "");
+            form.setValue("monthsOfPayments", value);
+        } else {
+            if (!isNaN(value) && (value == 1 || value == 0)) {
+                form.setValue("monthsOfPayments", value);
+            }
+        }
+    }
+
+    async function onSubmit(values: z.infer<typeof confirmationPolicySchema>) {
         try {
             console.log(values);
             router.push('/dashboard/policyPlan/paymentsuccess');
@@ -52,9 +77,17 @@ const PaymentForm = () => {
                 <form onSubmit={form.handleSubmit(onSubmit)} >
 
                     <div className="grid grid-cols-1 gap-4">
+
+                        <FormItem className="mb-2">
+                            <FormLabel>Cuenta bancaria</FormLabel>
+                            <FormControl>
+                                <Input readOnly type="number" min="0" max="10" placeholder="538957BNUIF8429427" />
+                            </FormControl>
+                        </FormItem>
+
                         <FormField
                             control={form.control}
-                            name="brand"
+                            name="phoneNumber"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Teléfono</FormLabel>
@@ -65,36 +98,37 @@ const PaymentForm = () => {
                             )}
                         />
 
-
-                        <FormItem className="mb-2">
-                            <FormLabel>Método de pago</FormLabel>
-                            <FormControl>
-                                <Select>
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="Seleccione un método de pago" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="0">Cuenta bancaria: 538957BNUIF8429427</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </FormControl>
-                        </FormItem>
-
+                        <FormField
+                            control={form.control}
+                            name="monthsOfPayments"
+                            render={({ field, fieldState }) => (
+                                <FormItem>
+                                    <FormLabel>Método de pago</FormLabel>
+                                    {fieldState.error && (
+                                        <p className="text-red-500 text-sm mt-1">
+                                            {fieldState.error.message}
+                                        </p>
+                                    )}
+                                </FormItem>
+                            )}
+                        />
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <div className="flex flex-row mb-2">
-                                    <input
+                                    <Input
                                         type="radio"
                                         name="plan"
-                                        className="mr-2 appearance-none w-6 h-6 border-2 border-darkBlue rounded-full checked:bg-darkBlue checked:border-darkBlue cursor-pointer"
+                                        className="mr-2 w-6 h-6 appearance-none border-darkBlue rounded-full checked:bg-darkBlue checked:border-darkBlue cursor-pointer"
+                                        onChange={() => { onMonthsValueChanged(1); toogleMonthPayment("single"); }}
                                     />
                                     <label>Pago único</label>
                                 </div>
                                 <div className="flex flex-row">
-                                    <input
+                                    <Input
                                         type="radio"
                                         name="plan"
-                                        className="mr-2 appearance-none w-6 h-6 border-2 border-darkBlue rounded-full checked:bg-darkBlue checked:border-darkBlue cursor-pointer"
+                                        className="mr-2 w-6 h-6 appearance-none border-darkBlue rounded-full checked:bg-darkBlue checked:border-darkBlue cursor-pointer"
+                                        onChange={() => { toogleMonthPayment("monthly"); onMonthsValueChanged(0); }}
                                     />
                                     <label>Pago mensuales</label>
                                 </div>
@@ -103,13 +137,26 @@ const PaymentForm = () => {
                                 <FormItem>
                                     <FormLabel>Pago cada</FormLabel>
                                     <FormControl>
-                                        <Select>
-                                            <SelectTrigger className="w-full">
+                                        <Select
+                                            value={selectedPayment}
+                                            disabled={!isMonthlyPayment}
+                                            onValueChange={(value) => { onMonthsValueChanged(+value) }}>
+                                            <SelectTrigger className={`w-full ${!isMonthlyPayment ? "bg-gray-200 cursor-not-allowed" : ""}`}>
                                                 <SelectValue placeholder="Seleccione un método de pago" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="0">1 mes</SelectItem>
-                                                <SelectItem value="1">4 meses</SelectItem>
+                                                {(() => {
+                                                    const items = [];
+                                                    const maxPeriod = (policyPlan) ? policyPlan.maxPeriod : 0;
+                                                    for (let i = 2; i <= maxPeriod; i++) {
+                                                        items.push(
+                                                            <SelectItem value={i + ""}>
+                                                                {i + " meses"}
+                                                            </SelectItem>
+                                                        );
+                                                    }
+                                                    return items;
+                                                })()}
                                             </SelectContent>
                                         </Select>
                                     </FormControl>
