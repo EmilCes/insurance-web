@@ -12,7 +12,7 @@ import {
     FormItem,
     FormLabel,
 } from "@/components/ui/form"
-import planPolicySchema from '@/schemas/planPolicy.schema';
+import planPolicySelectionSchema from '@/schemas/planPolicySelection.schema';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Loading from '@/components/loading/Loading';
@@ -27,17 +27,17 @@ const SelectionPlanForm = () => {
     const [policyPlans, setPolicyPlans] = useState<PolicyPlansResponse>([]);
     const [brandModel, setBrandModel] = useState<BrandVehicleItem>();
     const [yearsPolicy, setYearsPolicy] = useState<number>(1);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const form = useForm<z.infer<typeof planPolicySchema>>({
-        resolver: zodResolver(planPolicySchema),
+    const form = useForm<z.infer<typeof planPolicySelectionSchema>>({
+        resolver: zodResolver(planPolicySelectionSchema),
         defaultValues: {
-            yearPolicy: 1
+            yearPolicy: 1,
+            idPolicyPlan: formPolicyData.idPolicyPlan ? formPolicyData.idPolicyPlan : ""
         }
     });
 
     useEffect(() => {
-        setIsLoading(true);
         const fetchPlans = async () => {
             try {
                 const idModelData = formPolicyData && formPolicyData.idModel ? formPolicyData.idModel : 0;
@@ -71,16 +71,17 @@ const SelectionPlanForm = () => {
         form.setValue("idPolicyPlan", value);
     }
 
-    async function onSubmit(values: z.infer<typeof planPolicySchema>) {
+    async function onSubmit(values: z.infer<typeof planPolicySelectionSchema>) {
+        setIsLoading(true);
         try {
             setFormPolicyData({ 
                 idPolicyPlan: values.idPolicyPlan, 
                 yearOfPolicy: values.yearPolicy
               });
       
-            console.log(values)
             router.push('/dashboard/policyPlan/confirmation');
         } catch (error: any) {
+            setIsLoading(false);
             console.log(error);
         }
     }
@@ -105,7 +106,7 @@ const SelectionPlanForm = () => {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Duración de la póliza</FormLabel>
-                                        <Select defaultValue="1" onValueChange={(value) => { field.onChange(value); onTimeValueChanged(+value) }}>
+                                        <Select defaultValue={ formPolicyData?.yearOfPolicy ? formPolicyData.yearOfPolicy + "" : "1"} onValueChange={(value) => { field.onChange(value); onTimeValueChanged(+value) }}>
                                             <SelectTrigger className="w-full">
                                                 <SelectValue placeholder="Selecciona tipo" />
                                             </SelectTrigger>
@@ -131,6 +132,20 @@ const SelectionPlanForm = () => {
                     <div className='mb-4'>
                         <h3 className='text-1xl font-semibold mt-4'>Planes disponibles</h3>
                         <h4 className="text-alternGray">El precio de cada póliza es de acuerdo a la duración seleccionada</h4>
+
+                        <FormField
+                            control={form.control}
+                            name="idPolicyPlan"
+                            render={({ field, fieldState }) => (
+                                <FormItem>
+                                    {fieldState.error && (
+                                        <p className="text-red-500 text-sm mt-1">
+                                            {fieldState.error.message}
+                                        </p>
+                                    )}
+                                </FormItem>
+                            )}
+                        />
                     </div>
 
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-10'>
@@ -149,6 +164,8 @@ const SelectionPlanForm = () => {
                                         type='radio'
                                         className="mt-auto ml-auto appearance-none w-8 h-8 border-darkBlue rounded-full checked:bg-darkBlue checked:border-darkBlue cursor-pointer"
                                         onChange={() => onIdPolicyPlanChanged(plan.idPolicyPlan)}
+                                        defaultChecked={ (formPolicyData?.idPolicyPlan == plan.idPolicyPlan) ? true : undefined }
+                                        
                                     />
 
                                 </div>

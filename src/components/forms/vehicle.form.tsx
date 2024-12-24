@@ -36,16 +36,23 @@ const VehiculeForm = () => {
   const [models, setModels] = useState<ModelVehicleResponse>([]);
   const [types, setTypes] = useState<TypeVehicleResponse>([]);
   const [services, setServices] = useState<ServicesVehicleResponse>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const form = useForm<z.infer<typeof vehicleSchema>>({
     resolver: zodResolver(vehicleSchema),
     defaultValues: {
+      idBrand: formPolicyData.idBrand ? formPolicyData.idBrand : undefined,
+      idModel: formPolicyData.idModel ? formPolicyData.idModel : undefined,
+      serialNumber: formPolicyData.series ? formPolicyData.series : undefined,
+      idColor: formPolicyData.idColor ? formPolicyData.idColor : undefined,
+      plates: formPolicyData.plates ? formPolicyData.plates : "",
+      idType: formPolicyData.idType ? formPolicyData.idType : undefined,
+      occupants: formPolicyData.occupants ? formPolicyData.occupants : undefined,
+      idService: formPolicyData.idService ? formPolicyData.idService : undefined
     }
   });
 
   useEffect(() => {
-    setIsLoading(true);
     const fetchColors = async () => {
       try {
         const colorsData = await getColorsVehicles();
@@ -76,6 +83,15 @@ const VehiculeForm = () => {
     fetchColors();
   }, []);
 
+  useEffect(() => {
+    const showPreviousData = () => {
+      if (formPolicyData?.idBrand) {
+        onBrandValueChanged(formPolicyData?.idBrand + "");
+      }
+    };
+    showPreviousData();
+  }, [brands]);
+
   const onBrandValueChanged = (value: string) => {
     setIsLoading(true);
     if (isNaN(+value)) return;
@@ -88,16 +104,15 @@ const VehiculeForm = () => {
     setIsLoading(false);
   }
 
-
   async function onSubmit(values: z.infer<typeof vehicleSchema>) {
     try {
       setIsLoading(true);
       const response = await validatePlates(values);
       if (response.isValid) {
 
-        setFormPolicyData({ 
-          idBrand: values.idBrand, 
-          idModel: values.idModel, 
+        setFormPolicyData({
+          idBrand: values.idBrand,
+          idModel: values.idModel,
           series: values.serialNumber,
           idColor: values.idColor,
           plates: values.plates,
@@ -107,7 +122,7 @@ const VehiculeForm = () => {
         });
 
         router.push('/dashboard/policyPlan/selectionPlan');
-        setIsLoading(false);
+        
       } else {
         if (response.status == 409) {
           form.setError("plates", {
@@ -115,10 +130,12 @@ const VehiculeForm = () => {
             message: "Las placas ingresadas ya están registradas",
           });
         }
+        setIsLoading(false);
       }
-      setIsLoading(false);
+      
     } catch (error: any) {
       console.log(error);
+      setIsLoading(false);
     }
   }
 
@@ -146,7 +163,8 @@ const VehiculeForm = () => {
                 <FormItem>
                   <FormLabel>Marca</FormLabel>
                   <FormControl>
-                    <Select onValueChange={(value) => { { field.onChange(value); onBrandValueChanged(value) } }}>
+                    <Select onValueChange={(value) => { { field.onChange(value); onBrandValueChanged(value) } }}
+                      defaultValue={formPolicyData?.idBrand ? formPolicyData.idBrand + "" : undefined}>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Selecciona una marca" />
                       </SelectTrigger>
@@ -168,7 +186,8 @@ const VehiculeForm = () => {
                 <FormItem>
                   <FormLabel>Modelo</FormLabel>
                   <FormControl>
-                    <Select onValueChange={field.onChange} >
+                    <Select onValueChange={field.onChange}
+                      defaultValue={formPolicyData?.idModel ? formPolicyData.idModel + "" : undefined}>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Selecciona tipo" />
                       </SelectTrigger>
@@ -190,7 +209,8 @@ const VehiculeForm = () => {
                 <FormItem>
                   <FormLabel>Serie</FormLabel>
                   <FormControl>
-                    <Input placeholder="Serie del vehículo" {...field} />
+                    <Input placeholder="Serie del vehículo" {...field}
+                      defaultValue={formPolicyData?.series ? formPolicyData.series + "" : undefined} />
                   </FormControl>
                 </FormItem>
               )}
@@ -202,7 +222,8 @@ const VehiculeForm = () => {
                 <FormItem>
                   <FormLabel>Color</FormLabel>
                   <FormControl>
-                    <Select onValueChange={field.onChange}>
+                    <Select onValueChange={field.onChange}
+                      defaultValue={formPolicyData?.idColor ? formPolicyData.idColor + "" : undefined}>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Selecciona tipo" />
                       </SelectTrigger>
@@ -224,7 +245,8 @@ const VehiculeForm = () => {
                 <FormItem>
                   <FormLabel>Placas</FormLabel>
                   <FormControl>
-                    <Input placeholder="Placas del vehículo" {...field} />
+                    <Input placeholder="Placas del vehículo" {...field}
+                      defaultValue={formPolicyData?.plates ? formPolicyData.plates + "" : undefined} />
                   </FormControl>
                   {fieldState.error && (
                     <p className="text-red-500 text-sm mt-2">
@@ -242,7 +264,8 @@ const VehiculeForm = () => {
                 <FormItem>
                   <FormLabel>Tipo</FormLabel>
                   <FormControl>
-                    <Select onValueChange={field.onChange}>
+                    <Select onValueChange={field.onChange}
+                      defaultValue={formPolicyData?.idType ? formPolicyData.idType + "" : undefined}>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Selecciona tipo" />
                       </SelectTrigger>
@@ -268,7 +291,8 @@ const VehiculeForm = () => {
                 <FormItem>
                   <FormLabel>Ocupantes</FormLabel>
                   <FormControl>
-                    <Input type="number" min="0" max="10" placeholder="Número de ocupantes" {...field} />
+                    <Input type="number" min="0" max="10" placeholder="Número de ocupantes" {...field}
+                      defaultValue={formPolicyData?.occupants ? formPolicyData.occupants + "" : undefined} />
                   </FormControl>
                 </FormItem>
               )}
@@ -281,7 +305,8 @@ const VehiculeForm = () => {
                 <FormItem>
                   <FormLabel>Servicio</FormLabel>
                   <FormControl>
-                    <Select onValueChange={field.onChange}>
+                    <Select onValueChange={field.onChange}
+                      defaultValue={formPolicyData?.idService ? formPolicyData.idService + "" : undefined}>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Selecciona el servicio" />
                       </SelectTrigger>

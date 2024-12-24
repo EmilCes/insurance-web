@@ -25,11 +25,15 @@ import { useRouter } from "next/navigation";
 import confirmationPolicySchema from "@/schemas/confirmationPaymentPolicy.schema";
 import { useState } from "react";
 import { PolicyPlanItem } from "@/api/policyplan.api";
+import { useFormPolicyContext } from "@/lib/context/formPolicyContext";
+import Loading from "../loading/Loading";
 
 const PaymentForm = ({ policyPlan }: { policyPlan: PolicyPlanItem | undefined }) => {
+    const { formPolicyData, setFormPolicyData } = useFormPolicyContext();
     const router = useRouter();
     const [isMonthlyPayment, setIsMonthlyPayment] = useState(false);
     const [selectedPayment, setSelectedPayment] = useState<string | undefined>("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const form = useForm<z.infer<typeof confirmationPolicySchema>>({
         resolver: zodResolver(confirmationPolicySchema),
@@ -60,16 +64,22 @@ const PaymentForm = ({ policyPlan }: { policyPlan: PolicyPlanItem | undefined })
     }
 
     async function onSubmit(values: z.infer<typeof confirmationPolicySchema>) {
+        setIsLoading(true);
         try {
-            console.log(values);
-            router.push('/dashboard/policyPlan/paymentsuccess');
+            
+
+
+            //router.push('/dashboard/policyPlan/paymentsuccess');
         } catch (error: any) {
+            setIsLoading(false);
             console.log(error);
         }
     }
 
     return (
         <div>
+            {isLoading ? <Loading /> : <></>}
+
             <h2 className='text-2xl font-semibold'>Información de pago</h2>
             <h4 className="text-alternGray">Ingrese la información para realizar el pago</h4>
 

@@ -11,7 +11,7 @@ interface FormPolicyData{
     idService?: number;
     yearOfPolicy?: number;
     idPolicyPlan?: string;
-    phoneNumber?: number;
+    phoneNumber?: string;
     perMonthsPayment?: number;
 }
 

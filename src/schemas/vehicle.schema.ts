@@ -11,7 +11,7 @@ const vehicleSchema = z.object({
     idColor: z.coerce.
         number().positive(),
     plates: z
-        .string().min(5, "Las placas debe tener al menos 5 caracteres")
+        .string().min(7, "Las placas debe tener al menos 7 caracteres")
         .max(50, "Las placas no debe exceder los 50 caracteres"),
     idType: z.coerce.
         number().positive(),
