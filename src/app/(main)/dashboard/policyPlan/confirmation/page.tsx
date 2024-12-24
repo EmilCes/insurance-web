@@ -78,6 +78,43 @@ const Confirmation = () => {
 
                                     <h4 className="text-alternGray">{policyPlan?.description}</h4>
 
+                                    <div className="overflow-x-auto">
+                                        <table className="min-w-full border-collapse border border-gray-300">
+                                            <thead>
+                                                <tr className="bg-gray-100">
+                                                    <th className="border border-gray-300 px-4 py-2 text-left text-sm font-semibold text-gray-600">
+                                                        Coberturas contratadas
+                                                    </th>
+                                                    <th className="border border-gray-300 px-4 py-2 text-left text-sm font-semibold text-gray-600">
+                                                        Suma asegurada
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {policyPlan?.Service.map((service, index) => (
+                                                    <tr
+                                                        key={index}
+                                                        className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                                                    >
+                                                        <td className="border border-gray-300 px-4 py-2 text-sm text-gray-700">
+                                                            {service.name}
+                                                        </td>
+                                                        {!service.isCovered ?
+                                                            (<td className="border border-gray-300 px-4 py-2 text-sm text-gray-700">
+                                                                ${new Intl.NumberFormat("en-US").format(service.coveredCost)}
+                                                            </td>) 
+                                                            :
+                                                            <td className="border border-gray-300 px-4 py-2 text-sm text-gray-700">
+                                                                Amparado
+                                                            </td>}
+
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+
                                     <h3 className='text-xl font-semibold my-auto mt-4'>
                                         Total <span className='text-darkBlue'>${new Intl.NumberFormat("en-US").format((policyPlan) ? policyPlan.basePrice : "0")}</span></h3>
 

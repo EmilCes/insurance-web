@@ -32,7 +32,7 @@ const SelectionPlanForm = () => {
     const form = useForm<z.infer<typeof planPolicySelectionSchema>>({
         resolver: zodResolver(planPolicySelectionSchema),
         defaultValues: {
-            yearPolicy: 1,
+            yearPolicy: formPolicyData.yearOfPolicy ? formPolicyData.yearOfPolicy : 1,
             idPolicyPlan: formPolicyData.idPolicyPlan ? formPolicyData.idPolicyPlan : ""
         }
     });
