@@ -29,7 +29,7 @@ import { useFormPolicyContext } from "@/lib/context/formPolicyContext";
 import Loading from "../loading/Loading";
 
 const PaymentForm = ({ policyPlan }: { policyPlan: PolicyPlanItem | undefined }) => {
-    const { formPolicyData, setFormPolicyData } = useFormPolicyContext();
+    const { formPolicyData, deleteFormPolicyData } = useFormPolicyContext();
     const router = useRouter();
     const [isMonthlyPayment, setIsMonthlyPayment] = useState(false);
     const [selectedPayment, setSelectedPayment] = useState<string | undefined>("");
@@ -66,9 +66,6 @@ const PaymentForm = ({ policyPlan }: { policyPlan: PolicyPlanItem | undefined })
     async function onSubmit(values: z.infer<typeof confirmationPolicySchema>) {
         setIsLoading(true);
         try {
-            if (formPolicyData) {
-
-            }
             if ((formPolicyData?.idBrand && formPolicyData?.idModel && formPolicyData?.series && formPolicyData?.idColor
                 && formPolicyData?.plates && formPolicyData?.idType && formPolicyData?.occupants && formPolicyData?.idService
                 && formPolicyData?.yearOfPolicy && formPolicyData?.idPolicyPlan
@@ -89,7 +86,10 @@ const PaymentForm = ({ policyPlan }: { policyPlan: PolicyPlanItem | undefined })
 
                 const response = await createPolicyData(policyDataCreate);
                 if (response?.status == 201) {
-                    return router.push('/dashboard/policyPlan/paymentsuccess');
+                    
+                    router.push('/dashboard/policyPlan/paymentsuccess');
+                    deleteFormPolicyData();
+                    return;
                 }
 
                 throw new Error("Hubo un error al crear la póliza, inténtelo más tarde...");

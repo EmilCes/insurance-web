@@ -22,7 +22,7 @@ const PaymentSuccess = () => {
             <div className="grid grid-cols-1 md:grid-cols-2">
                 <br className="hidden md:block"/>
                 <Button className='w-4/5 text-center flex justify-center mt-4 min-h-12 bg-darkBlue'>
-                    Finalizar
+                    Regresar al inicio
                 </Button>
             </div>
 

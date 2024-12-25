@@ -23,7 +23,7 @@ const Confirmation = () => {
         )) {
             router.push("/dashboard/policyPlan/");
         }
-    }, [formPolicyData]);
+    }, []);
 
 
     useEffect(() => {

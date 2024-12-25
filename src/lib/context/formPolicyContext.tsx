@@ -17,6 +17,7 @@ interface FormPolicyData{
 interface FormPolicyContextType {
     formPolicyData: FormPolicyData;
     setFormPolicyData: (data: Partial<FormPolicyData>) => void;
+    deleteFormPolicyData: () => void;
 }
 
 const FormPolicyContext = createContext<FormPolicyContextType | undefined>(undefined);
@@ -28,8 +29,25 @@ export const FormPolicyProvider = ({ children }: {children : ReactNode}) => {
         setFormPolicy((prev) => ({ ...prev, ...data }));
     }
 
+    const clearFormPolicyData = () => {
+        setFormPolicy({
+            idBrand: undefined,
+            idModel: undefined,
+            series: undefined,
+            idColor: undefined,
+            plates: undefined,
+            idType: undefined,
+            occupants: undefined,
+            idService: undefined,
+            yearOfPolicy: undefined,
+            idPolicyPlan: undefined,
+        });
+    };
+
     return (
-        <FormPolicyContext.Provider value={{ formPolicyData , setFormPolicyData: updateFormPolicyData}}>
+        <FormPolicyContext.Provider value={{ formPolicyData , setFormPolicyData: updateFormPolicyData, 
+            deleteFormPolicyData: clearFormPolicyData
+        }}>
             { children }
         </FormPolicyContext.Provider>
     );
