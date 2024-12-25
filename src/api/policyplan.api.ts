@@ -160,7 +160,7 @@ export interface PolicyPlanItem {
 
 export async function getPolicyPlans(): Promise<PolicyPlansResponse | null> {
     try {
-        const response = await fetch(`${API_URL}/plan-policy`, {
+        const response = await fetch(`${API_URL}/policy-plan/current`, {
             method: 'GET'
         });
 
@@ -189,7 +189,7 @@ interface ServicePolicyItem {
 
 export async function getPolicyPlanData(id: string): Promise<PolicyPlanItem | null> {
     try {
-        const response = await fetch(`${API_URL}/plan-policy/${id}`, {
+        const response = await fetch(`${API_URL}/policy-plan/${id}`, {
             method: 'GET'
         });
         if (response.ok) {
@@ -205,13 +205,19 @@ export async function getPolicyPlanData(id: string): Promise<PolicyPlanItem | nu
     }
 }
 
-export async function getBrandModelData(idModel: number): Promise<BrandVehicleItem | null> {
+export interface BrandModelItem {
+    idBrand: number;
+    name: string;
+    year: string;
+}
+
+export async function getBrandModelData(idModel: number): Promise<BrandModelItem | null> {
     try {
         const response = await fetch(`${API_URL}/brands/models/${idModel}`, {
             method: 'GET'
         });
         if (response.ok) {
-            const values: BrandVehicleItem = await response.json();
+            const values: BrandModelItem = await response.json();
             return values;
         }
 
@@ -220,5 +226,46 @@ export async function getBrandModelData(idModel: number): Promise<BrandVehicleIt
     } catch (error) {
         console.error('Get plan error:', error);
         throw new Error('Error during get plan. Please try again later.');
+    }
+}
+
+interface CreatePolicyResponse {
+    status: number;
+}
+
+export interface PolicyCreateData{
+    idBrand: number;
+    idModel: number;
+    series: string;
+    plates: string;
+    idColor: number;
+    idType: number;
+    occupants: number;
+    idService: number;
+    yearOfPolicy: number;
+    idPolicyPlan: string;
+    perMonthsPayment: number;
+}
+
+export async function createPolicyData(policyData: PolicyCreateData): Promise<CreatePolicyResponse | null> {
+    try {
+        const response = await fetch(`${API_URL}/policies/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(policyData),
+        });
+        if (response.status == 201) {
+            const values: CreatePolicyResponse = { status: response.status };
+            return values;
+        }
+
+        return null;
+
+
+    } catch (error) {
+        console.error('Post policy error:', error);
+        throw new Error('Error during create policy. Please try again later.');
     }
 }

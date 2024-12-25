@@ -4,14 +4,14 @@ import PaymentForm from '@/components/forms/payment.form'
 import React, { useEffect, useState } from 'react'
 import Vehicledata from '../vehicledata'
 import { useRouter } from "next/navigation";
-import { BrandVehicleItem, getBrandModelData, getPolicyPlanData, PolicyPlanItem } from '@/api/policyplan.api';
+import { BrandModelItem, getBrandModelData, getPolicyPlanData, PolicyPlanItem } from '@/api/policyplan.api';
 import Loading from '@/components/loading/Loading';
 import { useFormPolicyContext } from '@/lib/context/formPolicyContext';
 
 const Confirmation = () => {
     const { formPolicyData, setFormPolicyData } = useFormPolicyContext();
     const [policyPlan, setPolicyPlan] = useState<PolicyPlanItem>();
-    const [brandModel, setBrandModel] = useState<BrandVehicleItem>();
+    const [brandModel, setBrandModel] = useState<BrandModelItem>();
     const [isLoading, setIsLoading] = useState(true);
 
     const router = useRouter();
@@ -72,13 +72,13 @@ const Confirmation = () => {
                                 </div>
                                 <div>
                                     <div className='grid grid-cols-1 md:grid-cols-2 mb-2'>
-                                        <h3 className='text-xl font-semibold my-auto'>{policyPlan?.title}</h3>
+                                        <h3 className='text-xl font-semibold my-auto'>Plan {policyPlan?.title}</h3>
                                         <h6 className='text-alternGray ml-auto text-right'>La duración de la póliza será de {formPolicyData.yearOfPolicy} años</h6>
                                     </div>
 
                                     <h4 className="text-alternGray">{policyPlan?.description}</h4>
 
-                                    <div className="overflow-x-auto">
+                                    <div className="overflow-x-auto mt-2">
                                         <table className="min-w-full border-collapse border border-gray-300">
                                             <thead>
                                                 <tr className="bg-gray-100">

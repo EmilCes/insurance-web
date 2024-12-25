@@ -24,7 +24,7 @@ import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import confirmationPolicySchema from "@/schemas/confirmationPaymentPolicy.schema";
 import { useState } from "react";
-import { PolicyPlanItem } from "@/api/policyplan.api";
+import { createPolicyData, PolicyCreateData, PolicyPlanItem } from "@/api/policyplan.api";
 import { useFormPolicyContext } from "@/lib/context/formPolicyContext";
 import Loading from "../loading/Loading";
 
@@ -66,10 +66,37 @@ const PaymentForm = ({ policyPlan }: { policyPlan: PolicyPlanItem | undefined })
     async function onSubmit(values: z.infer<typeof confirmationPolicySchema>) {
         setIsLoading(true);
         try {
-            
+            if (formPolicyData) {
 
+            }
+            if ((formPolicyData?.idBrand && formPolicyData?.idModel && formPolicyData?.series && formPolicyData?.idColor
+                && formPolicyData?.plates && formPolicyData?.idType && formPolicyData?.occupants && formPolicyData?.idService
+                && formPolicyData?.yearOfPolicy && formPolicyData?.idPolicyPlan
+            )) {
+                const policyDataCreate: PolicyCreateData = {
+                    idBrand: formPolicyData.idBrand,
+                    idModel: formPolicyData.idModel,
+                    series: formPolicyData.series,
+                    plates: formPolicyData.plates,
+                    idColor: formPolicyData.idColor,
+                    idType: formPolicyData.idType,
+                    occupants: formPolicyData.occupants,
+                    idService: formPolicyData.idService,
+                    yearOfPolicy: formPolicyData.yearOfPolicy,
+                    idPolicyPlan: formPolicyData.idPolicyPlan,
+                    perMonthsPayment: values.monthsOfPayments
+                }
 
-            //router.push('/dashboard/policyPlan/paymentsuccess');
+                const response = await createPolicyData(policyDataCreate);
+                if (response?.status == 201) {
+                    return router.push('/dashboard/policyPlan/paymentsuccess');
+                }
+
+                throw new Error("Hubo un error al crear la póliza, inténtelo más tarde...");
+
+            } else {
+                throw new Error("Hubo un error con los datos de la póliza, inténtelo más tarde...");
+            }
         } catch (error: any) {
             setIsLoading(false);
             console.log(error);
@@ -86,7 +113,7 @@ const PaymentForm = ({ policyPlan }: { policyPlan: PolicyPlanItem | undefined })
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} >
 
-                    <div className="grid grid-cols-1 gap-4">
+                    <div className="grid grid-cols-1 gap-4 mt-4">
 
                         <FormItem className="mb-2">
                             <FormLabel>Cuenta bancaria</FormLabel>
@@ -94,19 +121,6 @@ const PaymentForm = ({ policyPlan }: { policyPlan: PolicyPlanItem | undefined })
                                 <Input readOnly type="number" min="0" max="10" placeholder="538957BNUIF8429427" />
                             </FormControl>
                         </FormItem>
-
-                        <FormField
-                            control={form.control}
-                            name="phoneNumber"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Teléfono</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Télefono de contacto" {...field} />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
 
                         <FormField
                             control={form.control}
@@ -122,57 +136,55 @@ const PaymentForm = ({ policyPlan }: { policyPlan: PolicyPlanItem | undefined })
                                 </FormItem>
                             )}
                         />
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <div className="flex flex-row mb-2">
-                                    <Input
-                                        type="radio"
-                                        name="plan"
-                                        className="mr-2 w-6 h-6 appearance-none border-darkBlue rounded-full checked:bg-darkBlue checked:border-darkBlue cursor-pointer"
-                                        onChange={() => { onMonthsValueChanged(1); toogleMonthPayment("single"); }}
-                                    />
-                                    <label>Pago único</label>
-                                </div>
-                                <div className="flex flex-row">
-                                    <Input
-                                        type="radio"
-                                        name="plan"
-                                        className="mr-2 w-6 h-6 appearance-none border-darkBlue rounded-full checked:bg-darkBlue checked:border-darkBlue cursor-pointer"
-                                        onChange={() => { toogleMonthPayment("monthly"); onMonthsValueChanged(0); }}
-                                    />
-                                    <label>Pago mensuales</label>
-                                </div>
+
+                        <div>
+                            <div className="flex flex-row mb-2">
+                                <Input
+                                    type="radio"
+                                    name="plan"
+                                    className="mr-2 w-6 h-6 appearance-none border-darkBlue rounded-full checked:bg-darkBlue checked:border-darkBlue cursor-pointer"
+                                    onChange={() => { onMonthsValueChanged(1); toogleMonthPayment("single"); }}
+                                />
+                                <label>Pago único</label>
                             </div>
-                            <div>
-                                <FormItem>
-                                    <FormLabel>Pago cada</FormLabel>
-                                    <FormControl>
-                                        <Select
-                                            value={selectedPayment}
-                                            disabled={!isMonthlyPayment}
-                                            onValueChange={(value) => { onMonthsValueChanged(+value) }}>
-                                            <SelectTrigger className={`w-full ${!isMonthlyPayment ? "bg-gray-200 cursor-not-allowed" : ""}`}>
-                                                <SelectValue placeholder="Seleccione un método de pago" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {(() => {
-                                                    const items = [];
-                                                    const maxPeriod = (policyPlan) ? policyPlan.maxPeriod : 0;
-                                                    for (let i = 2; i <= maxPeriod; i++) {
-                                                        items.push(
-                                                            <SelectItem value={i + ""}>
-                                                                {i + " meses"}
-                                                            </SelectItem>
-                                                        );
-                                                    }
-                                                    return items;
-                                                })()}
-                                            </SelectContent>
-                                        </Select>
-                                    </FormControl>
-                                </FormItem>
+                            <div className="flex flex-row">
+                                <Input
+                                    type="radio"
+                                    name="plan"
+                                    className="mr-2 w-6 h-6 appearance-none border-darkBlue rounded-full checked:bg-darkBlue checked:border-darkBlue cursor-pointer"
+                                    onChange={() => { toogleMonthPayment("monthly"); onMonthsValueChanged(0); }}
+                                />
+                                <label>Pago mensuales</label>
                             </div>
                         </div>
+                        <FormItem>
+                            <FormLabel>Pago cada</FormLabel>
+                            <FormControl>
+                                <Select
+                                    value={selectedPayment}
+                                    disabled={!isMonthlyPayment}
+                                    onValueChange={(value) => { onMonthsValueChanged(+value) }}>
+                                    <SelectTrigger className={`w-full ${!isMonthlyPayment ? "bg-gray-200 cursor-not-allowed" : ""}`}>
+                                        <SelectValue placeholder="Seleccione un método de pago" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {(() => {
+                                            const items = [];
+                                            const maxPeriod = (policyPlan) ? policyPlan.maxPeriod : 0;
+                                            for (let i = 2; i <= maxPeriod; i++) {
+                                                items.push(
+                                                    <SelectItem value={i + ""}>
+                                                        {i + " meses"}
+                                                    </SelectItem>
+                                                );
+                                            }
+                                            return items;
+                                        })()}
+                                    </SelectContent>
+                                </Select>
+                            </FormControl>
+                        </FormItem>
+
 
                         <div className="flex justify-center">
                             <Button

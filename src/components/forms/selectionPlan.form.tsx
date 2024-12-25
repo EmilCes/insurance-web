@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from "next/navigation";
-import { BrandVehicleItem, getBrandModelData, getPolicyPlans, PolicyPlansResponse } from '@/api/policyplan.api';
+import { BrandModelItem, getBrandModelData, getPolicyPlans, PolicyPlansResponse } from '@/api/policyplan.api';
 import {
     Form,
     FormField,
@@ -25,7 +25,7 @@ const SelectionPlanForm = () => {
     const router = useRouter();
 
     const [policyPlans, setPolicyPlans] = useState<PolicyPlansResponse>([]);
-    const [brandModel, setBrandModel] = useState<BrandVehicleItem>();
+    const [brandModel, setBrandModel] = useState<BrandModelItem>();
     const [yearsPolicy, setYearsPolicy] = useState<number>(1);
     const [isLoading, setIsLoading] = useState(true);
 

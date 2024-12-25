@@ -1,7 +1,7 @@
-import { BrandVehicleItem } from '@/api/policyplan.api'
+import { BrandModelItem, BrandVehicleItem } from '@/api/policyplan.api'
 import React from 'react'
 
-const Vehicledata = ({ brandModel }: { brandModel: BrandVehicleItem | undefined }) => {
+const Vehicledata = ({ brandModel }: { brandModel: BrandModelItem | undefined }) => {
     return (
         <>
             <h3 className='text-xl font-semibold'>Vehículo asegurado</h3>
@@ -13,7 +13,7 @@ const Vehicledata = ({ brandModel }: { brandModel: BrandVehicleItem | undefined 
                 </div>
                 <div className='bg-neutral-100 border-solid border rounded-md border-stone-300 px-6 py-1'>
                     <label className='font-light text-slate-700'>Modelo</label>
-                    <p className='font-bold'>{brandModel?.Model[0]?.year}</p>
+                    <p className='font-bold'>{brandModel?.year}</p>
                 </div>
             </div>
 
