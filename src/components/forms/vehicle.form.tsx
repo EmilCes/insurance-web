@@ -122,7 +122,7 @@ const VehiculeForm = () => {
         });
 
         router.push('/dashboard/policyPlan/selectionPlan');
-        
+
       } else {
         if (response.status == 409) {
           form.setError("plates", {
@@ -132,7 +132,7 @@ const VehiculeForm = () => {
         }
         setIsLoading(false);
       }
-      
+
     } catch (error: any) {
       console.log(error);
       setIsLoading(false);
