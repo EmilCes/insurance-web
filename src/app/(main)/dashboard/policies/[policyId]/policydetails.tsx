@@ -3,6 +3,7 @@
 import { PolicyDetails } from '@/api/policy.api'
 import Loading from '@/components/loading/Loading'
 import { Button } from '@/components/ui/button'
+import { NavigationMenu } from '@radix-ui/react-navigation-menu'
 import React, { useState } from 'react'
 
 const PolicyDetailsPage = ({ policyData }: { policyData: PolicyDetails }) => {
@@ -80,8 +81,8 @@ const PolicyDetailsPage = ({ policyData }: { policyData: PolicyDetails }) => {
                     <div className='mt-4 px-6 grid grid-cols-2 border-solid border-b border-slate-400 pb-4'>
                         <div className='border-solid border-r border-slate-400'>
                             <p className='text-alternGray mb-2'>Vigencia de póliza:</p>
-                            <p className='font-semibold'>Desde el {startDate.getDay()} de {startDate.toLocaleString('es', { month: 'long' })} del {startDate.getFullYear()}</p>
-                            <p className='font-semibold'>Desde el {endDate.getDay()} de {endDate.toLocaleString('es', { month: 'long' })} del {endDate.getFullYear()}</p>
+                            <p className='font-semibold'>Desde el {startDate.getDate()} de {startDate.toLocaleString('es', { month: 'long' })} del {startDate.getFullYear()}</p>
+                            <p className='font-semibold'>Desde el {endDate.getDate()} de {endDate.toLocaleString('es', { month: 'long' })} del {endDate.getFullYear()}</p>
                         </div>
 
                         <div className='pl-6 my-auto'>

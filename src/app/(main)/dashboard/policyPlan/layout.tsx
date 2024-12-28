@@ -11,8 +11,8 @@ const layout = ({ children }: { children: React.ReactNode }) => {
             <FormPolicyProvider>
                 <TitleBar title='Compra de una póliza'></TitleBar>
 
-                <div className="flex justify-center items-center bg-white p-8">
-                    <div className="w-full max-w-screen-lg">
+                <div className="flex justify-center items-center bg-white">
+                    <div className="w-full">
                         {children}
                     </div>
                 </div>

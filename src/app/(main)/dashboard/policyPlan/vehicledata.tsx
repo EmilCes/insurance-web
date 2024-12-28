@@ -2,6 +2,7 @@ import { BrandModelItem, BrandVehicleItem } from '@/api/policyplan.api'
 import React from 'react'
 
 const Vehicledata = ({ brandModel }: { brandModel: BrandModelItem | undefined }) => {
+    console.log(brandModel);
     return (
         <>
             <h3 className='text-xl font-semibold'>Vehículo asegurado</h3>

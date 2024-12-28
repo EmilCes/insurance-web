@@ -11,6 +11,8 @@ const PolicyItem = ({ policyItem }: { policyItem: PolicyItemResponse }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const startDate = new Date(policyItem?.startDate);
+  console.log(policyItem?.startDate);
+  console.log(startDate);
   const endDate = new Date(startDate);
   endDate.setFullYear(startDate.getFullYear() + policyItem?.yearsPolicy);
 
@@ -27,12 +29,12 @@ const PolicyItem = ({ policyItem }: { policyItem: PolicyItemResponse }) => {
           <div className='grid grid-cols-1 md:grid-cols-2 mt-4'>
             <div className='mb-1'>
               <h4 className="text-alternGray">Inicio de vigencia</h4>
-              <h4 className="text-alternGray font-semibold">{startDate.getDay()} de {startDate.toLocaleString('es', { month: 'long' })} del {startDate.getFullYear()}</h4>
+              <h4 className="text-alternGray font-semibold">{startDate.getDate()} de {startDate.toLocaleString('es', { month: 'long' })} del {startDate.getFullYear()}</h4>
             </div>
 
             <div className='mb-1'>
               <h4 className="text-alternGray">Fin de vigencia</h4>
-              <h4 className="text-alternGray font-semibold">{endDate.getDay()} de {endDate.toLocaleString('es', { month: 'long' })} del {endDate.getFullYear()}</h4>
+              <h4 className="text-alternGray font-semibold">{endDate.getDate()} de {endDate.toLocaleString('es', { month: 'long' })} del {endDate.getFullYear()}</h4>
             </div>
 
             <div className='mb-1'>

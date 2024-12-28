@@ -142,7 +142,7 @@ const PaymentForm = ({ policyPlan }: { policyPlan: PolicyPlanItem | undefined })
                                 <Input
                                     type="radio"
                                     name="plan"
-                                    className="mr-2 w-6 h-6 appearance-none border-darkBlue rounded-full checked:bg-darkBlue checked:border-darkBlue cursor-pointer"
+                                    className="p-0 mr-2 w-6 h-6 appearance-none border-darkBlue rounded-full checked:bg-darkBlue checked:border-darkBlue cursor-pointer"
                                     onChange={() => { onMonthsValueChanged(1); toogleMonthPayment("single"); }}
                                 />
                                 <label>Pago único</label>
@@ -151,7 +151,7 @@ const PaymentForm = ({ policyPlan }: { policyPlan: PolicyPlanItem | undefined })
                                 <Input
                                     type="radio"
                                     name="plan"
-                                    className="mr-2 w-6 h-6 appearance-none border-darkBlue rounded-full checked:bg-darkBlue checked:border-darkBlue cursor-pointer"
+                                    className="p-0 mr-2 w-6 h-6 appearance-none border-darkBlue rounded-full checked:bg-darkBlue checked:border-darkBlue cursor-pointer"
                                     onChange={() => { toogleMonthPayment("monthly"); onMonthsValueChanged(0); }}
                                 />
                                 <label>Pago mensuales</label>
@@ -165,7 +165,7 @@ const PaymentForm = ({ policyPlan }: { policyPlan: PolicyPlanItem | undefined })
                                     disabled={!isMonthlyPayment}
                                     onValueChange={(value) => { onMonthsValueChanged(+value) }}>
                                     <SelectTrigger className={`w-full ${!isMonthlyPayment ? "bg-gray-200 cursor-not-allowed" : ""}`}>
-                                        <SelectValue placeholder="Seleccione un método de pago" />
+                                        <SelectValue placeholder="Seleccione cada cuántos meses se realizará un pago" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {(() => {

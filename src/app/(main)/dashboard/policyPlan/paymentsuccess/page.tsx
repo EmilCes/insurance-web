@@ -3,7 +3,7 @@ import React from 'react'
 
 const PaymentSuccess = () => {
     return (
-        <div>
+        <div className="mx-auto w-full max-w-screen-lg p-8">
             <h2 className='text-2xl font-semibold'>Plan “Amplia Plus” adquirido</h2>
             <h4 className="text-alternGray mb-4">Puede consultar su póliza después o descargarla ahora</h4>
 
