@@ -229,11 +229,8 @@ export async function getBrandModelData(idModel: number): Promise<BrandModelItem
     }
 }
 
-interface CreatePolicyResponse {
-    status: number;
-}
 
-export interface PolicyCreateData{
+export interface PolicyCreateData {
     idBrand: number;
     idModel: number;
     series: string;
@@ -247,6 +244,20 @@ export interface PolicyCreateData{
     perMonthsPayment: number;
 }
 
+interface CreatePolicyData {
+    serialNumber: string;
+    planTitle: string,
+    planDescription: string;
+}
+
+export interface CreatePolicyResponse {
+    status: number;
+    serialNumber: string;
+    planTitle: string,
+    planDescription: string;
+}
+
+
 export async function createPolicyData(policyData: PolicyCreateData): Promise<CreatePolicyResponse | null> {
     try {
         const response = await fetch(`${API_URL}/policies/`, {
@@ -257,12 +268,12 @@ export async function createPolicyData(policyData: PolicyCreateData): Promise<Cr
             body: JSON.stringify(policyData),
         });
         if (response.status == 201) {
-            const values: CreatePolicyResponse = { status: response.status };
+            const policyData : CreatePolicyData = await response.json();
+            const values: CreatePolicyResponse = { status: response.status, ...policyData };
             return values;
         }
 
         return null;
-
 
     } catch (error) {
         console.error('Post policy error:', error);
