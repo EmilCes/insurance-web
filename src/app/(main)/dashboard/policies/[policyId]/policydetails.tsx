@@ -5,9 +5,11 @@ import Loading from '@/components/loading/Loading'
 import { Button } from '@/components/ui/button'
 import { NavigationMenu } from '@radix-ui/react-navigation-menu'
 import React, { useState } from 'react'
+import CancelPolicy from './cancelpolicy'
 
 const PolicyDetailsPage = ({ policyData }: { policyData: PolicyDetails }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [showCancelPolicy, setShowCancelPolicy] = useState<boolean>(false);
 
     const startDate = new Date(policyData?.startDate);
     const endDate = new Date(startDate);
@@ -138,12 +140,17 @@ const PolicyDetailsPage = ({ policyData }: { policyData: PolicyDetails }) => {
 
                 </div>
 
-                <div className='grid grid-cols-1 md:grid-cols-3'>
-                    <Button
-                        className="w-4/5 text-center flex justify-center mt-4 min-h-12 bg-red-950 col-start-3">
-                        Cancelar póliza
-                    </Button>
-                </div>
+                {policyData.isCanceled ? (<></>) : (<>
+                    <div className='grid grid-cols-1 md:grid-cols-3'>
+                        <Button
+                            className="w-4/5 text-center flex justify-center mt-4 min-h-12 bg-red-950 col-start-3"
+                            onClick={() => setShowCancelPolicy(true)}>
+                            Cancelar póliza
+                        </Button>
+                    </div></>)}
+                {showCancelPolicy ? (<CancelPolicy idPolicy={policyData.serialNumber}
+                    closeMessage={() => {setShowCancelPolicy(false)}}
+                ></CancelPolicy>) : (<></>)}
             </>)}
         </>
     )

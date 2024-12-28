@@ -145,3 +145,16 @@ export async function getPolicyDetails(serialNumber: any): Promise<PolicyDetails
         throw new Error('Error during get policy. Please try again later.');
     }
 }
+
+export async function cancelPolicy(serialNumber: any): Promise<number> {
+    try {
+        const response = await fetch(`${API_URL}/policies/cancel/${serialNumber}`, {
+            method: 'PUT'
+        });
+        return response.status;
+
+    } catch (error) {
+        console.error('Cancel policy error:', error);
+        throw new Error('Error during canceling policy. Please try again later.');
+    }
+}
