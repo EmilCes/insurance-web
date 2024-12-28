@@ -6,6 +6,7 @@ import SelectionPlanForm from '@/components/forms/selectionPlan.form';
 
 import Loading from '@/components/loading/Loading';
 import { useRouter } from 'next/navigation';
+import isAuth from '@/lib/auth/isAuth';
 
 const SelectionPlan = () => {
     const { formPolicyData, setFormPolicyData } = useFormPolicyContext();
@@ -28,4 +29,4 @@ const SelectionPlan = () => {
     )
 }
 
-export default SelectionPlan
+export default isAuth(SelectionPlan)

@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input'
 import { useRouter } from 'next/navigation'
 import { getPoliciesFromPage, getTotalNumberPolicies, PoliciesResponse } from '@/api/policy.api'
 import Loading from '@/components/loading/Loading'
+import isAuth from '@/lib/auth/isAuth'
+import { useAuth } from '@/lib/auth/authContext'
 
 const PoliciesList = () => {
   const numberOfPoliciesPerPage = 4;
@@ -119,7 +121,7 @@ const PoliciesList = () => {
           </div>
 
           <div className='col-span-3'>
-            <div className='grid grid-cols-4'>
+            <div className='grid grid-cols-4 mb-6'>
               <Input className='col-span-3' placeholder='Ingrese el ID de la póliza' />
               <Button
                 className="text-center flex mx-6  bg-darkBlue">
@@ -128,7 +130,6 @@ const PoliciesList = () => {
             </div>
 
 
-            <h4 className="text-alternGray mb-3 mt-6 ml-4 ">Mostrando {policiesList?.length} de {totalPolicies} resultados</h4>
             {policiesList?.map((policyItem) => (
               <PolicyItem policyItem={policyItem}></PolicyItem>
             ))}
@@ -160,4 +161,4 @@ const PoliciesList = () => {
   )
 }
 
-export default PoliciesList
+export default isAuth(PoliciesList)

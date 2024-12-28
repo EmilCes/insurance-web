@@ -1,9 +1,7 @@
 "use client"
 
 import VehiculeForm from "@/components/forms/vehicle.form"
-import { NavigationMenu } from "@/components/ui/navigation-menu";
-import { FormPolicyProvider } from "@/lib/context/formPolicyContext";
-import Image from "next/image";
+import isAuth from "@/lib/auth/isAuth";
 
 const PolicyPlan = () => {
     return (
@@ -13,4 +11,4 @@ const PolicyPlan = () => {
     )
 }
 
-export default PolicyPlan 
+export default isAuth(PolicyPlan)

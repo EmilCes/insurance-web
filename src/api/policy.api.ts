@@ -1,3 +1,5 @@
+import { useAuth } from "@/lib/auth/authContext";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export interface PolicyDetails {
@@ -93,8 +95,12 @@ export interface VehicleDataBrandModel {
 
 export async function getPoliciesFromPage(page: number): Promise<PoliciesResponse | null> {
     try {
+        const token = localStorage.getItem("token");
         const response = await fetch(`${API_URL}/policies?page=${page}`, {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
         });
         if (response.ok) {
             const values: PoliciesResponse = await response.json();
@@ -112,8 +118,12 @@ export async function getPoliciesFromPage(page: number): Promise<PoliciesRespons
 
 export async function getTotalNumberPolicies(): Promise<number> {
     try {
+        const token = localStorage.getItem("token");
         const response = await fetch(`${API_URL}/policies/total`, {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
         });
         if (response.ok) {
             const values: number = await response.json();
@@ -130,8 +140,12 @@ export async function getTotalNumberPolicies(): Promise<number> {
 
 export async function getPolicyDetails(serialNumber: any): Promise<PolicyDetails | null> {
     try {
+        const token = localStorage.getItem("token");
         const response = await fetch(`${API_URL}/policies/${serialNumber}`, {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
         });
         if (response.ok) {
             const values: PolicyDetails = await response.json();
@@ -148,8 +162,12 @@ export async function getPolicyDetails(serialNumber: any): Promise<PolicyDetails
 
 export async function cancelPolicy(serialNumber: any): Promise<number> {
     try {
+        const token = localStorage.getItem("token");
         const response = await fetch(`${API_URL}/policies/cancel/${serialNumber}`, {
-            method: 'PUT'
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
         });
         return response.status;
 

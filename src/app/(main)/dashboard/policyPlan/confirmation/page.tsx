@@ -9,6 +9,7 @@ import Loading from '@/components/loading/Loading';
 import { useFormPolicyContext } from '@/lib/context/formPolicyContext';
 import ProgressInPolicyForm from '../progresspolicyform';
 import PaymentPolicySuccesful from './paymentsuccesful';
+import isAuth from '@/lib/auth/isAuth';
 
 const Confirmation = () => {
     const { formPolicyData, setFormPolicyData } = useFormPolicyContext();
@@ -147,4 +148,4 @@ const Confirmation = () => {
     )
 }
 
-export default Confirmation
+export default isAuth(Confirmation)
