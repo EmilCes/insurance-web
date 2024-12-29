@@ -1,4 +1,5 @@
 import React from 'react'
+import { Button } from '../ui/button';
 
 const SessionExpired = ({setSessionExpired} : {setSessionExpired: (value: boolean)=> void}) => {
   return (
@@ -6,14 +7,14 @@ const SessionExpired = ({setSessionExpired} : {setSessionExpired: (value: boolea
           <div className="bg-white p-8 rounded shadow-lg text-center z-50">
             <h2 className="text-xl font-bold mb-4">Sesión expirada</h2>
             <p>Tu sesión ha caducado. Por favor, inicia sesión nuevamente.</p>
-            <button
+            <Button
               onClick={() => {
                 setSessionExpired(false);
               }}
               className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
             >
               Aceptar
-            </button>
+            </Button>
           </div>
         </div>
   )

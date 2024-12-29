@@ -4,7 +4,7 @@ import PaymentForm from '@/components/forms/payment.form'
 import React, { useEffect, useState } from 'react'
 import Vehicledata from '../vehicledata'
 import { useRouter } from "next/navigation";
-import { BrandModelItem, CreatePolicyResponse, getBrandModelData, getPolicyPlanData, PolicyPlanItem } from '@/api/policyplan.api';
+import { getPolicyPlanData, PolicyPlanItem } from '@/api/policyplan.api';
 import Loading from '@/components/loading/Loading';
 import { useFormPolicyContext } from '@/lib/context/formPolicyContext';
 import ProgressInPolicyForm from '../progresspolicyform';
@@ -12,6 +12,8 @@ import PaymentPolicySuccesful from './paymentsuccesful';
 import isAuth from '@/lib/auth/isAuth';
 import { useStatusPageContext } from '@/lib/statusPage/statusContext';
 import ErrorMessage from '@/components/errorMessage/errorMessage';
+import { BrandModelItem, getBrandModelData } from '@/api/brand.api';
+import { CreatePolicyResponse } from '@/api/policy.api';
 
 const Confirmation = () => {
     const { formPolicyData } = useFormPolicyContext();

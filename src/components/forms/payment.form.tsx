@@ -24,10 +24,11 @@ import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import confirmationPolicySchema from "@/schemas/confirmationPaymentPolicy.schema";
 import { useState } from "react";
-import { createPolicyData, CreatePolicyResponse, PolicyCreateData, PolicyPlanItem } from "@/api/policyplan.api";
 import { useFormPolicyContext } from "@/lib/context/formPolicyContext";
 import Loading from "../loading/Loading";
 import { useStatusPageContext } from "@/lib/statusPage/statusContext";
+import { PolicyPlanItem } from "@/api/policyplan.api";
+import { createPolicyData, CreatePolicyResponse, PolicyCreateData } from "@/api/policy.api";
 
 const PaymentForm = ({ policyPlan, onPaymentSuccess }: {
     policyPlan: PolicyPlanItem | undefined;

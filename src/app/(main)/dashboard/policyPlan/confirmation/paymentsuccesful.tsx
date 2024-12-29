@@ -1,6 +1,6 @@
 "use client"
 
-import { CreatePolicyResponse } from '@/api/policyplan.api';
+import { CreatePolicyResponse } from '@/api/policy.api';
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation';
 import React from 'react'
@@ -22,7 +22,7 @@ const PaymentPolicySuccesful = ({ newPolicy }: { newPolicy: CreatePolicyResponse
                         </div>
                         <div className='flex justify-center my-auto'>
                             <Button className='bg-darkBlue'
-                            onClick={() => { router.push(`/dashboard/policies/${newPolicy.serialNumber}`) }}>
+                                onClick={() => { router.push(`/dashboard/policies/${newPolicy.serialNumber}`) }}>
                                 Ver detalles póliza
                             </Button>
                         </div>
@@ -30,7 +30,8 @@ const PaymentPolicySuccesful = ({ newPolicy }: { newPolicy: CreatePolicyResponse
 
                     <div className="grid grid-cols-1 md:grid-cols-2">
                         <br className="hidden md:block" />
-                        <Button className='w-4/5 text-center flex justify-center mt-4 min-h-12 bg-darkBlue'>
+                        <Button className='w-4/5 text-center flex justify-center mt-4 min-h-12 bg-darkBlue'
+                            onClick={() => router.push("/dashboard")}>
                             Regresar al inicio
                         </Button>
                     </div>

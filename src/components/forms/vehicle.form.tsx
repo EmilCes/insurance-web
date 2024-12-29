@@ -22,13 +22,14 @@ import {
 } from "@/components/ui/select"
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
-import { BrandsVehicleResponse, ColorsVehicleResponse, getBrandsVehicles, getColorsVehicles, getServicesVehicles, getTypesVehicles, ModelVehicleResponse, ServicesVehicleResponse, TypeVehicleResponse, validatePlates } from "@/api/policyplan.api";
 import { useEffect, useState } from "react";
 import Loading from "../loading/Loading";
 import { FormPolicyProvider, useFormPolicyContext } from "@/lib/context/formPolicyContext";
 import ProgressInPolicyForm from "@/app/(main)/dashboard/policyPlan/progresspolicyform";
 import { useStatusPageContext } from "@/lib/statusPage/statusContext";
 import { useAuth } from "@/lib/auth/authContext";
+import { ColorsVehicleResponse, getColorsVehicles, getServicesVehicles, getTypesVehicles, ServicesVehicleResponse, TypeVehicleResponse, validatePlates } from "@/api/vehicle.api";
+import { BrandsVehicleResponse, getBrandsVehicles, ModelVehicleResponse } from "@/api/brand.api";
 
 const VehiculeForm = () => {
   const { formPolicyData, setFormPolicyData } = useFormPolicyContext();

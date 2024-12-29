@@ -1,4 +1,5 @@
-import { BrandModelItem, BrandVehicleItem } from '@/api/policyplan.api'
+
+import { BrandModelItem } from '@/api/brand.api'
 import React from 'react'
 
 const Vehicledata = ({ brandModel }: { brandModel: BrandModelItem | undefined }) => {

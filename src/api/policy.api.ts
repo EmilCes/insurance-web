@@ -3,6 +3,33 @@ import { fetchWithAuth } from "./fecthWithAuth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+export interface PolicyCreateData {
+    idBrand: number;
+    idModel: number;
+    series: string;
+    plates: string;
+    idColor: number;
+    idType: number;
+    occupants: number;
+    idService: number;
+    yearOfPolicy: number;
+    idPolicyPlan: string;
+    perMonthsPayment: number;
+}
+
+export interface CreatePolicyResponse {
+    status: number;
+    serialNumber: string;
+    planTitle: string,
+    planDescription: string;
+}
+
+interface CreatePolicyData {
+    serialNumber: string;
+    planTitle: string,
+    planDescription: string;
+}
+
 export interface PolicyDetails {
     serialNumber: string;
     monthsOfPayment: number;
@@ -96,6 +123,22 @@ export interface VehicleDataBrandModel {
 
 export interface PolicyDetailsErrorResponse{
     status: number;
+}
+
+export async function createPolicyData(policyData: PolicyCreateData): Promise<CreatePolicyResponse | null> {
+    const response = await fetchWithAuth(`${API_URL}/policies/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(policyData),
+    });
+    if (response.status == 201) {
+        const policyData: CreatePolicyData = await response.json();
+        const values: CreatePolicyResponse = { status: response.status, ...policyData };
+        return values;
+    }
+    return null;
 }
 
 export async function getPoliciesFromPage(page: number): Promise<PoliciesResponse | null> {
