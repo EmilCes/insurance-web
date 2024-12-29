@@ -3,7 +3,7 @@
 import { getPolicyDetails, PolicyDetails, PolicyDetailsErrorResponse } from '@/api/policy.api'
 import Loading from '@/components/loading/Loading';
 import { Button } from '@/components/ui/button'
-import { useParams, useRouter } from 'next/navigation'
+import { notFound, useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from "react";
 import PolicyDetailsPage from './policydetails';
 import { useStatusPageContext } from '@/lib/statusPage/statusContext';
@@ -36,8 +36,7 @@ const PolicyPage = () => {
                     return;
                 }
                 if(policyDataResponse.status == 404){
-                    router.push("/no");
-                    return;
+                    return router.push("/notfound");
                 }
 
                 throw new Error("Error al recuperar datos póliza");

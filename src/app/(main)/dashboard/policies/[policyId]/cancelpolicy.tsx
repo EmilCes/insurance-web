@@ -1,14 +1,12 @@
 "use client"
 
 import { cancelPolicy } from '@/api/policy.api';
-import Loading from '@/components/loading/Loading';
 import { Button } from '@/components/ui/button'
 import { useStatusPageContext } from '@/lib/statusPage/statusContext';
-import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 
 const CancelPolicy = ({ idPolicy, closeMessage }: { idPolicy: string; closeMessage: () => void }) => {
-    const { isLoading, showMessageError, setShowMessageError, setIsLoading } = useStatusPageContext();
+    const { setShowMessageError, setIsLoading } = useStatusPageContext();
     const alertImage = '/alert-icon.svg';
     const crossImage = '/cross-icon.svg';
 
