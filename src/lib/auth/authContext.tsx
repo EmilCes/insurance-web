@@ -1,13 +1,16 @@
 // context/AuthContext.tsx
 "use client";
 
+import { authEvents } from "@/api/fecthWithAuth";
+import SessionExpired from "@/components/sessionExpired/sessionExpired";
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+
 
 interface AuthContextType {
   isAuthenticated: boolean;
   login: (token: string) => void;
   logout: () => void;
-  isLoading: boolean;
+  isLoading: boolean
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -15,6 +18,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [sessionExpired, setSessionExpired] = useState<boolean>(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -22,8 +26,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setIsAuthenticated(true);
     }
     setIsLoading(false);
-  }, []);
 
+    const handleUnauthorized = () => {
+      setSessionExpired(true);
+      logout();
+    };
+
+    authEvents.on("unauthorized", handleUnauthorized);
+
+    return () => {
+      authEvents.off("unauthorized", handleUnauthorized);
+    };
+
+  }, []);
 
   const login = (token: string) => {
     localStorage.setItem("token", token);
@@ -45,6 +60,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   return (
     <AuthContext.Provider value={value}>
       {children}
+      {sessionExpired ? (
+        <SessionExpired setSessionExpired={setSessionExpired}></SessionExpired>
+      ) : <></>}
+
     </AuthContext.Provider>
   );
 };

@@ -3,27 +3,33 @@
 import { cancelPolicy } from '@/api/policy.api';
 import Loading from '@/components/loading/Loading';
 import { Button } from '@/components/ui/button'
+import { useStatusPageContext } from '@/lib/statusPage/statusContext';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 
 const CancelPolicy = ({ idPolicy, closeMessage }: { idPolicy: string; closeMessage: () => void }) => {
+    const { isLoading, showMessageError, setShowMessageError, setIsLoading } = useStatusPageContext();
     const alertImage = '/alert-icon.svg';
     const crossImage = '/cross-icon.svg';
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const router = useRouter();
 
     const cancelCurrentPolicy = async () => {
         setIsLoading(true);
-        const response = await cancelPolicy(idPolicy);
-        if (response == 204) {
-            window.location.reload();
+        try {
+            const response = await cancelPolicy(idPolicy);
+            if (response == 204) {
+                setIsLoading(false);
+                return window.location.reload();
+            }
+            throw new Error("Error al cancelar póliza")
+        } catch (error) {
+            setShowMessageError(true);
         }
+        closeMessage();
         setIsLoading(false);
     }
 
     return (
         <>
-            {isLoading ? (<Loading></Loading>) : (<></>)}
             <div className='fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-40 z-50'>
                 <div className='bg-white m-20 rounded-lg'>
                     <div className='pt-4'>

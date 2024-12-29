@@ -1,4 +1,5 @@
 import { useAuth } from "@/lib/auth/authContext";
+import { fetchWithAuth } from "./fecthWithAuth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -93,86 +94,48 @@ export interface VehicleDataBrandModel {
     Model: ModelDetails;
 }
 
+export interface PolicyDetailsErrorResponse{
+    status: number;
+}
+
 export async function getPoliciesFromPage(page: number): Promise<PoliciesResponse | null> {
-    try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(`${API_URL}/policies?page=${page}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            }
-        });
-        if (response.ok) {
-            const values: PoliciesResponse = await response.json();
-            return values;
-        }
-
-        return null;
-
-    } catch (error) {
-        console.error('Get policies error:', error);
-        throw new Error('Error during get policies. Please try again later.');
+    const response = await fetchWithAuth(`${API_URL}/policies?page=${page}`, {
+        method: 'GET'
+    });
+    if (response.ok) {
+        const values: PoliciesResponse = await response.json();
+        return values;
     }
+    return null;
 }
 
 
 export async function getTotalNumberPolicies(): Promise<number> {
-    try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(`${API_URL}/policies/total`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            }
-        });
-        if (response.ok) {
-            const values: number = await response.json();
-            return values;
-        }
-
-        return 0;
-
-    } catch (error) {
-        console.error('Get number policies error:', error);
-        throw new Error('Error during get number policies. Please try again later.');
+    const response = await fetchWithAuth(`${API_URL}/policies/total`, {
+        method: 'GET'
+    });
+    if (response.ok) {
+        const values: number = await response.json();
+        return values;
     }
+    return 0;
 }
 
-export async function getPolicyDetails(serialNumber: any): Promise<PolicyDetails | null> {
-    try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(`${API_URL}/policies/${serialNumber}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            }
-        });
-        if (response.ok) {
-            const values: PolicyDetails = await response.json();
-            return values;
-        }
-
-        return null;
-
-    } catch (error) {
-        console.error('Get policy error:', error);
-        throw new Error('Error during get policy. Please try again later.');
+export async function getPolicyDetails(serialNumber: any): Promise<{ status: number; data: PolicyDetails | null }> {
+    const response = await fetchWithAuth(`${API_URL}/policies/${serialNumber}`, {
+        method: 'GET'
+    });
+    if (response.ok) {
+        const values: PolicyDetails = await response.json();
+        return {status: response.status, data: values};
     }
+    return {status: response.status, data : null} ;
 }
 
 export async function cancelPolicy(serialNumber: any): Promise<number> {
-    try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(`${API_URL}/policies/cancel/${serialNumber}`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            }
-        });
-        return response.status;
-
-    } catch (error) {
-        console.error('Cancel policy error:', error);
-        throw new Error('Error during canceling policy. Please try again later.');
-    }
+    const token = localStorage.getItem("token");
+    const response = await fetchWithAuth(`${API_URL}/policies/cancel/${serialNumber}`, {
+        method: 'PUT'
+    });
+    return response.status;
 }

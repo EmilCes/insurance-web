@@ -27,17 +27,16 @@ import { useState } from "react";
 import { createPolicyData, CreatePolicyResponse, PolicyCreateData, PolicyPlanItem } from "@/api/policyplan.api";
 import { useFormPolicyContext } from "@/lib/context/formPolicyContext";
 import Loading from "../loading/Loading";
-import PaymentPolicySuccesful from "@/app/(main)/dashboard/policyPlan/confirmation/paymentsuccesful";
+import { useStatusPageContext } from "@/lib/statusPage/statusContext";
 
 const PaymentForm = ({ policyPlan, onPaymentSuccess }: {
     policyPlan: PolicyPlanItem | undefined;
-    onPaymentSuccess: (newPolicy : CreatePolicyResponse) => void
+    onPaymentSuccess: (newPolicy: CreatePolicyResponse) => void
 }) => {
     const { formPolicyData, deleteFormPolicyData } = useFormPolicyContext();
-    const router = useRouter();
+    const { setShowMessageError, setIsLoading } = useStatusPageContext();
     const [isMonthlyPayment, setIsMonthlyPayment] = useState(false);
     const [selectedPayment, setSelectedPayment] = useState<string | undefined>("");
-    const [isLoading, setIsLoading] = useState(false);
 
     const form = useForm<z.infer<typeof confirmationPolicySchema>>({
         resolver: zodResolver(confirmationPolicySchema),
@@ -100,19 +99,15 @@ const PaymentForm = ({ policyPlan, onPaymentSuccess }: {
             } else {
                 throw new Error("Hubo un error con los datos de la póliza, inténtelo más tarde...");
             }
-        } catch (error: any) {
+        } catch (error) {
+            setShowMessageError(true);
             setIsLoading(false);
-            console.log(error);
         }
     }
 
     return (
         <>
-            {isLoading ? <Loading /> : <></>}
-
             <div>
-
-
                 <h2 className='text-2xl font-semibold'>Información de pago</h2>
                 <h4 className="text-alternGray">Ingrese la información para realizar el pago</h4>
 

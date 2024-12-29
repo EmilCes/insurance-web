@@ -20,15 +20,16 @@ import { Input } from '@/components/ui/input';
 import { FormPolicyProvider, useFormPolicyContext } from "@/lib/context/formPolicyContext";
 import Vehicledata from '@/app/(main)/dashboard/policyPlan/vehicledata';
 import ProgressInPolicyForm from '@/app/(main)/dashboard/policyPlan/progresspolicyform';
+import { useStatusPageContext } from '@/lib/statusPage/statusContext';
 
 const SelectionPlanForm = () => {
     const { formPolicyData, setFormPolicyData } = useFormPolicyContext();
+    const { setShowMessageError, showMessageError, setIsLoading } = useStatusPageContext();
     const router = useRouter();
 
     const [policyPlans, setPolicyPlans] = useState<PolicyPlansResponse>([]);
     const [brandModel, setBrandModel] = useState<BrandModelItem>();
     const [yearsPolicy, setYearsPolicy] = useState<number>(1);
-    const [isLoading, setIsLoading] = useState(true);
 
     const form = useForm<z.infer<typeof planPolicySelectionSchema>>({
         resolver: zodResolver(planPolicySelectionSchema),
@@ -49,15 +50,23 @@ const SelectionPlanForm = () => {
                 const brandModel = await getBrandModelData(idModelData);
                 if (brandModel) {
                     setBrandModel(brandModel);
+                } else {
+                    throw new Error("Error la marca");
                 }
 
                 const policyPlansData = await getPolicyPlans();
                 if (policyPlansData) {
                     setPolicyPlans(policyPlansData);
+                } else {
+                    throw new Error("Error al recuperar los planes de póliza");
+                }
+
+                if (showMessageError) {
+                    setShowMessageError(false);
                 }
 
             } catch (error) {
-                console.error("Error al obtener datos:", error);
+                setShowMessageError(true);
             }
             setIsLoading(false);
         };
@@ -83,15 +92,11 @@ const SelectionPlanForm = () => {
             router.push('/dashboard/policyPlan/confirmation');
         } catch (error: any) {
             setIsLoading(false);
-            console.log(error);
+            setShowMessageError(true);
         }
     }
     return (
         <>
-            <div>
-                {isLoading && <Loading />}
-            </div>
-
             <ProgressInPolicyForm currentStep={2}></ProgressInPolicyForm>
             <div className="mx-auto w-full max-w-screen-lg px-8 pb-8 pt-4">
                 <Form {...form}>

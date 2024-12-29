@@ -27,9 +27,12 @@ import { useEffect, useState } from "react";
 import Loading from "../loading/Loading";
 import { FormPolicyProvider, useFormPolicyContext } from "@/lib/context/formPolicyContext";
 import ProgressInPolicyForm from "@/app/(main)/dashboard/policyPlan/progresspolicyform";
+import { useStatusPageContext } from "@/lib/statusPage/statusContext";
+import { useAuth } from "@/lib/auth/authContext";
 
 const VehiculeForm = () => {
   const { formPolicyData, setFormPolicyData } = useFormPolicyContext();
+  const { setIsLoading, showMessageError, setShowMessageError } = useStatusPageContext();
   const router = useRouter();
 
   const [colors, setColors] = useState<ColorsVehicleResponse>([]);
@@ -37,7 +40,6 @@ const VehiculeForm = () => {
   const [models, setModels] = useState<ModelVehicleResponse>([]);
   const [types, setTypes] = useState<TypeVehicleResponse>([]);
   const [services, setServices] = useState<ServicesVehicleResponse>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   const form = useForm<z.infer<typeof vehicleSchema>>({
     resolver: zodResolver(vehicleSchema),
@@ -54,30 +56,41 @@ const VehiculeForm = () => {
   });
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchColors = async () => {
       try {
         const colorsData = await getColorsVehicles();
         if (colorsData) {
           setColors(colorsData);
+        } else {
+          throw new Error("Error al recuperar los colores");
         }
 
         const brandsData = await getBrandsVehicles();
         if (brandsData) {
           setBrands(brandsData);
+        } else {
+          throw new Error("Error al recuperar las marcas");
         }
 
         const typesData = await getTypesVehicles();
         if (typesData) {
           setTypes(typesData);
+        } else {
+          throw new Error("Error al recuperar los tipos");
         }
 
         const servicesData = await getServicesVehicles();
         if (servicesData) {
           setServices(servicesData);
+        } else {
+          throw new Error("Error al recuperar los servicios");
         }
-
+        if (showMessageError) {
+          setShowMessageError(false);
+        }
       } catch (error) {
-        console.error("Error al obtener datos:", error);
+        setShowMessageError(true);
       }
       setIsLoading(false);
     };
@@ -110,7 +123,6 @@ const VehiculeForm = () => {
       setIsLoading(true);
       const response = await validatePlates(values);
       if (response.isValid) {
-
         setFormPolicyData({
           idBrand: values.idBrand,
           idModel: values.idModel,
@@ -134,18 +146,14 @@ const VehiculeForm = () => {
         setIsLoading(false);
       }
 
-    } catch (error: any) {
-      console.log(error);
+    } catch (err) {
       setIsLoading(false);
+      setShowMessageError(true);
     }
   }
 
   return (
     <div>
-
-      <div>
-        {isLoading && <Loading />}
-      </div>
 
       <ProgressInPolicyForm currentStep={1}></ProgressInPolicyForm>
 

@@ -3,16 +3,15 @@
 import { PolicyItemResponse } from '@/api/policy.api'
 import Loading from '@/components/loading/Loading'
 import { Button } from '@/components/ui/button'
+import { useStatusPageContext } from '@/lib/statusPage/statusContext'
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React from 'react'
 
 const PolicyItem = ({ policyItem }: { policyItem: PolicyItemResponse }) => {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { setIsLoading } = useStatusPageContext();
 
   const startDate = new Date(policyItem?.startDate);
-  console.log(policyItem?.startDate);
-  console.log(startDate);
   const endDate = new Date(startDate);
   endDate.setFullYear(startDate.getFullYear() + policyItem?.yearsPolicy);
 
@@ -20,7 +19,6 @@ const PolicyItem = ({ policyItem }: { policyItem: PolicyItemResponse }) => {
 
   return (
     <>
-      {isLoading ? (<Loading></Loading>) : <></>}
       <div className='mb-2 border-slate-400 border-solid border rounded-lg px-6 py-4 grid grid-cols-3'>
         <div className='col-span-2'>
           <h2 className='text-xl font-semibold'>Póliza con <span className='text-2xl text-alternGray '>Plan {policyItem?.planTitle}</span></h2>
@@ -55,7 +53,7 @@ const PolicyItem = ({ policyItem }: { policyItem: PolicyItemResponse }) => {
             </p>
           </div>
           <Button
-            className="text-center flex mt-auto mb-2 min-h-12 bg-darkBlue" onClick={() => { setIsLoading(true); router.push(`/dashboard/policies/${policyItem?.serialNumber}`); }}>
+            className="text-center flex mt-auto mb-2 min-h-12 bg-darkBlue" onClick={() => { router.push(`/dashboard/policies/${policyItem?.serialNumber}`); setIsLoading(true); }}>
             Ver más
           </Button>
         </div>
