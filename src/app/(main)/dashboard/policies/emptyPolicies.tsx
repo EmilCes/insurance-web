@@ -1,10 +1,10 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import React from 'react'
 
-const NoItemsPolicy = () => {
+const EmptyPolicies = () => {
     const router = useRouter();
-    const noItemsImage = '/nosearch-image.png';
+    const noItemsImage = '/noitems-image.png';
 
     return (
         <>
@@ -19,8 +19,8 @@ const NoItemsPolicy = () => {
                         height: "180px"
                     }}
                 ></div>
-                <h1 className='text-xl font-semibold mb-2 text-darkBlue'>Sin resultados</h1>
-                <h2 className='text-alternGray md:w-4/5 text-center'>No encontramos ninguna coincidencia con las pólizas registradas, por favor intente de nuevo con otras opciones</h2>
+                <h1 className='text-xl font-semibold mb-2 text-darkBlue'>Todavía no hay pólizas registradas</h1>
+                <h2 className='text-alternGray'>Si adquiere una póliza podrá consultarla aquí</h2>
                 <Button
                     className="mt-2 min-h-8 bg-white text-alternGray border border-alternGray hover:text-white"
                     onClick={() => router.push("/dashboard")}>
@@ -31,4 +31,4 @@ const NoItemsPolicy = () => {
     )
 }
 
-export default NoItemsPolicy
+export default EmptyPolicies

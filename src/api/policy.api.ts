@@ -125,6 +125,17 @@ export interface PolicyDetailsErrorResponse{
     status: number;
 }
 
+export interface DataPolicyPageRequest {
+    page: number;
+    type: string;
+    status: number;
+}
+
+export interface DataPolicyTotalRequest {
+    type: string;
+    status: number;
+}
+
 export async function createPolicyData(policyData: PolicyCreateData): Promise<CreatePolicyResponse | null> {
     const response = await fetchWithAuth(`${API_URL}/policies/`, {
         method: 'POST',
@@ -141,8 +152,8 @@ export async function createPolicyData(policyData: PolicyCreateData): Promise<Cr
     return null;
 }
 
-export async function getPoliciesFromPage(page: number): Promise<PoliciesResponse | null> {
-    const response = await fetchWithAuth(`${API_URL}/policies?page=${page}`, {
+export async function getPoliciesFromPage(data : DataPolicyPageRequest): Promise<PoliciesResponse | null> {
+    const response = await fetchWithAuth(`${API_URL}/policies?page=${data.page}&type=${data.type}&status=${data.status}`, {
         method: 'GET'
     });
     if (response.ok) {
@@ -152,9 +163,8 @@ export async function getPoliciesFromPage(page: number): Promise<PoliciesRespons
     return null;
 }
 
-
-export async function getTotalNumberPolicies(): Promise<number> {
-    const response = await fetchWithAuth(`${API_URL}/policies/total`, {
+export async function getTotalNumberPolicies(data: DataPolicyTotalRequest): Promise<number> {
+    const response = await fetchWithAuth(`${API_URL}/policies/total?&type=${data.type}&status=${data.status}`, {
         method: 'GET'
     });
     if (response.ok) {
