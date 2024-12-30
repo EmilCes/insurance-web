@@ -5,10 +5,9 @@ import React, { useEffect, useState } from 'react'
 import PolicyItem from './policyItem'
 import { Input } from '@/components/ui/input'
 import { useRouter } from 'next/navigation'
-import { DataPolicyPageRequest, DataPolicyTotalRequest, getPoliciesFromPage, getTotalNumberPolicies, PoliciesResponse } from '@/api/policy.api'
+import { DataPolicyTotalRequest, getPoliciesFromPage, getTotalNumberPolicies, PoliciesResponse } from '@/api/policy.api'
 import Loading from '@/components/loading/Loading'
 import isAuth from '@/lib/auth/isAuth'
-import { useAuth } from '@/lib/auth/authContext'
 import ErrorMessage from '@/components/errorMessage/errorMessage'
 import { useStatusPageContext } from '@/lib/statusPage/statusContext'
 import NoItemsPolicy from './noItems'
@@ -22,6 +21,7 @@ const PoliciesList = () => {
 
   const [dataPolicyRequest, setDataPolicyRequest] = useState<DataPolicyTotalRequest>({ type: "0", status: 0 });
   const [pageNumber, setPageNumber] = useState<number>(1);
+  const [idPolicySearch, setIdPolicySearch] = useState<string | undefined>(undefined);
   const [isAlwaysEmpty, setIsAlwaysEmpty] = useState<boolean>(false);
   const [totalPolicies, setTotalPolicies] = useState<number>(0);
   const [policiesList, setPoliciesList] = useState<PoliciesResponse>();
@@ -47,23 +47,23 @@ const PoliciesList = () => {
   }, []);
 
   useEffect(() => {
-    fetchPolicies(dataPolicyRequest);
+    fetchPolicies(dataPolicyRequest, idPolicySearch);
   }, []);
 
-  const fetchPolicies = async (data: DataPolicyTotalRequest) => {
+  const fetchPolicies = async (data: DataPolicyTotalRequest, idPolicy: string | undefined) => {
     try {
-      const policiesTotal = await getTotalNumberPolicies({ type: data.type, status: data.status });
+      const policiesTotal = await getTotalNumberPolicies({ type: data.type, status: data.status }, idPolicy);
       setTotalPolicies(policiesTotal);
 
       if (policiesTotal > 0) {
-        const policiesDataResponse = await getPoliciesFromPage({ page: 1, type: data.type, status: data.status });
-        if (policiesDataResponse) {
+        const policiesDataResponse = await getPoliciesFromPage({ page: 1, type: data.type, status: data.status, idPolicy: idPolicy });
+        if (policiesDataResponse != null && policiesDataResponse.length > 0) {
           setPoliciesList(policiesDataResponse);
         } else {
           throw new Error("Error al recuperar pólizas");
         }
-      }else{
-        if(data.type == "0" && data.status == 0){
+      } else {
+        if (data.type == "0" && data.status == 0) {
           setIsAlwaysEmpty(true);
         }
       }
@@ -82,7 +82,7 @@ const PoliciesList = () => {
     if ((newPageNumberValue) >= 1 && (newPageNumberValue * numberOfPoliciesPerPage) < (totalPolicies + numberOfPoliciesPerPage)) {
       setIsLoading(true);
       try {
-        const policiesDataResponse = await getPoliciesFromPage({ page: newPageNumberValue, type: dataPolicyRequest.type, status: dataPolicyRequest.status });
+        const policiesDataResponse = await getPoliciesFromPage({ page: newPageNumberValue, type: dataPolicyRequest.type, status: dataPolicyRequest.status, idPolicy: idPolicySearch });
         if (policiesDataResponse) {
           setPoliciesList(policiesDataResponse);
           setPageNumber(newPageNumberValue);
@@ -99,7 +99,7 @@ const PoliciesList = () => {
   async function changeTypePoliciesResults(value: string) {
     if (value == "0" || value.length == 36) {
       setIsLoading(true);
-      fetchPolicies({ type: value, status: dataPolicyRequest.status });
+      fetchPolicies({ type: value, status: dataPolicyRequest.status }, idPolicySearch);
       setDataPolicyRequest({ type: value, status: dataPolicyRequest.status });
       setPageNumber(1);
     }
@@ -108,10 +108,16 @@ const PoliciesList = () => {
   async function changeStatusPoliciesResults(value: number) {
     if (value == 0 || value == 1 || value == 2 || value == 3) {
       setIsLoading(true);
-      fetchPolicies({ type: dataPolicyRequest.type, status: value });
+      fetchPolicies({ type: dataPolicyRequest.type, status: value }, idPolicySearch);
       setDataPolicyRequest({ type: dataPolicyRequest.type, status: value });
       setPageNumber(1);
     }
+  }
+
+  async function changeIdPolicyPoliciesResults() {
+    setIsLoading(true);
+    fetchPolicies({ type: dataPolicyRequest.type, status: dataPolicyRequest.status}, idPolicySearch );
+    setPageNumber(1);
   }
 
   return (
@@ -169,10 +175,11 @@ const PoliciesList = () => {
 
         <div className='col-span-3'>
           <div className='grid grid-cols-4 mb-4'>
-            <Input className='col-span-3' placeholder='Ingrese el ID de la póliza' disabled={isAlwaysEmpty} />
+            <Input className='col-span-3' placeholder='Ingrese el ID de la póliza' disabled={isAlwaysEmpty}
+              value={idPolicySearch} onChange={(e) => setIdPolicySearch(e.target.value)} />
             <Button
               disabled={isAlwaysEmpty}
-              className="text-center flex mx-6  bg-darkBlue">
+              className="text-center flex mx-6  bg-darkBlue" onClick={() => { changeIdPolicyPoliciesResults(); }}>
               Buscar
             </Button>
           </div>

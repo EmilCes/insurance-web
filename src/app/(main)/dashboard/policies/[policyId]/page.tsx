@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import PolicyDetailsPage from './policydetails';
 import { useStatusPageContext } from '@/lib/statusPage/statusContext';
 import ErrorMessage from '@/components/errorMessage/errorMessage';
+import isAuth from '@/lib/auth/isAuth';
 
 const PolicyPage = () => {
     const router = useRouter();
@@ -59,4 +60,4 @@ const PolicyPage = () => {
     )
 }
 
-export default PolicyPage
+export default isAuth(PolicyPage)

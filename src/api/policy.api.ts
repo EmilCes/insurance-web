@@ -121,7 +121,7 @@ export interface VehicleDataBrandModel {
     Model: ModelDetails;
 }
 
-export interface PolicyDetailsErrorResponse{
+export interface PolicyDetailsErrorResponse {
     status: number;
 }
 
@@ -129,6 +129,7 @@ export interface DataPolicyPageRequest {
     page: number;
     type: string;
     status: number;
+    idPolicy: string | undefined;
 }
 
 export interface DataPolicyTotalRequest {
@@ -152,8 +153,11 @@ export async function createPolicyData(policyData: PolicyCreateData): Promise<Cr
     return null;
 }
 
-export async function getPoliciesFromPage(data : DataPolicyPageRequest): Promise<PoliciesResponse | null> {
-    const response = await fetchWithAuth(`${API_URL}/policies?page=${data.page}&type=${data.type}&status=${data.status}`, {
+export async function getPoliciesFromPage(data: DataPolicyPageRequest): Promise<PoliciesResponse | null> {
+    const URL = (data.idPolicy == undefined ? `${API_URL}/policies?page=${data.page}&type=${data.type}&status=${data.status}` :
+        `${API_URL}/policies?page=${data.page}&type=${data.type}&status=${data.status}&idPolicy=${data.idPolicy}`);
+        
+    const response = await fetchWithAuth(URL, {
         method: 'GET'
     });
     if (response.ok) {
@@ -163,8 +167,11 @@ export async function getPoliciesFromPage(data : DataPolicyPageRequest): Promise
     return null;
 }
 
-export async function getTotalNumberPolicies(data: DataPolicyTotalRequest): Promise<number> {
-    const response = await fetchWithAuth(`${API_URL}/policies/total?&type=${data.type}&status=${data.status}`, {
+export async function getTotalNumberPolicies(data: DataPolicyTotalRequest, idPolicy: string | undefined): Promise<number> {
+    const URL = (idPolicy == undefined ? `${API_URL}/policies/total?&type=${data.type}&status=${data.status}` :
+        `${API_URL}/policies/total?&type=${data.type}&status=${data.status}&idPolicy=${idPolicy}`);
+
+    const response = await fetchWithAuth(URL, {
         method: 'GET'
     });
     if (response.ok) {
@@ -180,9 +187,9 @@ export async function getPolicyDetails(serialNumber: any): Promise<{ status: num
     });
     if (response.ok) {
         const values: PolicyDetails = await response.json();
-        return {status: response.status, data: values};
+        return { status: response.status, data: values };
     }
-    return {status: response.status, data : null} ;
+    return { status: response.status, data: null };
 }
 
 export async function cancelPolicy(serialNumber: any): Promise<number> {
