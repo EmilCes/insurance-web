@@ -9,6 +9,7 @@ import PolicyDetailsPage from './policydetails';
 import { useStatusPageContext } from '@/lib/statusPage/statusContext';
 import ErrorMessage from '@/components/errorMessage/errorMessage';
 import isAuth from '@/lib/auth/isAuth';
+import isDriver from '@/lib/auth/isDriver';
 
 const PolicyPage = () => {
     const router = useRouter();
@@ -60,4 +61,4 @@ const PolicyPage = () => {
     )
 }
 
-export default isAuth(PolicyPage)
+export default isDriver(isAuth(PolicyPage))

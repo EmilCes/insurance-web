@@ -14,6 +14,7 @@ import { useStatusPageContext } from '@/lib/statusPage/statusContext';
 import ErrorMessage from '@/components/errorMessage/errorMessage';
 import { BrandModelItem, getBrandModelData } from '@/api/brand.api';
 import { CreatePolicyResponse } from '@/api/policy.api';
+import isDriver from '@/lib/auth/isDriver';
 
 const Confirmation = () => {
     const { formPolicyData } = useFormPolicyContext();
@@ -163,4 +164,4 @@ const Confirmation = () => {
     )
 }
 
-export default isAuth(Confirmation)
+export default isDriver(isAuth(Confirmation))

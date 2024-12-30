@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import isAuth from '@/lib/auth/isAuth';
 import { useStatusPageContext } from '@/lib/statusPage/statusContext';
 import ErrorMessage from '@/components/errorMessage/errorMessage';
+import isDriver from '@/lib/auth/isDriver';
 
 const SelectionPlan = () => {
     const { formPolicyData } = useFormPolicyContext();
@@ -32,4 +33,4 @@ const SelectionPlan = () => {
     )
 }
 
-export default isAuth(SelectionPlan)
+export default isDriver(isAuth(SelectionPlan))

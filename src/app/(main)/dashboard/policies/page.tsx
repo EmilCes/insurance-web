@@ -13,6 +13,7 @@ import { useStatusPageContext } from '@/lib/statusPage/statusContext'
 import NoItemsPolicy from './noItems'
 import { getPolicyPlanTypes, PolicyPlanTypesResponse } from '@/api/policyplan.api'
 import EmptyPolicies from './emptyPolicies'
+import isDriver from '@/lib/auth/isDriver'
 
 const PoliciesList = () => {
   const { isLoading, showMessageError, setShowMessageError, setIsLoading } = useStatusPageContext();
@@ -221,4 +222,4 @@ const PoliciesList = () => {
   )
 }
 
-export default isAuth(PoliciesList)
+export default isDriver(isAuth(PoliciesList))
