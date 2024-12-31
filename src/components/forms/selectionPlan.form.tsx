@@ -49,14 +49,14 @@ const SelectionPlanForm = () => {
                 }
 
                 const brandModel = await getBrandModelData(idModelData);
-                if (brandModel) {
+                if (brandModel != null) {
                     setBrandModel(brandModel);
                 } else {
                     throw new Error("Error la marca");
                 }
 
                 const policyPlansData = await getPolicyPlans();
-                if (policyPlansData) {
+                if (policyPlansData != null && policyPlansData.length > 0) {
                     setPolicyPlans(policyPlansData);
                 } else {
                     throw new Error("Error al recuperar los planes de póliza");

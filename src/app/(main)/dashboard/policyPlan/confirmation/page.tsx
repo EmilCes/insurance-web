@@ -14,7 +14,8 @@ import { useStatusPageContext } from '@/lib/statusPage/statusContext';
 import ErrorMessage from '@/components/errorMessage/errorMessage';
 import { BrandModelItem, getBrandModelData } from '@/api/brand.api';
 import { CreatePolicyResponse } from '@/api/policy.api';
-import isDriver from '@/lib/auth/isDriver';
+import { getBankNumberUser, UserBankAccountResponse } from '@/api/user.api';
+import isCorrectRole from '@/lib/auth/isCorrectRole';
 
 const Confirmation = () => {
     const { formPolicyData } = useFormPolicyContext();
@@ -22,6 +23,7 @@ const Confirmation = () => {
 
     const [policyPlan, setPolicyPlan] = useState<PolicyPlanItem>();
     const [brandModel, setBrandModel] = useState<BrandModelItem>();
+    const [accountInfo, setAccountInfo] = useState<UserBankAccountResponse>();
     const [newPolicy, setNewPolicy] = useState<CreatePolicyResponse>();
     const [isPaymentSuccessful, setIsPaymentSuccessful] = useState(false);
 
@@ -49,6 +51,13 @@ const Confirmation = () => {
                 const idModelData = formPolicyData && formPolicyData.idModel ? formPolicyData.idModel : 0;
                 if (!formPolicyData?.idModel) {
                     throw new Error("Error al recuperar el modelo");
+                }
+
+                const accountInfoData = await getBankNumberUser();
+                if(accountInfoData != null){
+                    setAccountInfo(accountInfoData);
+                }else{
+                    throw new Error("Error al recuperar datos usuario");
                 }
 
                 const brandModel = await getBrandModelData(idModelData);
@@ -95,7 +104,7 @@ const Confirmation = () => {
                     <div className="mx-auto w-full max-w-screen-lg px-8 pb-8 pt-4">
 
                         <div className='grid grid-cols-1 md:grid-cols-2 gap-10 mt-4'>
-                            <PaymentForm policyPlan={policyPlan} onPaymentSuccess={handlePaymentSuccess} />
+                            <PaymentForm policyPlan={policyPlan} onPaymentSuccess={handlePaymentSuccess} accountInfo={accountInfo}/>
 
                             <div>
                                 <h2 className='text-2xl font-semibold mb-2'>Resumen de póliza</h2>
@@ -164,4 +173,4 @@ const Confirmation = () => {
     )
 }
 
-export default isDriver(isAuth(Confirmation))
+export default isAuth(isCorrectRole(Confirmation, "Conductor"))

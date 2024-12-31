@@ -10,7 +10,18 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (token: string) => void;
   logout: () => void;
-  isLoading: boolean
+  isLoading: boolean;
+  role: string;
+}
+
+export const obtainRoleFromToken = (token: string) => {
+  const parts = token.split('.');
+  if (parts.length === 3) {
+    const payload = atob(parts[1]);
+    const payloadObject = JSON.parse(payload);
+    return payloadObject.role;
+  }
+  return null
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,11 +30,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [sessionExpired, setSessionExpired] = useState<boolean>(false);
+  const [accountRole, setAccountRole] = useState<string>("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      setIsAuthenticated(true);
+      const roleToken = obtainRoleFromToken(token);
+      if (roleToken != null && roleToken.length > 0) {
+        setIsAuthenticated(true);
+        setAccountRole(roleToken);
+      }
     }
     setIsLoading(false);
 
@@ -41,20 +57,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = (token: string) => {
-    localStorage.setItem("token", token);
-    setIsAuthenticated(true);
+    const roleToken = obtainRoleFromToken(token);
+    if (roleToken != null && roleToken.length > 0) {
+      localStorage.setItem("token", token);
+      setIsAuthenticated(true);
+      setAccountRole(roleToken);
+    }
   };
 
   const logout = () => {
     localStorage.removeItem("token");
     setIsAuthenticated(false);
+    setAccountRole("");
   };
 
   const value: AuthContextType = {
     isAuthenticated,
     login,
     logout,
-    isLoading
+    isLoading,
+    role: accountRole,
   };
 
   return (

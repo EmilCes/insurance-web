@@ -61,28 +61,28 @@ const VehiculeForm = () => {
     const fetchColors = async () => {
       try {
         const colorsData = await getColorsVehicles();
-        if (colorsData) {
+        if (colorsData != null && colorsData.length > 0) {
           setColors(colorsData);
         } else {
           throw new Error("Error al recuperar los colores");
         }
 
         const brandsData = await getBrandsVehicles();
-        if (brandsData) {
+        if (brandsData != null && brandsData.length > 0) {
           setBrands(brandsData);
         } else {
           throw new Error("Error al recuperar las marcas");
         }
 
         const typesData = await getTypesVehicles();
-        if (typesData) {
+        if (typesData != null && typesData.length > 0) {
           setTypes(typesData);
         } else {
           throw new Error("Error al recuperar los tipos");
         }
 
         const servicesData = await getServicesVehicles();
-        if (servicesData) {
+        if (servicesData != null && servicesData.length > 0) {
           setServices(servicesData);
         } else {
           throw new Error("Error al recuperar los servicios");
@@ -141,7 +141,7 @@ const VehiculeForm = () => {
         if (response.status == 409) {
           form.setError("plates", {
             type: "manual",
-            message: "Las placas ingresadas ya están registradas",
+            message: "Las placas ingresadas ya están registradas y tienen una póliza vigente. Puede comprar otra póliza para este vehículo un mes antes de que se venza",
           });
         }
         setIsLoading(false);

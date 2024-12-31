@@ -25,19 +25,23 @@ import { useRouter } from "next/navigation";
 import confirmationPolicySchema from "@/schemas/confirmationPaymentPolicy.schema";
 import { useState } from "react";
 import { useFormPolicyContext } from "@/lib/context/formPolicyContext";
-import Loading from "../loading/Loading";
 import { useStatusPageContext } from "@/lib/statusPage/statusContext";
 import { PolicyPlanItem } from "@/api/policyplan.api";
 import { createPolicyData, CreatePolicyResponse, PolicyCreateData } from "@/api/policy.api";
+import { UserBankAccountResponse } from "@/api/user.api";
 
-const PaymentForm = ({ policyPlan, onPaymentSuccess }: {
+const PaymentForm = ({ policyPlan, onPaymentSuccess, accountInfo }: {
     policyPlan: PolicyPlanItem | undefined;
-    onPaymentSuccess: (newPolicy: CreatePolicyResponse) => void
+    onPaymentSuccess: (newPolicy: CreatePolicyResponse) => void;
+    accountInfo: UserBankAccountResponse | undefined;
 }) => {
     const { formPolicyData, deleteFormPolicyData } = useFormPolicyContext();
     const { setShowMessageError, setIsLoading } = useStatusPageContext();
     const [isMonthlyPayment, setIsMonthlyPayment] = useState(false);
     const [selectedPayment, setSelectedPayment] = useState<string | undefined>("");
+
+    const expirationDate = new Date(accountInfo != null ?  accountInfo.expirationDateBankAccount : "" );
+    const isExpired = new Date() > expirationDate;
 
     const form = useForm<z.infer<typeof confirmationPolicySchema>>({
         resolver: zodResolver(confirmationPolicySchema),
@@ -116,13 +120,21 @@ const PaymentForm = ({ policyPlan, onPaymentSuccess }: {
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} >
 
-                        <div className="grid grid-cols-1 gap-4 mt-4">
+                        <div className="grid grid-cols-1 gap-2 mt-4">
 
-                            <FormItem className="mb-2">
-                                <FormLabel>Cuenta bancaria</FormLabel>
+                            <FormItem className="mb-0">
+                                <FormLabel>Cuenta bancaria registrada</FormLabel>
                                 <FormControl>
-                                    <Input readOnly type="number" min="0" max="10" placeholder="538957BNUIF8429427" />
+                                    <Input readOnly value={accountInfo?.bankAccountNumber} />
                                 </FormControl>
+                            </FormItem>
+
+                            <FormItem className="mb-4">
+                                <FormLabel>Fecha de vencimiento</FormLabel>
+                                <FormControl>
+                                    <Input readOnly value={`${expirationDate.getDate()} de ${expirationDate.toLocaleString('es', { month: 'long' })} del ${expirationDate.getFullYear()}`} />
+                                </FormControl>
+                                { isExpired ? <label className="text-sm text-red-500">La cuenta bancaria ha expirado, por favor registre otra cuenta en su perfil</label> : <></>}
                             </FormItem>
 
                             <FormField
@@ -144,6 +156,7 @@ const PaymentForm = ({ policyPlan, onPaymentSuccess }: {
                                 <div className="flex flex-row mb-2">
                                     <Input
                                         type="radio"
+                                        disabled={isExpired}
                                         name="plan"
                                         className="p-0 mr-2 w-6 h-6 appearance-none border-darkBlue rounded-full checked:bg-darkBlue checked:border-darkBlue cursor-pointer"
                                         onChange={() => { onMonthsValueChanged(1); toogleMonthPayment("single"); }}
@@ -153,6 +166,7 @@ const PaymentForm = ({ policyPlan, onPaymentSuccess }: {
                                 <div className="flex flex-row">
                                     <Input
                                         type="radio"
+                                        disabled={isExpired}
                                         name="plan"
                                         className="p-0 mr-2 w-6 h-6 appearance-none border-darkBlue rounded-full checked:bg-darkBlue checked:border-darkBlue cursor-pointer"
                                         onChange={() => { toogleMonthPayment("monthly"); onMonthsValueChanged(0); }}
@@ -192,6 +206,7 @@ const PaymentForm = ({ policyPlan, onPaymentSuccess }: {
                             <div className="flex justify-center">
                                 <Button
                                     type="submit"
+                                    disabled={isExpired}
                                     className="w-4/5 text-center flex justify-center mt-4 min-h-12 bg-darkBlue">
                                     Finalizar compra
                                 </Button>

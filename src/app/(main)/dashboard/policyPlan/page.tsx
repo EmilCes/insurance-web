@@ -4,7 +4,7 @@ import ErrorMessage from "@/components/errorMessage/errorMessage";
 import VehiculeForm from "@/components/forms/vehicle.form"
 import Loading from "@/components/loading/Loading";
 import isAuth from "@/lib/auth/isAuth";
-import isDriver from "@/lib/auth/isDriver";
+import isCorrectRole from "@/lib/auth/isCorrectRole";
 import { useStatusPageContext } from "@/lib/statusPage/statusContext";
 
 const PolicyPlan = () => {
@@ -18,4 +18,4 @@ const PolicyPlan = () => {
     )
 }
 
-export default isDriver(isAuth(PolicyPlan))
+export default isAuth(isCorrectRole(PolicyPlan, "Conductor"))

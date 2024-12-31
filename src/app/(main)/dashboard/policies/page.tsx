@@ -13,7 +13,8 @@ import { useStatusPageContext } from '@/lib/statusPage/statusContext'
 import NoItemsPolicy from './noItems'
 import { getPolicyPlanTypes, PolicyPlanTypesResponse } from '@/api/policyplan.api'
 import EmptyPolicies from './emptyPolicies'
-import isDriver from '@/lib/auth/isDriver'
+import BreadcrumbPoliciesPage from './breadcrumbPolicies'
+import isCorrectRole from '@/lib/auth/isCorrectRole'
 
 const PoliciesList = () => {
   const { isLoading, showMessageError, setShowMessageError, setIsLoading } = useStatusPageContext();
@@ -117,7 +118,7 @@ const PoliciesList = () => {
 
   async function changeIdPolicyPoliciesResults() {
     setIsLoading(true);
-    fetchPolicies({ type: dataPolicyRequest.type, status: dataPolicyRequest.status}, idPolicySearch );
+    fetchPolicies({ type: dataPolicyRequest.type, status: dataPolicyRequest.status }, idPolicySearch);
     setPageNumber(1);
   }
 
@@ -126,100 +127,104 @@ const PoliciesList = () => {
       {isLoading ? (<Loading></Loading>) : (<></>)}
       {showMessageError ? (<ErrorMessage></ErrorMessage>) : (<></>)}
 
-      <div className='grid grid-cols-4 gap-8'>
-        <div className=''>
-          <h2 className='text-2xl font-semibold'>Categorías</h2>
+      <BreadcrumbPoliciesPage id={null}></BreadcrumbPoliciesPage>
 
-          <hr className="h-0.5 bg-slate-400 mt-2 mb-4"></hr>
+      <div className="mx-auto w-full max-w-screen-lg px-8 pb-8 pt-4">
+        <div className='grid grid-cols-4 gap-8'>
+          <div className=''>
+            <h2 className='text-2xl font-semibold'>Categorías</h2>
 
-          <p className='text-lg font-semibold text-alternGray mb-2'>Tipo de póliza</p>
-          <div className='flex mb-1'>
-            <Input type='radio' name='typePolicy' defaultChecked disabled={isAlwaysEmpty} value={0} onChange={() => changeTypePoliciesResults("0")}
-              className="appearance-none w-4 h-4 p-0 mt-0.5 rounded-full border-darkBlue checked:bg-darkBlue checked:border-darkBlue cursor-pointer" />
-            <label className='ml-2'>Todos</label>
-          </div>
-          {!isAlwaysEmpty && policyPlanTypes?.map((type) => (
-            <>
-              <div className='flex mb-1'>
-                <Input type='radio' name='typePolicy' onChange={() => changeTypePoliciesResults(type.idPolicyPlan)}
-                  className="appearance-none w-4 h-4 p-0 mt-0.5 rounded-full border-darkBlue checked:bg-darkBlue checked:border-darkBlue cursor-pointer" />
-                <label className='ml-2'>{type.title}</label>
-              </div>
-            </>
-          ))}
+            <hr className="h-0.5 bg-slate-400 mt-2 mb-4"></hr>
 
-          <hr className="h-0.5 bg-slate-400 mt-4 mb-4"></hr>
+            <p className='text-lg font-semibold text-alternGray mb-2'>Tipo de póliza</p>
+            <div className='flex mb-1'>
+              <Input type='radio' name='typePolicy' defaultChecked disabled={isAlwaysEmpty} value={0} onChange={() => changeTypePoliciesResults("0")}
+                className="appearance-none w-4 h-4 p-0 mt-0.5 rounded-full border-darkBlue checked:bg-darkBlue checked:border-darkBlue cursor-pointer" />
+              <label className='ml-2'>Todos</label>
+            </div>
+            {!isAlwaysEmpty && policyPlanTypes?.map((type) => (
+              <>
+                <div className='flex mb-1'>
+                  <Input type='radio' name='typePolicy' onChange={() => changeTypePoliciesResults(type.idPolicyPlan)}
+                    className="appearance-none w-4 h-4 p-0 mt-0.5 rounded-full border-darkBlue checked:bg-darkBlue checked:border-darkBlue cursor-pointer" />
+                  <label className='ml-2'>{type.title}</label>
+                </div>
+              </>
+            ))}
 
-          <p className='text-lg font-semibold text-alternGray mb-2'>Estado de póliza</p>
-          <div className='flex mb-1'>
-            <Input type='radio' name='statePolicy' defaultChecked disabled={isAlwaysEmpty} onChange={() => changeStatusPoliciesResults(0)}
-              className="appearance-none w-4 h-4 p-0 mt-0.5 rounded-full border-darkBlue checked:bg-darkBlue checked:border-darkBlue cursor-pointer" />
-            <label className='ml-2'>Todos</label>
-          </div>
-          <div className='flex mb-1'>
-            <Input type='radio' name='statePolicy' onChange={() => changeStatusPoliciesResults(1)} disabled={isAlwaysEmpty}
-              className="appearance-none w-4 h-4 p-0 mt-0.5 rounded-full border-darkBlue checked:bg-darkBlue checked:border-darkBlue cursor-pointer" />
-            <label className='ml-2'>Vigente</label>
-          </div>
-          <div className='flex mb-1'>
-            <Input type='radio' name='statePolicy' onChange={() => changeStatusPoliciesResults(2)} disabled={isAlwaysEmpty}
-              className="appearance-none w-4 h-4 p-0 mt-0.5 rounded-full border-darkBlue checked:bg-darkBlue checked:border-darkBlue cursor-pointer" />
-            <label className='ml-2'>No vigente</label>
-          </div>
-          <div className='flex mb-1'>
-            <Input type='radio' name='statePolicy' onChange={() => changeStatusPoliciesResults(3)} disabled={isAlwaysEmpty}
-              className="appearance-none w-4 h-4 p-0 mt-0.5 rounded-full border-darkBlue checked:bg-darkBlue checked:border-darkBlue cursor-pointer" />
-            <label className='ml-2'>Cancelada</label>
-          </div>
+            <hr className="h-0.5 bg-slate-400 mt-4 mb-4"></hr>
 
-        </div>
+            <p className='text-lg font-semibold text-alternGray mb-2'>Estado de póliza</p>
+            <div className='flex mb-1'>
+              <Input type='radio' name='statePolicy' defaultChecked disabled={isAlwaysEmpty} onChange={() => changeStatusPoliciesResults(0)}
+                className="appearance-none w-4 h-4 p-0 mt-0.5 rounded-full border-darkBlue checked:bg-darkBlue checked:border-darkBlue cursor-pointer" />
+              <label className='ml-2'>Todos</label>
+            </div>
+            <div className='flex mb-1'>
+              <Input type='radio' name='statePolicy' onChange={() => changeStatusPoliciesResults(1)} disabled={isAlwaysEmpty}
+                className="appearance-none w-4 h-4 p-0 mt-0.5 rounded-full border-darkBlue checked:bg-darkBlue checked:border-darkBlue cursor-pointer" />
+              <label className='ml-2'>Vigente</label>
+            </div>
+            <div className='flex mb-1'>
+              <Input type='radio' name='statePolicy' onChange={() => changeStatusPoliciesResults(2)} disabled={isAlwaysEmpty}
+                className="appearance-none w-4 h-4 p-0 mt-0.5 rounded-full border-darkBlue checked:bg-darkBlue checked:border-darkBlue cursor-pointer" />
+              <label className='ml-2'>No vigente</label>
+            </div>
+            <div className='flex mb-1'>
+              <Input type='radio' name='statePolicy' onChange={() => changeStatusPoliciesResults(3)} disabled={isAlwaysEmpty}
+                className="appearance-none w-4 h-4 p-0 mt-0.5 rounded-full border-darkBlue checked:bg-darkBlue checked:border-darkBlue cursor-pointer" />
+              <label className='ml-2'>Cancelada</label>
+            </div>
 
-        <div className='col-span-3'>
-          <div className='grid grid-cols-4 mb-4'>
-            <Input className='col-span-3' placeholder='Ingrese el ID de la póliza' disabled={isAlwaysEmpty}
-              value={idPolicySearch} onChange={(e) => setIdPolicySearch(e.target.value)} />
-            <Button
-              disabled={isAlwaysEmpty}
-              className="text-center flex mx-6  bg-darkBlue" onClick={() => { changeIdPolicyPoliciesResults(); }}>
-              Buscar
-            </Button>
           </div>
 
-          {!isAlwaysEmpty ? (
-            <>
-              {totalPolicies > 0 ? (<>
-                <h6 className='text-alternGray mb-2 ml-2'>Mostrando {(pageNumber * numberOfPoliciesPerPage) - (numberOfPoliciesPerPage - 1)}-
-                  {pageNumber * numberOfPoliciesPerPage + ((totalPolicies - (pageNumber * numberOfPoliciesPerPage)) < 0 ? (totalPolicies - (pageNumber * numberOfPoliciesPerPage)) : 0)} de {totalPolicies} resultados</h6>
+          <div className='col-span-3'>
+            <div className='grid grid-cols-4 mb-4'>
+              <Input className='col-span-3' placeholder='Ingrese el ID de la póliza' disabled={isAlwaysEmpty}
+                value={idPolicySearch} onChange={(e) => setIdPolicySearch(e.target.value)} />
+              <Button
+                disabled={isAlwaysEmpty}
+                className="text-center flex mx-6  bg-darkBlue" onClick={() => { changeIdPolicyPoliciesResults(); }}>
+                Buscar
+              </Button>
+            </div>
 
-                {policiesList?.map((policyItem) => (
-                  <PolicyItem policyItem={policyItem}></PolicyItem>
-                ))}
+            {!isAlwaysEmpty ? (
+              <>
+                {totalPolicies > 0 ? (<>
+                  <h6 className='text-alternGray mb-2 ml-2'>Mostrando {(pageNumber * numberOfPoliciesPerPage) - (numberOfPoliciesPerPage - 1)}-
+                    {pageNumber * numberOfPoliciesPerPage + ((totalPolicies - (pageNumber * numberOfPoliciesPerPage)) < 0 ? (totalPolicies - (pageNumber * numberOfPoliciesPerPage)) : 0)} de {totalPolicies} resultados</h6>
 
-                <div className="flex items-center justify-center space-x-4">
-                  <button className="p-2 text-gray-500 hover:text-gray-800 disabled:text-gray-300"
-                    onClick={() => changePage(-1)} disabled={pageNumber === 1}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-6 h-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                    </svg>
-                  </button>
+                  {policiesList?.map((policyItem) => (
+                    <PolicyItem policyItem={policyItem}></PolicyItem>
+                  ))}
 
-                  <div className="border border-gray-300 rounded-lg flex items-center justify-center w-10 h-10">
-                    <p className="text-gray-800">{pageNumber}</p>
-                  </div>
+                  <div className="flex items-center justify-center space-x-4">
+                    <button className="p-2 text-gray-500 hover:text-gray-800 disabled:text-gray-300"
+                      onClick={() => changePage(-1)} disabled={pageNumber === 1}>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-6 h-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
 
-                  <button className="p-2 text-gray-500 hover:text-gray-800 disabled:text-gray-300"
-                    onClick={(button) => changePage(1)} disabled={((pageNumber) * numberOfPoliciesPerPage) >= totalPolicies}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-6 h-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
-                  </button>
-                </div></>) : (<><NoItemsPolicy></NoItemsPolicy></>)}
-            </>) : (
-            <><EmptyPolicies></EmptyPolicies></>)}
+                    <div className="border border-gray-300 rounded-lg flex items-center justify-center w-10 h-10">
+                      <p className="text-gray-800">{pageNumber}</p>
+                    </div>
+
+                    <button className="p-2 text-gray-500 hover:text-gray-800 disabled:text-gray-300"
+                      onClick={(button) => changePage(1)} disabled={((pageNumber) * numberOfPoliciesPerPage) >= totalPolicies}>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-6 h-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </div></>) : (<><NoItemsPolicy></NoItemsPolicy></>)}
+              </>) : (
+              <><EmptyPolicies></EmptyPolicies></>)}
+          </div>
         </div>
       </div>
     </>
   )
 }
 
-export default isDriver(isAuth(PoliciesList))
+export default isAuth(isCorrectRole(PoliciesList, "Conductor"))

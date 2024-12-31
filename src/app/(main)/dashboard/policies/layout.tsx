@@ -10,8 +10,8 @@ const layout = ({ children }: { children: React.ReactNode }) => {
             <StatusPageProvider>
                 <TitleBar title='Mis pólizas'></TitleBar>
 
-                <div className="flex justify-center items-center bg-white p-8">
-                    <div className="w-full max-w-screen-lg">
+                <div className="flex justify-center items-center bg-white">
+                    <div className="w-full">
                         {children}
                     </div>
                 </div>
