@@ -24,13 +24,6 @@ export interface PolicyPlanItem {
     Service: ServicePolicyResponse;
 }
 
-export type PolicyPlanTypesResponse = PolicyPlanTypeItem[];
-
-export interface PolicyPlanTypeItem {
-    idPolicyPlan: string;
-    title: string;
-}
-
 export async function getPolicyPlans(): Promise<PolicyPlansResponse | null> {
     const response = await fetchWithAuth(`${API_URL}/policy-plan/current`, {
         method: 'GET'
@@ -48,17 +41,6 @@ export async function getPolicyPlanData(id: string): Promise<PolicyPlanItem | nu
     });
     if (response.ok) {
         const values: PolicyPlanItem = await response.json();
-        return values;
-    }
-    return null;
-}
-
-export async function getPolicyPlanTypes() {
-    const response = await fetchWithAuth(`${API_URL}/policy-plan/current/types`, {
-        method: 'GET'
-    });
-    if (response.ok) {
-        const values: PolicyPlanTypesResponse = await response.json();
         return values;
     }
     return null;

@@ -5,13 +5,12 @@ import React, { useEffect, useState } from 'react'
 import PolicyItem from './policyItem'
 import { Input } from '@/components/ui/input'
 import { useRouter } from 'next/navigation'
-import { DataPolicyTotalRequest, getPoliciesFromPage, getTotalNumberPolicies, PoliciesResponse } from '@/api/policy.api'
+import { DataPolicyTotalRequest, getPoliciesFromPage, getPolicyPlanTypes, getTotalNumberPolicies, PoliciesResponse, PolicyPlanTypesResponse } from '@/api/policy.api'
 import Loading from '@/components/loading/Loading'
 import isAuth from '@/lib/auth/isAuth'
 import ErrorMessage from '@/components/errorMessage/errorMessage'
 import { useStatusPageContext } from '@/lib/statusPage/statusContext'
 import NoItemsPolicy from './noItems'
-import { getPolicyPlanTypes, PolicyPlanTypesResponse } from '@/api/policyplan.api'
 import EmptyPolicies from './emptyPolicies'
 import BreadcrumbPoliciesPage from './breadcrumbPolicies'
 import isCorrectRole from '@/lib/auth/isCorrectRole'
@@ -99,7 +98,7 @@ const PoliciesList = () => {
   }
 
   async function changeTypePoliciesResults(value: string) {
-    if (value == "0" || value.length == 36) {
+    if (value == "0" || value.length > 0) {
       setIsLoading(true);
       fetchPolicies({ type: value, status: dataPolicyRequest.status }, idPolicySearch);
       setDataPolicyRequest({ type: value, status: dataPolicyRequest.status });
@@ -145,9 +144,9 @@ const PoliciesList = () => {
             {!isAlwaysEmpty && policyPlanTypes?.map((type) => (
               <>
                 <div className='flex mb-1'>
-                  <Input type='radio' name='typePolicy' onChange={() => changeTypePoliciesResults(type.idPolicyPlan)}
+                  <Input type='radio' name='typePolicy' onChange={() => changeTypePoliciesResults(type.planTitle)}
                     className="appearance-none w-4 h-4 p-0 mt-0.5 rounded-full border-darkBlue checked:bg-darkBlue checked:border-darkBlue cursor-pointer" />
-                  <label className='ml-2'>{type.title}</label>
+                  <label className='ml-2'>{type.planTitle}</label>
                 </div>
               </>
             ))}
@@ -184,7 +183,7 @@ const PoliciesList = () => {
                 value={idPolicySearch} onChange={(e) => setIdPolicySearch(e.target.value)} />
               <Button
                 disabled={isAlwaysEmpty}
-                className="text-center flex mx-6  bg-darkBlue" onClick={() => { changeIdPolicyPoliciesResults(); }}>
+                className="text-center mx-1 md:mx-6 bg-darkBlue" onClick={() => { changeIdPolicyPoliciesResults(); }}>
                 Buscar
               </Button>
             </div>

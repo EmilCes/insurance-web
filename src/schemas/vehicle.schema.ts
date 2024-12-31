@@ -12,7 +12,7 @@ const vehicleSchema = z.object({
         number().positive(),
     plates: z
         .string().min(7, "Las placas debe tener al menos 7 caracteres")
-        .max(50, "Las placas no debe exceder los 50 caracteres"),
+        .max(15, "Las placas no debe exceder los 15 caracteres").regex(new RegExp("^(?=(?:.*[A-Z0-9]){7})(?=(?:.*-){2})[A-Z0-9-]{9}$"), "El formato de las placas no es válido"),
     idType: z.coerce.
         number().positive(),
     occupants: z.coerce.

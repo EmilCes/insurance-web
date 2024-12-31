@@ -11,7 +11,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
                 <TitleBar title='Mis pólizas'></TitleBar>
 
                 <div className="flex justify-center items-center bg-white">
-                    <div className="w-full">
+                    <div className="w-full m-0">
                         {children}
                     </div>
                 </div>

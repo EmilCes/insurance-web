@@ -24,11 +24,11 @@ const ProgressInPolicyForm = ({ currentStep }: { currentStep: number }) => {
                     "row-start-1 col-start-3 m-auto flex items-center justify-center w-10 h-10 bg-gray-400 text-white font-bold rounded-full"}>
                     3
                 </div>
-                <p className="col-start-1 row-start-2 m-auto text-teal-700 mt-2 text-sm">Información vehículo</p>
-                <p className={currentStep >= 2 ? "col-start-2 row-start-2 m-auto text-teal-700 mt-2 text-sm" :
-                    "col-start-2 row-start-2 m-auto text-gray-400 mt-2 text-sm"}>Selección plan póliza</p>
-                <p className={currentStep >= 3 ? "col-start-3 row-start-2 m-auto text-teal-700 mt-2 text-sm" :
-                    "col-start-3 row-start-2 m-auto text-gray-400 mt-2 text-sm"}>Información de pago</p>
+                <p className="col-start-1 row-start-2 m-auto text-teal-700 mt-2 text-center text-sm">Información vehículo</p>
+                <p className={currentStep >= 2 ? "text-center col-start-2 row-start-2 m-auto text-teal-700 mt-2 text-sm" :
+                    "text-center col-start-2 row-start-2 m-auto text-gray-400 mt-2 text-sm"}>Selección plan póliza</p>
+                <p className={currentStep >= 3 ? "text-center col-start-3 row-start-2 m-auto text-teal-700 mt-2 text-sm" :
+                    "text-center col-start-3 row-start-2 m-auto text-gray-400 mt-2 text-sm"}>Información de pago</p>
             </div>
         </>
     );

@@ -157,7 +157,7 @@ const SelectionPlanForm = () => {
                             />
                         </div>
 
-                        <div className='grid grid-cols-1 md:grid-cols-2 gap-10'>
+                        <div className='grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-10'>
 
                             {policyPlans.map((plan) => (
                                 <div className='border-solid border rounded-lg border-stone-300 py-6 px-8'>

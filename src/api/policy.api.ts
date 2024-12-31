@@ -137,6 +137,12 @@ export interface DataPolicyTotalRequest {
     status: number;
 }
 
+export type PolicyPlanTypesResponse = PolicyPlanTypeItem[];
+
+export interface PolicyPlanTypeItem {
+    planTitle: string;
+}
+
 export async function createPolicyData(policyData: PolicyCreateData): Promise<CreatePolicyResponse | null> {
     const response = await fetchWithAuth(`${API_URL}/policies/`, {
         method: 'POST',
@@ -190,6 +196,17 @@ export async function getPolicyDetails(serialNumber: any): Promise<{ status: num
         return { status: response.status, data: values };
     }
     return { status: response.status, data: null };
+}
+
+export async function getPolicyPlanTypes() {
+    const response = await fetchWithAuth(`${API_URL}/policies/current/types`, {
+        method: 'GET'
+    });
+    if (response.ok) {
+        const values: PolicyPlanTypesResponse = await response.json();
+        return values;
+    }
+    return null;
 }
 
 export async function cancelPolicy(serialNumber: any): Promise<number> {
