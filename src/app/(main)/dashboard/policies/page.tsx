@@ -14,6 +14,7 @@ import NoItemsPolicy from './noItems'
 import EmptyPolicies from './emptyPolicies'
 import BreadcrumbPoliciesPage from './breadcrumbPolicies'
 import isCorrectRole from '@/lib/auth/isCorrectRole'
+import FilterMenuPolicies from './filterMenuPolicies'
 
 const PoliciesList = () => {
   const { isLoading, showMessageError, setShowMessageError, setIsLoading } = useStatusPageContext();
@@ -27,6 +28,8 @@ const PoliciesList = () => {
   const [totalPolicies, setTotalPolicies] = useState<number>(0);
   const [policiesList, setPoliciesList] = useState<PoliciesResponse>();
   const [policyPlanTypes, setPolicyPlanTypes] = useState<PolicyPlanTypesResponse>();
+  
+
 
   useEffect(() => {
     const fecthTypesPlans = async () => {
@@ -64,7 +67,7 @@ const PoliciesList = () => {
           throw new Error("Error al recuperar pólizas");
         }
       } else {
-        if (data.type == "0" && data.status == 0) {
+        if (data.type == "0" && data.status == 0 && idPolicySearch == undefined) {
           setIsAlwaysEmpty(true);
         }
       }
@@ -129,53 +132,9 @@ const PoliciesList = () => {
       <BreadcrumbPoliciesPage id={null}></BreadcrumbPoliciesPage>
 
       <div className="mx-auto w-full max-w-screen-lg px-8 pb-8 pt-4">
-        <div className='grid grid-cols-4 gap-8'>
-          <div className=''>
-            <h2 className='text-2xl font-semibold'>Categorías</h2>
-
-            <hr className="h-0.5 bg-slate-400 mt-2 mb-4"></hr>
-
-            <p className='text-lg font-semibold text-alternGray mb-2'>Tipo de póliza</p>
-            <div className='flex mb-1'>
-              <Input type='radio' name='typePolicy' defaultChecked disabled={isAlwaysEmpty} value={0} onChange={() => changeTypePoliciesResults("0")}
-                className="appearance-none w-4 h-4 p-0 mt-0.5 rounded-full border-darkBlue checked:bg-darkBlue checked:border-darkBlue cursor-pointer" />
-              <label className='ml-2'>Todos</label>
-            </div>
-            {!isAlwaysEmpty && policyPlanTypes?.map((type) => (
-              <>
-                <div className='flex mb-1'>
-                  <Input type='radio' name='typePolicy' onChange={() => changeTypePoliciesResults(type.planTitle)}
-                    className="appearance-none w-4 h-4 p-0 mt-0.5 rounded-full border-darkBlue checked:bg-darkBlue checked:border-darkBlue cursor-pointer" />
-                  <label className='ml-2'>{type.planTitle}</label>
-                </div>
-              </>
-            ))}
-
-            <hr className="h-0.5 bg-slate-400 mt-4 mb-4"></hr>
-
-            <p className='text-lg font-semibold text-alternGray mb-2'>Estado de póliza</p>
-            <div className='flex mb-1'>
-              <Input type='radio' name='statePolicy' defaultChecked disabled={isAlwaysEmpty} onChange={() => changeStatusPoliciesResults(0)}
-                className="appearance-none w-4 h-4 p-0 mt-0.5 rounded-full border-darkBlue checked:bg-darkBlue checked:border-darkBlue cursor-pointer" />
-              <label className='ml-2'>Todos</label>
-            </div>
-            <div className='flex mb-1'>
-              <Input type='radio' name='statePolicy' onChange={() => changeStatusPoliciesResults(1)} disabled={isAlwaysEmpty}
-                className="appearance-none w-4 h-4 p-0 mt-0.5 rounded-full border-darkBlue checked:bg-darkBlue checked:border-darkBlue cursor-pointer" />
-              <label className='ml-2'>Vigente</label>
-            </div>
-            <div className='flex mb-1'>
-              <Input type='radio' name='statePolicy' onChange={() => changeStatusPoliciesResults(2)} disabled={isAlwaysEmpty}
-                className="appearance-none w-4 h-4 p-0 mt-0.5 rounded-full border-darkBlue checked:bg-darkBlue checked:border-darkBlue cursor-pointer" />
-              <label className='ml-2'>No vigente</label>
-            </div>
-            <div className='flex mb-1'>
-              <Input type='radio' name='statePolicy' onChange={() => changeStatusPoliciesResults(3)} disabled={isAlwaysEmpty}
-                className="appearance-none w-4 h-4 p-0 mt-0.5 rounded-full border-darkBlue checked:bg-darkBlue checked:border-darkBlue cursor-pointer" />
-              <label className='ml-2'>Cancelada</label>
-            </div>
-
-          </div>
+        <div className='md:grid grid-cols-4 gap-8'>
+          <FilterMenuPolicies isAlwaysEmpty={isAlwaysEmpty} policyPlanTypes={policyPlanTypes} changeTypePoliciesResults={changeTypePoliciesResults}
+            changeStatusPoliciesResults={changeStatusPoliciesResults}></FilterMenuPolicies>
 
           <div className='col-span-3'>
             <div className='grid grid-cols-4 mb-4'>

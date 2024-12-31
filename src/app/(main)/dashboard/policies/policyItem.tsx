@@ -24,7 +24,7 @@ const PolicyItem = ({ policyItem }: { policyItem: PolicyItemResponse }) => {
         <div className='grid grid-cols-2 md:grid-cols-3 gap-2'>
           <h2 className='text-lg md:text-xl font-semibold col-start-1 row-start-1 md:col-span-2'>Póliza con <span className='text-xl md:text-2xl text-alternGray '>Plan {policyItem?.planTitle}</span></h2>
           <h4 className="text-alternGray mt-1 col-start-1 row-start-2 col-span-2">ID: <span className='font-semibold'>{policyItem?.serialNumber}</span></h4>
-          <div className='border-slate-400 border-solid border rounded-lg px-4 py-2 my-auto col-start-2 md:col-start-3 row-start-1 md:row-span-2'>
+          <div className='border-slate-400 border-solid border rounded-lg py-2 my-auto col-start-2 md:col-start-3 row-start-1 md:row-span-2'>
             <p className='text-lg text-lightBlue font-semibold text-center'>
               {!policyItem?.isCanceled ? (isPolicyActive ? "Vigente" : "Expirada") : "Cancelada"}
             </p>
