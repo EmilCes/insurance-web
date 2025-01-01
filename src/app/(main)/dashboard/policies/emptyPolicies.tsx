@@ -8,7 +8,7 @@ const EmptyPolicies = () => {
 
     return (
         <>
-            <div className='flex items-center justify-center flex-col h-full border-slate-300 border rounded-xl m-4' >
+            <div className='flex items-center justify-center flex-col h-full border-slate-300 border rounded-xl m-4 p-4' >
                 <div
                     className="flex items-center justify-between h-20 mx-auto"
                     style={{

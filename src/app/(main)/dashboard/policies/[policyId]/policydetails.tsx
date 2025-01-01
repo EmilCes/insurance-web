@@ -30,17 +30,17 @@ const PolicyDetailsPage = ({ policyData }: { policyData: PolicyDetails }) => {
                     </div>
 
                     <Button
-                        className="w-4/5 text-center flex justify-center mt-4 min-h-12 bg-darkBlue">
+                        className="w-4/5 text-center flex justify-center mt-4 min-h-12 bg-darkBlue mx-auto">
                         Descargar póliza
                     </Button>
                 </div>
 
-                <div className='border-solid border border-slate-400 rounded-lg py-8 px-8 mt-6'>
-                    <div className='grid md:grid-cols-4 gap-2 md:gap-14 px-2'>
-                        <div className='border-solid border-b border-slate-400 md:col-span-3 w-4/5 md:w-3/5'>
+                <div className='border-solid border border-slate-400 rounded-lg py-6 md:py-8 px-6 md:px-8 mt-6'>
+                    <div className='grid md:grid-cols-4 gap-2 md:gap-14 px-2 w-4/5 mx-auto'>
+                        <div className='border-solid border-b border-slate-400 md:col-span-3 md:w-3/5'>
                             <p className='text-base text-alternGray text-center'>ID: <span className='text-lg text-black font-semibold'>{policyData?.serialNumber}</span></p>
                         </div>
-                        <div className='border-solid border-b border-slate-400 mx-2 w-1/3 md:w-auto'>
+                        <div className='border-solid border-b border-slate-400 mx-2 md:w-auto'>
                             <p className='text-base text-alternGray text-center'>Plan: <span className='text-lg text-black font-semibold'>{policyData?.planTitle}</span></p>
                         </div>
                     </div>
@@ -51,15 +51,15 @@ const PolicyDetailsPage = ({ policyData }: { policyData: PolicyDetails }) => {
 
                     <div className='px-6 grid grid-cols-2 border-solid border-b border-slate-400 pb-4'>
                         <div className='border-solid border-r border-slate-400'>
-                            <p className='text-alternGray mb-2'>Nombre: <span className='text-black font-semibold'>{policyData?.Driver?.Account?.name}</span></p>
-                            <p className='text-alternGray mb-2'>RFC: <span className='text-black font-semibold'>{policyData?.Driver?.rfc}</span></p>
-                            <p className='text-alternGray'>Código postal: <span className='text-black font-semibold'>{policyData?.Driver?.Account?.postalCode}</span></p>
+                            <p className='text-alternGray mb-2'>Nombre: <br className='md:hidden'/><span className='text-black font-semibold'>{policyData?.Driver?.Account?.name}</span></p>
+                            <p className='text-alternGray mb-2'>RFC: <br className='md:hidden'/><span className='text-black font-semibold'>{policyData?.Driver?.rfc}</span></p>
+                            <p className='text-alternGray'>Código postal: <br className='md:hidden'/><span className='text-black font-semibold'>{policyData?.Driver?.Account?.postalCode}</span></p>
                         </div>
 
                         <div className='pl-6'>
-                            <p className='text-alternGray mb-2'>Domicilio: <span className='text-black font-semibold'>{policyData?.Driver?.Account?.address}</span></p>
-                            <p className='text-alternGray mb-2'>Estado: <span className='text-black font-semibold'>{policyData?.Driver?.Account?.Municipality?.State?.stateName}</span></p>
-                            <p className='text-alternGray'>Municipio: <span className='text-black font-semibold'>{policyData?.Driver?.Account?.Municipality?.municipalityName}</span></p>
+                            <p className='text-alternGray mb-2'>Domicilio: <br className='md:hidden'/><span className='text-black font-semibold'>{policyData?.Driver?.Account?.address}</span></p>
+                            <p className='text-alternGray mb-2'>Estado: <br className='md:hidden'/><span className='text-black font-semibold'>{policyData?.Driver?.Account?.Municipality?.State?.stateName}</span></p>
+                            <p className='text-alternGray'>Municipio: <br className='md:hidden'/><span className='text-black font-semibold'>{policyData?.Driver?.Account?.Municipality?.municipalityName}</span></p>
                         </div>
                     </div>
 
@@ -69,15 +69,15 @@ const PolicyDetailsPage = ({ policyData }: { policyData: PolicyDetails }) => {
 
                     <div className='px-6 grid grid-cols-2 border-solid border-b border-slate-400 pb-4'>
                         <div className='border-solid border-r border-slate-400'>
-                            <p className='text-alternGray mb-2'>Marca: <span className='text-black font-semibold'>{policyData?.Vehicle?.Model?.Brand?.name}</span></p>
-                            <p className='text-alternGray mb-2'>Modelo: <span className='text-black font-semibold'>{policyData?.Vehicle?.Model?.year}</span></p>
-                            <p className='text-alternGray'>Serie: <span className='text-black font-semibold'>{policyData?.Vehicle?.serialNumberVehicle}</span></p>
+                            <p className='text-alternGray mb-2'>Marca: <br className='md:hidden'/><span className='text-black font-semibold'>{policyData?.Vehicle?.Model?.Brand?.name}</span></p>
+                            <p className='text-alternGray mb-2'>Modelo: <br className='md:hidden'/><span className='text-black font-semibold'>{policyData?.Vehicle?.Model?.year}</span></p>
+                            <p className='text-alternGray'>Serie: <br className='md:hidden'/><span className='text-black font-semibold'>{policyData?.Vehicle?.serialNumberVehicle}</span></p>
                         </div>
 
                         <div className='pl-6'>
-                            <p className='text-alternGray mb-2'>Placas: <span className='text-black font-semibold'>{policyData?.Vehicle?.plates}</span></p>
-                            <p className='text-alternGray mb-2'>Color: <span className='text-black font-semibold'>{policyData?.Vehicle?.Color?.vehicleColor}</span></p>
-                            <p className='text-alternGray'>Tipo Automóvil: <span className='text-black font-semibold'>{policyData?.Vehicle?.Type?.vehicleType}</span></p>
+                            <p className='text-alternGray mb-2'>Placas: <br className='md:hidden'/><span className='text-black font-semibold'>{policyData?.Vehicle?.plates}</span></p>
+                            <p className='text-alternGray mb-2'>Color: <br className='md:hidden'/><span className='text-black font-semibold'>{policyData?.Vehicle?.Color?.vehicleColor}</span></p>
+                            <p className='text-alternGray'>Tipo Automóvil: <br className='md:hidden'/><span className='text-black font-semibold'>{policyData?.Vehicle?.Type?.vehicleType}</span></p>
                         </div>
                     </div>
 
@@ -89,8 +89,8 @@ const PolicyDetailsPage = ({ policyData }: { policyData: PolicyDetails }) => {
                         </div>
 
                         <div className='pl-6 my-auto'>
-                            <p className='text-alternGray mb-2'>Ocupantes: <span className='text-black font-semibold'>{policyData?.Vehicle?.occupants}</span></p>
-                            <p className='text-alternGray'>Servicio: <span className='text-black font-semibold'>{policyData?.Vehicle?.ServiceVehicle?.name}</span></p>
+                            <p className='text-alternGray mb-2'>Ocupantes: <br className='md:hidden'/><span className='text-black font-semibold'>{policyData?.Vehicle?.occupants}</span></p>
+                            <p className='text-alternGray'>Servicio: <br className='md:hidden'/><span className='text-black font-semibold'>{policyData?.Vehicle?.ServiceVehicle?.name}</span></p>
                         </div>
                     </div>
 
@@ -110,7 +110,7 @@ const PolicyDetailsPage = ({ policyData }: { policyData: PolicyDetails }) => {
                     </div>
 
                     <div className='grid md:grid-cols-2'>
-                        <div className='border-solid border-r border-slate-400 pr-4 mt-2 pb-4'>
+                        <div className='border-solid md:border-r border-slate-400 pr-4 mt-2 pb-4'>
                             <div className='bg-lighterBlue my-2 px-4 py-2 rounded-lg'>
                                 <h2 className='text-white'>TOTAL</h2>
                             </div>
@@ -144,7 +144,7 @@ const PolicyDetailsPage = ({ policyData }: { policyData: PolicyDetails }) => {
                 {policyData.isCanceled ? (<></>) : (<>
                     <div className='grid grid-cols-1 md:grid-cols-3'>
                         <Button
-                            className="w-4/5 text-center flex justify-center mt-4 min-h-12 bg-red-950 col-start-3"
+                            className="w-4/5 text-center flex justify-center mx-auto mt-4 min-h-12 bg-red-950 md:col-start-3"
                             onClick={() => setShowCancelPolicy(true)}>
                             Cancelar póliza
                         </Button>
