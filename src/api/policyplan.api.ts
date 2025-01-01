@@ -1,31 +1,47 @@
+import { fetchWithAuth } from "./fecthWithAuth";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-interface ValidatePlatesResponse {
-    plates: string;
+export type ServicePolicyResponse = ServicePolicyItem[];
+
+interface ServicePolicyItem {
+    idService: number;
+    name: string;
+    isCovered: boolean;
+    coveredCost: number;
+    idPolicyPlan: string;
 }
 
-export async function validatePlates(values: { plates: string }): Promise<ValidatePlatesResponse | null> {
-    try {
-        /*
-        const response = await fetch(`${API_URL}/policyplan/${values.plates}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
+export type PolicyPlansResponse = PolicyPlanItem[];
 
-        if (response.status === 200) {
-            throw new Error('Plates alredy register');
-        }
-        
-        if (response.status === 401){
-            return values;
-        }*/
+export interface PolicyPlanItem {
+    idPolicyPlan: string;
+    title: string;
+    description: string;
+    maxPeriod: number;
+    basePrice: number;
+    idPolicyPlanStatus: number;
+    Service: ServicePolicyResponse;
+}
 
-        throw new Error('Error during validating plates');
-        
-    } catch (error) {
-        console.error('Validate plates error:', error);
-        throw new Error('Error during validating plates. Please try again later.');
+export async function getPolicyPlans(): Promise<PolicyPlansResponse | null> {
+    const response = await fetchWithAuth(`${API_URL}/policy-plan/current`, {
+        method: 'GET'
+    });
+    if (response.ok) {
+        const values: PolicyPlansResponse = await response.json();
+        return values;
     }
+    return null;
+}
+
+export async function getPolicyPlanData(id: string): Promise<PolicyPlanItem | null> {
+    const response = await fetchWithAuth(`${API_URL}/policy-plan/${id}`, {
+        method: 'GET'
+    });
+    if (response.ok) {
+        const values: PolicyPlanItem = await response.json();
+        return values;
+    }
+    return null;
 }
