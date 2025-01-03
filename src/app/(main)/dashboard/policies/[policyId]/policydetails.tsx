@@ -28,11 +28,6 @@ const PolicyDetailsPage = ({ policyData }: { policyData: PolicyDetails }) => {
                             <span className="text-lightBlue"> {!policyData?.isCanceled ? (isPolicyActive ? "Vigente" : "Expirada") : "Cancelada"}</span>
                         </h3>
                     </div>
-
-                    <Button
-                        className="w-4/5 text-center flex justify-center mt-4 min-h-12 bg-darkBlue mx-auto">
-                        Descargar póliza
-                    </Button>
                 </div>
 
                 <div className='border-solid border border-slate-400 rounded-lg py-6 md:py-8 px-6 md:px-8 mt-6'>
