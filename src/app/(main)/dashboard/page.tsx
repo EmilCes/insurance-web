@@ -2,6 +2,7 @@
 
 import TitleBar from "@/components/dashboard/TitleBar";
 import isAuth from "@/lib/auth/isAuth";
+import isCorrectRole from "@/lib/auth/isCorrectRole";
 
 const DashboardPage = () => {
   return (
@@ -14,4 +15,4 @@ const DashboardPage = () => {
   )
 }
 
-export default isAuth(DashboardPage);
+export default isAuth(isCorrectRole(DashboardPage, "Conductor,Ajustador,Ejecutivo de asistencia,Administrador"));

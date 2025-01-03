@@ -3,12 +3,12 @@
 import { useEffect } from "react";
 import { redirect } from "next/navigation";
 import { useAuth } from "./authContext";
+import Loading from "@/components/loading/Loading";
 
 export default function isAuth(Component: any) {
   return function IsAuth(props: any) {
     const { isAuthenticated, isLoading } = useAuth();
     const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
-
 
     useEffect(() => {
       if (!isAuthenticated && !isLoading) {
@@ -18,7 +18,7 @@ export default function isAuth(Component: any) {
 
 
     if (isLoading) {
-      return <div>Cargando...</div>;
+      return <Loading></Loading>;
     }
 
     if (!isAuthenticated) {
