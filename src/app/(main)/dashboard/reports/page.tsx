@@ -1,4 +1,5 @@
 import TitleBar from "@/components/dashboard/TitleBar";
+import ReportForm from "@/components/forms/report.form";
 
 const ReportsPage = () => {
 
@@ -13,6 +14,8 @@ const ReportsPage = () => {
                     <h2 className="font-semibold text-xl">Información del reporte</h2>
                     <h3 className="text-sm text-alternGray">Información del reporte generado.</h3>
                 </div>
+
+                <ReportForm />
 
             </div>
         </>

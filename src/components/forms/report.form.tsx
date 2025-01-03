@@ -1,4 +1,4 @@
-/*"use client"
+"use client"
 
 import reportSchema from "@/schemas/report.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,6 +10,7 @@ import { Checkbox } from "../ui/checkbox";
 import { Button } from "../ui/button";
 import { useState } from "react";
 
+/*
 const MapComponent = ({ onLocationSelected }: { onLocationSelected: (location: { latitude: number, longitude: number }) => void }) => {
     const [viewport, setViewport] = useState({
         latitude: 37.7749,
@@ -78,7 +79,7 @@ const MapComponent = ({ onLocationSelected }: { onLocationSelected: (location: {
             )}
         </>
     );
-};
+};*/
 
 const ReportForm = () => {
 
@@ -257,4 +258,4 @@ const ReportForm = () => {
     )
 }
 
-export default ReportForm;*/
+export default ReportForm;
