@@ -14,6 +14,7 @@ export default {
   			alternGray: '#475467',
 			lightBlue: "#096972",
 			lighterBlue: "#307B8B",
+			lightGray: '#D0D5DD',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
