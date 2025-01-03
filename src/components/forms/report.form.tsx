@@ -3,93 +3,34 @@
 import reportSchema from "@/schemas/report.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
-import { z } from "zod";
+import { number, z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
 import { Checkbox } from "../ui/checkbox";
 import { Button } from "../ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import LocationMap from "@/app/(main)/dashboard/reports/map";
+import { MapWrapper } from "@/app/(main)/dashboard/reports/mapWrapper";
+import ImageUpload from "@/app/(main)/dashboard/reports/imageUpload";
 
-/*
-const MapComponent = ({ onLocationSelected }: { onLocationSelected: (location: { latitude: number, longitude: number }) => void }) => {
-    const [viewport, setViewport] = useState({
-        latitude: 37.7749,
-        longitude: -122.4194,
-        zoom: 12,
-    });
-
-    const [showModal, setShowModal] = useState(false);
-    const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
-
-    const handleGeolocate = () => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    setUserLocation({ latitude, longitude });
-                    setViewport({ latitude, longitude, zoom: 14 });
-                    setShowModal(true); // Open modal to allow user to modify location
-                },
-                (error) => {
-                    console.error('Error getting location', error);
-                }
-            );
-        } else {
-            alert("Geolocation is not supported by this browser.");
-        }
-    };
-
-    const handleAcceptLocation = () => {
-        if (userLocation) {
-            onLocationSelected(userLocation);
-        }
-        setShowModal(false); // Close modal
-    };
-
-    return (
-        <>
-            <Button variant="outline" onClick={handleGeolocate}>
-                Obtener Ubicación
-            </Button>
-
-            {showModal && (
-                <Modal onClose={() => setShowModal(false)}>
-                    <div className="w-full h-96">
-                        <ReactMapGL
-                            {...viewport}
-                            width="100%"
-                            height="100%"
-                            mapStyle="mapbox://styles/mapbox/streets-v11"
-                            onViewportChange={(nextViewport) => setViewport(nextViewport)}
-                            mapboxApiAccessToken={process.env.MAPBOX_API_KEY}
-                        >
-                            {userLocation && (
-                                <Marker latitude={userLocation.latitude} longitude={userLocation.longitude}>
-                                    <div className="bg-red-500 p-2 rounded-full" />
-                                </Marker>
-                            )}
-                            <GeolocateControl />
-                        </ReactMapGL>
-
-                        <div className="mt-4">
-                            <Button onClick={handleAcceptLocation}>Aceptar Ubicación</Button>
-                        </div>
-                    </div>
-                </Modal>
-            )}
-        </>
-    );
-};*/
 
 const ReportForm = () => {
 
+    const [showMap, setShowMap] = useState(false);
+
     const form = useForm<z.infer<typeof reportSchema>>({
-        resolver: zodResolver(reportSchema)
+        resolver: zodResolver(reportSchema),
+        defaultValues: {
+            location: {
+                latitude: 0,
+                longitude: 0
+            }
+        }
     });
 
     const { fields, append, remove } = useFieldArray({
         control: form.control,
-        name: "personas"
+        name: "involvedPeople"
     });
 
     async function onSubmit(values: z.infer<typeof reportSchema>) {
@@ -123,12 +64,17 @@ const ReportForm = () => {
                                     <FormLabel>Imagenes del siniestro</FormLabel>
                                     <FormControl>
                                         <div className="p-4 border-lightGray border-[1px] rounded-md flex justify-center items-center h-52">
-                                            <Button
+                                            <ImageUpload
+                                                onFilesChange={(files) => {
+                                                    form.setValue('images', files);
+                                                }}
+                                            />
+                                            {/*<Button
                                                 variant="outline"
                                                 onClick={() => append({ name: "", brand: "", color: "", plates: "" })}
                                             >
                                                 Subir Imagen
-                                            </Button>
+                                            </Button>*/}
                                         </div>
                                     </FormControl>
                                 </FormItem>
@@ -145,12 +91,24 @@ const ReportForm = () => {
                                     <FormLabel>Ubicación</FormLabel>
                                     <FormControl className="flex-1">
                                         <div className="p-4 border-lightGray border-[1px] rounded-md flex justify-center items-center h-[90%]">
-                                            <Button
-                                                variant="outline"
-                                                onClick={() => append({ name: "", brand: "", color: "", plates: "" })}
-                                            >
-                                                Obtener Ubicación
-                                            </Button>
+
+                                            {!showMap ? (
+                                                <Button
+                                                    variant="outline"
+                                                    onClick={() => setShowMap(true)}
+                                                >
+                                                    Obtener Ubicación
+                                                </Button>
+                                            ) : (
+                                                <MapWrapper
+                                                    visible={showMap}
+                                                    onLocationSelect={(lat: number, lng: number) => {
+                                                        form.setValue('location.latitude', lat);
+                                                        form.setValue('location.longitude', lng);
+                                                        console.log(lat, lng)
+                                                    }}
+                                                />
+                                            )}
                                         </div>
                                     </FormControl>
                                 </FormItem>
@@ -172,7 +130,7 @@ const ReportForm = () => {
                                 <div className="w-1/2 space-y-4">
                                     <FormField
                                         control={form.control}
-                                        name={`personas.${index}.name`}
+                                        name={`involvedPeople.${index}.name`}
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Nombre del conductor</FormLabel>
@@ -185,7 +143,7 @@ const ReportForm = () => {
 
                                     <FormField
                                         control={form.control}
-                                        name={`personas.${index}.brand`}
+                                        name={`involvedPeople.${index}.brand`}
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Marca</FormLabel>
@@ -200,7 +158,7 @@ const ReportForm = () => {
                                 <div className="w-1/2 space-y-4">
                                     <FormField
                                         control={form.control}
-                                        name={`personas.${index}.color`}
+                                        name={`involvedPeople.${index}.color`}
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Color</FormLabel>
@@ -213,7 +171,7 @@ const ReportForm = () => {
 
                                     <FormField
                                         control={form.control}
-                                        name={`personas.${index}.plates`}
+                                        name={`involvedPeople.${index}.plates`}
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Placas</FormLabel>

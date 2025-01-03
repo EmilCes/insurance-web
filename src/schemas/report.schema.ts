@@ -11,16 +11,16 @@ const reportSchema = z.object({
   vehicle: z.string().min(1, "Selecciona un vehículo"),
 
   images: z
-    .array(z.string().url())
+    .array(z.instanceof(File))
     .min(4, "Debes subir al menos 4 imágenes")
     .max(8, "Puedes subir hasta 8 imágenes como máximo"),
 
-  ubication: z.object({
-    latitud: z.number().min(-90).max(90, "Latitud inválida"),
-    longitud: z.number().min(-180).max(180, "Longitud inválida"),
+  location: z.object({
+    latitude: z.number().min(-90).max(90, "Latitud inválida"),
+    longitude: z.number().min(-180).max(180, "Longitud inválida"),
   }),
 
-  personas: z
+  involvedPeople: z
     .array(involvedPersonSchema)
     .min(1, "Debes agregar al menos una persona o seleccionar 'Anónimo'"),
 });
