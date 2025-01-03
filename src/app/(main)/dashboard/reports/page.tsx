@@ -7,8 +7,6 @@ const ReportsPage = () => {
 
     return (
         <>
-            <TitleBar title="Mis Reportes"/>
-            
             <div className="my-10 mx-16">
                 <div>
                     <h2 className="font-semibold text-xl">Información del reporte</h2>

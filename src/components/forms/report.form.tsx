@@ -3,20 +3,74 @@
 import reportSchema from "@/schemas/report.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
-import { number, z } from "zod";
+import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
 import { Checkbox } from "../ui/checkbox";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
-import LocationMap from "@/app/(main)/dashboard/reports/map";
 import { MapWrapper } from "@/app/(main)/dashboard/reports/mapWrapper";
 import ImageUpload from "@/app/(main)/dashboard/reports/imageUpload";
+import { ActivePolicyResponse, getAllActivePolicies } from "@/api/policy.api";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { useStatusPageContext } from "@/lib/statusPage/statusContext";
+import { ColorsVehicleResponse, getColorsVehicles } from "@/api/vehicle.api";
+import { BrandsVehicleResponse, getBrandsVehicles } from "@/api/brand.api";
 
 
 const ReportForm = () => {
 
     const [showMap, setShowMap] = useState(false);
+    const { setIsLoading, showMessageError, setShowMessageError } = useStatusPageContext();
+    const [activePolicies, setActivePolicies] = useState<ActivePolicyResponse[]>([]);
+    const [colors, setColors] = useState<ColorsVehicleResponse>([]);
+    const [brands, setBrands] = useState<BrandsVehicleResponse>([]);
+
+    useEffect(() => {
+        setIsLoading(true);
+
+        try {
+            fetchActivePolicies();
+            fetchColors();
+            fetchBrands();
+        } catch (error) {
+            setIsLoading(false);
+            setShowMessageError(true);
+        }
+
+        setIsLoading(false)
+
+    }, []);
+
+    const fetchActivePolicies = async () => {
+        const activePolicies = await getAllActivePolicies();
+
+        if (activePolicies) {
+            setActivePolicies(activePolicies);
+        } else {
+            throw new Error("Error al recuperar las polizas vigentes");
+        }
+    }
+
+    const fetchColors = async () => {
+        const colorsData = await getColorsVehicles();
+
+        if (colorsData) {
+            setColors(colorsData);
+        } else {
+            throw new Error("Error al recuperar los colores");
+        }
+    }
+
+    const fetchBrands = async () => {
+        const brandsData = await getBrandsVehicles();
+
+        if (brandsData) {
+            setBrands(brandsData);
+        } else {
+            throw new Error("Error al recuperar las marcas");
+        }
+    }
 
     const form = useForm<z.infer<typeof reportSchema>>({
         resolver: zodResolver(reportSchema),
@@ -48,9 +102,20 @@ const ReportForm = () => {
                             name="vehicle"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Vehiculo</FormLabel>
+                                    <FormLabel>Poliza</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Vehiculo" {...field} />
+                                        <Select onValueChange={(value) => { { field.onChange(value); } }}>
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Selecciona una poliza" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {
+                                                    activePolicies.map((policy) => (
+                                                        <SelectItem key={policy.serialNumber} value={policy.serialNumber}>{`${policy.Vehicle.Model.Brand.name} - ${policy.Vehicle.Color.vehicleColor} - ${policy.Vehicle.Model.year}`}</SelectItem>
+                                                    ))
+                                                }
+                                            </SelectContent>
+                                        </Select>
                                     </FormControl>
                                 </FormItem>
                             )}
@@ -69,12 +134,6 @@ const ReportForm = () => {
                                                     form.setValue('images', files);
                                                 }}
                                             />
-                                            {/*<Button
-                                                variant="outline"
-                                                onClick={() => append({ name: "", brand: "", color: "", plates: "" })}
-                                            >
-                                                Subir Imagen
-                                            </Button>*/}
                                         </div>
                                     </FormControl>
                                 </FormItem>
@@ -148,7 +207,16 @@ const ReportForm = () => {
                                             <FormItem>
                                                 <FormLabel>Marca</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="Marca del vehiculo" {...field} />
+                                                    <Select onValueChange={(value) => { { field.onChange(value); } }}>
+                                                        <SelectTrigger className="w-full">
+                                                            <SelectValue placeholder="Selecciona una marca" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            {brands.map((brand) => (
+                                                                <SelectItem key={brand.idBrand} value={brand.idBrand + ""}>{brand.name}</SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>                                                
                                                 </FormControl>
                                             </FormItem>
                                         )}
@@ -163,7 +231,16 @@ const ReportForm = () => {
                                             <FormItem>
                                                 <FormLabel>Color</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="Color del vehiculo" {...field} />
+                                                    <Select onValueChange={field.onChange}>
+                                                        <SelectTrigger className="w-full">
+                                                            <SelectValue placeholder="Seleccionar color" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            {colors.map((color) => (
+                                                                <SelectItem key={color.idColor} value={color.idColor + ""}>{color.vehicleColor}</SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
                                                 </FormControl>
                                             </FormItem>
                                         )}
