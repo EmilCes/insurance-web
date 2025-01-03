@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import PolicyPlanForm from "@/components/forms/policyPlan.form";
 import { useParams } from "next/navigation";
+import isAuth from "@/lib/auth/isAuth";
+import isCorrectRole from "@/lib/auth/isCorrectRole";
 
 const PolicyPlanPageId = () => {
     const params = useParams();
@@ -19,4 +21,4 @@ const PolicyPlanPageId = () => {
     );
 };
 
-export default PolicyPlanPageId;
+export default isAuth(isCorrectRole(PolicyPlanPageId, "Administrador"))

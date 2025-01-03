@@ -193,5 +193,4 @@ const PlansPolicyList = () => {
     </>
   )
 }
-
-export default PlansPolicyList;
+export default isAuth(isCorrectRole(PlansPolicyList, "Administrador"))

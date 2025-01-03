@@ -4,6 +4,8 @@ import TitleBar from "@/components/dashboard/TitleBar";
 import { Button } from "@/components/ui/button";
 import { deletePolicyPlan, getPolicyPlanStatusData, updatePolicyPlanStatusData } from "@/api/policyplan.api";
 import { useParams, useRouter } from "next/navigation";
+import isAuth from "@/lib/auth/isAuth";
+import isCorrectRole from "@/lib/auth/isCorrectRole";
 
 const PolicyPlanDetail = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -187,4 +189,4 @@ const PolicyPlanDetail = () => {
   );
 };
 
-export default PolicyPlanDetail;
+export default isAuth(isCorrectRole(PolicyPlanDetail, "Administrador"))

@@ -85,7 +85,7 @@ export async function getPolicyPlans(): Promise<PolicyPlansResponse | null> {
 }
 
 export async function getPolicyPlanData(id: string): Promise<PolicyPlanItem | null> {
-    const response = await fetch(`${API_URL}/policy-plan/${id}`, {
+    const response = await fetchWithAuth(`${API_URL}/policy-plan/${id}`, {
         method: 'GET'
     });
     if (response.ok) {
@@ -96,7 +96,7 @@ export async function getPolicyPlanData(id: string): Promise<PolicyPlanItem | nu
 }
 
 export async function getPolicyPlanStatusData(id: string): Promise<PolicyPlanStatusItem | null> {
-    const response = await fetch(`${API_URL}/policy-plan/status/${id}`, {
+    const response = await fetchWithAuth(`${API_URL}/policy-plan/status/${id}`, {
         method: 'GET'
     });
     if (response.ok) {
@@ -108,7 +108,7 @@ export async function getPolicyPlanStatusData(id: string): Promise<PolicyPlanSta
 
 export async function createPolicyPlanData(policyPlanData: PolicyPlanCreate): Promise<PolicyPlanItem | { status: number, message: string } | null> {
     try {
-        const response = await fetch(`${API_URL}/policy-plan`, { //PONER ROLES CAMBIAR A FETCH CON AUTORIZACION
+        const response = await fetchWithAuth(`${API_URL}/policy-plan`, { //PONER ROLES CAMBIAR A FETCH CON AUTORIZACION
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -132,7 +132,7 @@ export async function createPolicyPlanData(policyPlanData: PolicyPlanCreate): Pr
 export async function updatePolicyPlanData(policyPlanData: PolicyPlanCreate, id: string): Promise<PolicyPlanItem | { status: number, message: string } | null> {
     try {
         //PONER ROLES
-        const response = await fetch(`${API_URL}/policy-plan/${id}`, {
+        const response = await fetchWithAuth(`${API_URL}/policy-plan/${id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -155,7 +155,7 @@ export async function updatePolicyPlanData(policyPlanData: PolicyPlanCreate, id:
 export async function updatePolicyPlanStatusData(statusPayload: { idPolicyPlanStatus: number }, id: string): Promise<PolicyPlanStatusItem | { status: number, message: string } | null> {
     try {
         //PONER ROLES
-        const response = await fetch(`${API_URL}/policy-plan/status/${id}`, {
+        const response = await fetchWithAuth(`${API_URL}/policy-plan/status/${id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -176,7 +176,7 @@ export async function updatePolicyPlanStatusData(statusPayload: { idPolicyPlanSt
 }
 
 export async function deletePolicyPlan(id: string): Promise<number | null> {
-    const response = await fetch(`${API_URL}/policy-plan/${id}`, {
+    const response = await fetchWithAuth(`${API_URL}/policy-plan/${id}`, {
         method: 'DELETE'
     });
     console.log("response.status"+response.status);
@@ -193,7 +193,7 @@ export async function getPolicyPlanPages(data: DataPlanPolicyPageRequest): Promi
         URL += `&name=${encodeURIComponent(data.name)}`;
     }
 
-    const response = await fetch(URL, {
+    const response = await fetchWithAuth(URL, {
         method: 'GET',
     });
     if (response.status === 200) {

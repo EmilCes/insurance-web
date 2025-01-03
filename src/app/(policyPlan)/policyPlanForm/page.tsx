@@ -3,6 +3,8 @@ import TitleBar from "@/components/dashboard/TitleBar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import PolicyPlanForm from "@/components/forms/policyPlan.form";
+import isAuth from "@/lib/auth/isAuth";
+import isCorrectRole from "@/lib/auth/isCorrectRole";
 
 const PolicyPlanPage = () => {
     return (
@@ -14,4 +16,5 @@ const PolicyPlanPage = () => {
     )
 };
 
-export default PolicyPlanPage;
+
+export default isAuth(isCorrectRole(PolicyPlanPage, "Administrador"));
