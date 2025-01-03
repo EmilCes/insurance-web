@@ -80,7 +80,7 @@ const PlansPolicyList = () => {
           setErrorMessage("Error al recuperar los planes de póliza");
         }
       } catch (error) {
-        setErrorMessage("Error al cambiar la pagina");
+        setErrorMessage("Ha ocurrido un error inesperado");
       }
     }
   }
@@ -171,7 +171,7 @@ const PlansPolicyList = () => {
                   </button>
 
                   <div className="border border-gray-300 rounded-lg flex items-center justify-center w-10 h-10">
-                    <p className="text-gray-800">{pageNumber}</p>
+                    <p className="text-gray-800">{pageNumber+1}</p>
                   </div>
 
                   <button

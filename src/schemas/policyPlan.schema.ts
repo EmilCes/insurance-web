@@ -10,7 +10,7 @@ const policyPlanSchema = z.object({
         .min(1, "La descripción es obligatoria")
         .max(255, "La descripción no debe exceder los 255 caracteres"),
 
-    maxPeriod: z.coerce.number().positive("El periodo debe ser positivo"),
+    maxPeriod: z.coerce.number().int("El periodo debe ser un entero positivo sin decimales").positive("El periodo debe ser un entero positivo sin decimales"),
 
     basePrice: z.coerce.number().positive("El precio debe ser positivo"),
 
