@@ -184,7 +184,7 @@ const VehiculeForm = () => {
                         </SelectTrigger>
                         <SelectContent>
                           {brands.map((brand) => (
-                            <SelectItem value={brand.idBrand + ""}>{brand.name}</SelectItem>
+                            <SelectItem key={brand.idBrand} value={brand.idBrand + ""}>{brand.name}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -207,7 +207,7 @@ const VehiculeForm = () => {
                         </SelectTrigger>
                         <SelectContent>
                           {models.map((model) => (
-                            <SelectItem value={model.idModel + ""}>{model.year}</SelectItem>
+                            <SelectItem key={model.idModel} value={model.idModel + ""}>{model.year}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -243,7 +243,7 @@ const VehiculeForm = () => {
                         </SelectTrigger>
                         <SelectContent>
                           {colors.map((color) => (
-                            <SelectItem value={color.idColor + ""}>{color.vehicleColor}</SelectItem>
+                            <SelectItem key={color.idColor} value={color.idColor + ""}>{color.vehicleColor}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>

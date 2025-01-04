@@ -88,7 +88,7 @@ const ReportForm = () => {
     });
 
     async function onSubmit(values: z.infer<typeof reportSchema>) {
-        console.log(values);
+        console.log(JSON.stringify(values, null, 2));
     }
 
     return (
