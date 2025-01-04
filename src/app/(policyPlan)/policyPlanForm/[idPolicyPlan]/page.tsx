@@ -6,6 +6,7 @@ import PolicyPlanForm from "@/components/forms/policyPlan.form";
 import { useParams } from "next/navigation";
 import isAuth from "@/lib/auth/isAuth";
 import isCorrectRole from "@/lib/auth/isCorrectRole";
+import BreadcrumbPolicyPlanForm from "../breadcrumbPolicyPlanForm";
 
 const PolicyPlanPageId = () => {
     const params = useParams();
@@ -16,6 +17,7 @@ const PolicyPlanPageId = () => {
     return (
         <div className="p-0">
             <TitleBar title="Registrar Plan de Póliza" />
+            <BreadcrumbPolicyPlanForm id={idPolicyPlan}></BreadcrumbPolicyPlanForm>
             <PolicyPlanForm idPolicyPlan={idPolicyPlan} />
         </div>
     );
