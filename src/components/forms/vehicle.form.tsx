@@ -285,7 +285,7 @@ const VehiculeForm = () => {
                         </SelectTrigger>
                         <SelectContent>
                           {types.map((type) => (
-                            <SelectItem value={type.idType + ""}>{type.vehicleType}</SelectItem>
+                            <SelectItem key={type.idType} value={type.idType + ""}>{type.vehicleType}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -326,7 +326,7 @@ const VehiculeForm = () => {
                         </SelectTrigger>
                         <SelectContent>
                           {services.map((service) => (
-                            <SelectItem value={service.idService + ""}>{service.name}</SelectItem>
+                            <SelectItem key={service.idService} value={service.idService + ""}>{service.name}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
