@@ -1,5 +1,5 @@
 import { useAuth } from "@/lib/auth/authContext";
-import { fetchWithAuth } from "./fecthWithAuth";
+import { fetchWithAuth } from "./fetchWithAuth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 

@@ -68,11 +68,13 @@ const Confirmation = () => {
                 }
 
                 const policyPlanData = await getPolicyPlanData(idPolicyPlan);
+
                 if (policyPlanData) {
                     setPolicyPlan(policyPlanData);
                 }else{
                     throw new Error("Error al recuperar el plan de póliza");
                 }
+
                 if(showMessageError){
                     setShowMessageError(false);
                 }

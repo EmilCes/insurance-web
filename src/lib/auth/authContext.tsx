@@ -1,7 +1,7 @@
 // context/AuthContext.tsx
 "use client";
 
-import { authEvents } from "@/api/fecthWithAuth";
+import { authEvents } from "@/api/fetchWithAuth";
 import SessionExpired from "@/components/sessionExpired/sessionExpired";
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 

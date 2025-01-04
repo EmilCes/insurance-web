@@ -1,6 +1,5 @@
 "use client"
 import React from 'react'
-import Image from "next/image";
 import TitleBar from '@/components/dashboard/TitleBar';
 import { StatusPageProvider } from '@/lib/statusPage/statusContext';
 

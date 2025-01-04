@@ -190,7 +190,7 @@ const PaymentForm = ({ policyPlan, onPaymentSuccess, accountInfo }: {
                                                 const maxPeriod = (policyPlan) ? policyPlan.maxPeriod : 0;
                                                 for (let i = 2; i <= maxPeriod; i++) {
                                                     items.push(
-                                                        <SelectItem value={i + ""}>
+                                                        <SelectItem key={i} value={i + ""}>
                                                             {i + " meses"}
                                                         </SelectItem>
                                                     );

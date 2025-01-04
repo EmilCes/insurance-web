@@ -8,7 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
 import { Checkbox } from "../ui/checkbox";
 import { Button } from "../ui/button";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MapWrapper } from "@/app/(main)/dashboard/reports/mapWrapper";
 import ImageUpload from "@/app/(main)/dashboard/reports/imageUpload";
 import { ActivePolicyResponse, getAllActivePolicies } from "@/api/policy.api";
@@ -16,6 +16,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { useStatusPageContext } from "@/lib/statusPage/statusContext";
 import { ColorsVehicleResponse, getColorsVehicles } from "@/api/vehicle.api";
 import { BrandsVehicleResponse, getBrandsVehicles } from "@/api/brand.api";
+import React from "react";
+import { createReport, CreateReportData } from "@/api/reports.api";
 
 
 const ReportForm = () => {
@@ -82,13 +84,47 @@ const ReportForm = () => {
         }
     });
 
+    const onLocationSelect = useCallback((lat: number, lng: number) => {
+        form.setValue('location.latitude', lat);
+        form.setValue('location.longitude', lng);
+        console.log(lat, lng);
+    }, [form]);
+
     const { fields, append, remove } = useFieldArray({
         control: form.control,
         name: "involvedPeople"
     });
 
     async function onSubmit(values: z.infer<typeof reportSchema>) {
-        console.log(JSON.stringify(values, null, 2));
+        const imagesWithDetails = values.images.map((file) => ({
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            lastModified: file.lastModified
+        }));
+
+        const valuesWithImages = {
+            ...values,
+            images: imagesWithDetails
+        }
+
+        console.log(JSON.stringify(valuesWithImages, null, 2));
+
+        const involvedPeopleWithDefaults = values.involvedPeople.map(person => ({
+            name: person.name || "",
+            brandId: parseInt(person.brandId!, 10) || 0,
+            colorId: parseInt(person.colorId!, 10) || 0,
+            plates: person.plates || ""
+        }));
+
+        const createReportData: CreateReportData = {
+            serialNumber: values.vehicle,
+            images: values.images,
+            location: values.location,
+            involvedPeople: involvedPeopleWithDefaults
+        }
+
+        await createReport(createReportData);
     }
 
     return (
@@ -144,29 +180,26 @@ const ReportForm = () => {
                     <div className="w-1/2 flex flex-col flex-grow min-h-0">
                         <FormField
                             control={form.control}
-                            name="vehicle"
+                            name="location"
                             render={({ field }) => (
                                 <FormItem className="flex-1">
                                     <FormLabel>Ubicación</FormLabel>
                                     <FormControl className="flex-1">
                                         <div className="p-4 border-lightGray border-[1px] rounded-md flex justify-center items-center h-[90%]">
+                                            {showMap && (
+                                                <MapWrapper
+                                                    onLocationSelect={onLocationSelect}
+                                                />
+                                            )}
 
-                                            {!showMap ? (
+                                            {!showMap && (
                                                 <Button
                                                     variant="outline"
                                                     onClick={() => setShowMap(true)}
+                                                    className="absolute"
                                                 >
                                                     Obtener Ubicación
                                                 </Button>
-                                            ) : (
-                                                <MapWrapper
-                                                    visible={showMap}
-                                                    onLocationSelect={(lat: number, lng: number) => {
-                                                        form.setValue('location.latitude', lat);
-                                                        form.setValue('location.longitude', lng);
-                                                        console.log(lat, lng)
-                                                    }}
-                                                />
                                             )}
                                         </div>
                                     </FormControl>
@@ -202,7 +235,7 @@ const ReportForm = () => {
 
                                     <FormField
                                         control={form.control}
-                                        name={`involvedPeople.${index}.brand`}
+                                        name={`involvedPeople.${index}.brandId`}
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Marca</FormLabel>
@@ -216,7 +249,7 @@ const ReportForm = () => {
                                                                 <SelectItem key={brand.idBrand} value={brand.idBrand + ""}>{brand.name}</SelectItem>
                                                             ))}
                                                         </SelectContent>
-                                                    </Select>                                                
+                                                    </Select>
                                                 </FormControl>
                                             </FormItem>
                                         )}
@@ -226,7 +259,7 @@ const ReportForm = () => {
                                 <div className="w-1/2 space-y-4">
                                     <FormField
                                         control={form.control}
-                                        name={`involvedPeople.${index}.color`}
+                                        name={`involvedPeople.${index}.colorId`}
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Color</FormLabel>
@@ -278,7 +311,7 @@ const ReportForm = () => {
                         <Button
                             className="w-full"
                             variant="outline"
-                            onClick={() => append({ name: "", brand: "", color: "", plates: "" })}
+                            onClick={() => append({ name: "", brandId: "", colorId: "", plates: "" })}
                         >
                             Agregar conductor
                         </Button>

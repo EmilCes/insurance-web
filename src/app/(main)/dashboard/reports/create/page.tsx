@@ -2,8 +2,6 @@ import ReportForm from "@/components/forms/report.form";
 
 const ReportsPage = () => {
 
-
-
     return (
         <>
             <div className="my-10 mx-16">

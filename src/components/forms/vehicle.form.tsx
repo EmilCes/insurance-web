@@ -27,7 +27,6 @@ import Loading from "../loading/Loading";
 import { FormPolicyProvider, useFormPolicyContext } from "@/lib/context/formPolicyContext";
 import ProgressInPolicyForm from "@/app/(main)/dashboard/policyPlan/progresspolicyform";
 import { useStatusPageContext } from "@/lib/statusPage/statusContext";
-import { useAuth } from "@/lib/auth/authContext";
 import { ColorsVehicleResponse, getColorsVehicles, getServicesVehicles, getTypesVehicles, ServicesVehicleResponse, TypeVehicleResponse, validatePlates } from "@/api/vehicle.api";
 import { BrandsVehicleResponse, getBrandsVehicles, ModelVehicleResponse } from "@/api/brand.api";
 
@@ -224,7 +223,7 @@ const VehiculeForm = () => {
                     <FormLabel>Serie</FormLabel>
                     <FormControl>
                       <Input placeholder="Serie del vehículo" {...field}
-                        defaultValue={formPolicyData?.series ? formPolicyData.series + "" : undefined} />
+                        value={formPolicyData?.series ? formPolicyData.series + "" : undefined} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -306,7 +305,7 @@ const VehiculeForm = () => {
                     <FormLabel>Ocupantes</FormLabel>
                     <FormControl>
                       <Input type="number" min="0" max="10" placeholder="Número de ocupantes" {...field}
-                        defaultValue={formPolicyData?.occupants ? formPolicyData.occupants + "" : undefined} />
+                        value={formPolicyData?.occupants ? formPolicyData.occupants + "" : undefined} />
                     </FormControl>
                   </FormItem>
                 )}

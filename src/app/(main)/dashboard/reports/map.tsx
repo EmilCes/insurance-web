@@ -7,7 +7,6 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 // Tipo para las props del componente
 interface LocationMapProps {
   onLocationSelect?: (latitude: number, longitude: number) => void;
-  visible: boolean;
 }
 
 // Tipo para la posición
@@ -18,13 +17,13 @@ interface Position {
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_API_KEY || '';
 
-const LocationMap: React.FC<LocationMapProps> = ({ onLocationSelect, visible }) => {
+const LocationMap: React.FC<LocationMapProps> = ({ onLocationSelect }) => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<Map | null>(null);
   const marker = useRef<Marker | null>(null);
 
   useEffect(() => {
-    if (visible && !map.current && mapContainer.current) {
+    if (!map.current && mapContainer.current) {
       // Inicializar mapa
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
@@ -85,9 +84,7 @@ const LocationMap: React.FC<LocationMapProps> = ({ onLocationSelect, visible }) 
         map.current = null;
       }
     };
-  }, [visible, onLocationSelect]);
-
-  if (!visible) return null;
+  }, [onLocationSelect]);
 
   return (
     <div 

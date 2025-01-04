@@ -2,8 +2,8 @@ import { z } from 'zod';
 
 const involvedPersonSchema = z.object({
   name: z.string().optional(),
-  brand: z.string().optional(),
-  color: z.string().optional(),
+  brandId: z.string().optional(),
+  colorId: z.string().optional(),
   plates: z.string().optional()
 });
 
