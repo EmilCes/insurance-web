@@ -1,7 +1,7 @@
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import React from 'react'
 
-const BreadcrumbPolicyPlanPage = ({ id }: { id: string | null }) => {
+const BreadcrumbPolicyPlanForm = ({ id }: { id: string | null }) => {
     return (
         <div className='bg-sky-100'>
             <div className="mx-auto w-full max-w-screen-lg py-1 ml-8 md:ml-20">
@@ -16,7 +16,7 @@ const BreadcrumbPolicyPlanPage = ({ id }: { id: string | null }) => {
                         {id == null ?
                             (<>
                                 <BreadcrumbItem>
-                                    <BreadcrumbPage>Planes de póliza</BreadcrumbPage>
+                                    <BreadcrumbPage>Formulario de póliza</BreadcrumbPage>
                                 </BreadcrumbItem>
                             </>) :
                             (<>
@@ -27,7 +27,7 @@ const BreadcrumbPolicyPlanPage = ({ id }: { id: string | null }) => {
                                 <BreadcrumbSeparator />
 
                                 <BreadcrumbItem>
-                                    <BreadcrumbPage>Plan de póliza #{id}</BreadcrumbPage>
+                                    <BreadcrumbPage>Formulario para el plan de póliza #{id}</BreadcrumbPage>
                                 </BreadcrumbItem>
 
                             </>)
@@ -40,4 +40,4 @@ const BreadcrumbPolicyPlanPage = ({ id }: { id: string | null }) => {
     )
 }
 
-export default BreadcrumbPolicyPlanPage
+export default BreadcrumbPolicyPlanForm

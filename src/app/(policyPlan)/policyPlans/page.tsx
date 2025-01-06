@@ -11,11 +11,11 @@ import isAuth from '@/lib/auth/isAuth'
 import { useStatusPageContext } from '@/lib/statusPage/statusContext'
 import NoItemsPolicy from './noItems'
 import EmptyPolicies from './emptyPolicies'
-import BreadcrumbPoliciesPage from './breadcrumbPolicies'
 import isCorrectRole from '@/lib/auth/isCorrectRole'
 import FilterMenuStatus from './filterMenuStatus'
 import { PolicyPlanStatusItem } from '@/api/policyplan.api'
 import PolicyPlanItem from './policyPlanItem'
+import BreadcrumbPolicyPlanPage from './breadcrumbPolicies'
 
 const PlansPolicyList = () => {
   const router = useRouter();
@@ -100,7 +100,7 @@ const PlansPolicyList = () => {
   return (
     <>
 
-      <BreadcrumbPoliciesPage id={null}></BreadcrumbPoliciesPage>
+      <BreadcrumbPolicyPlanPage id={null}></BreadcrumbPolicyPlanPage>
       {errorMessage && (
         <div className="text-red-500 text-right mr-4">
           {errorMessage}
@@ -193,5 +193,4 @@ const PlansPolicyList = () => {
     </>
   )
 }
-
-export default PlansPolicyList;
+export default isAuth(isCorrectRole(PlansPolicyList, "Administrador"))

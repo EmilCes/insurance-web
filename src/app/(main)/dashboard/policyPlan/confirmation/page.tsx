@@ -54,16 +54,16 @@ const Confirmation = () => {
                 }
 
                 const accountInfoData = await getBankNumberUser();
-                if(accountInfoData != null){
+                if (accountInfoData != null) {
                     setAccountInfo(accountInfoData);
-                }else{
+                } else {
                     throw new Error("Error al recuperar datos usuario");
                 }
 
                 const brandModel = await getBrandModelData(idModelData);
                 if (brandModel) {
                     setBrandModel(brandModel);
-                }else{
+                } else {
                     throw new Error("Error al recuperar la marca");
                 }
 
@@ -71,10 +71,10 @@ const Confirmation = () => {
 
                 if (policyPlanData) {
                     setPolicyPlan(policyPlanData);
-                }else{
+                } else {
                     throw new Error("Error al recuperar el plan de póliza");
                 }
-
+              
                 if(showMessageError){
                     setShowMessageError(false);
                 }
@@ -95,7 +95,6 @@ const Confirmation = () => {
     return (
         <div>
             {isLoading ? (<Loading></Loading>) : (<></>)}
-            {showMessageError ? (<ErrorMessage></ErrorMessage>) : (<></>)}
 
             {isPaymentSuccessful ? (
                 <>
@@ -106,7 +105,11 @@ const Confirmation = () => {
                     <div className="mx-auto w-full max-w-screen-lg px-8 pb-8 pt-4">
 
                         <div className='grid grid-cols-1 md:grid-cols-2 gap-10 mt-4'>
-                            <PaymentForm policyPlan={policyPlan} onPaymentSuccess={handlePaymentSuccess} accountInfo={accountInfo}/>
+                            <div>
+                                <PaymentForm policyPlan={policyPlan} onPaymentSuccess={handlePaymentSuccess} accountInfo={accountInfo} />
+                                {showMessageError ? (<p className='text-red-600'>Ocurrió un error, por favor vuelva a intentar</p>) : (<></>)}
+                            </div>
+
 
                             <div>
                                 <h2 className='text-2xl font-semibold mb-2'>Resumen de póliza</h2>
