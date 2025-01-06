@@ -16,8 +16,12 @@ const reportSchema = z.object({
     .max(8, "Puedes subir hasta 8 imágenes como máximo"),
 
   location: z.object({
-    latitude: z.number().min(-90).max(90, "Latitud inválida"),
-    longitude: z.number().min(-180).max(180, "Longitud inválida"),
+    latitude: z.number().min(-90).max(90, "Latitud inválida").refine((val) => val !== 0, {
+      message: "la latitud es requerida"
+    }),
+    longitude: z.number().min(-180).max(180, "Longitud inválida").refine((val) => val !== 0, {
+      message: "La longitud es requerida"
+    }),
   }),
 
   involvedPeople: z

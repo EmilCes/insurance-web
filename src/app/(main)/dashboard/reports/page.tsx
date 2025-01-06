@@ -1,22 +1,25 @@
-import ReportForm from "@/components/forms/report.form";
+"use client"
 
-const ReportsPage = () => {
+import React from 'react';
+import ListPage from './ListPage';
+import FilterMenuReports from './FilterMenuReports';
+import { getReports, ReportData, ReportFilters } from '@/api/reports.api';
+import BreadcrumbReportsPage from './breadcrumReportsPage';
+import ReportItem from './reportItem';
+import NoItemsComponent from './noItemsComponent';
 
-
-
-    return (
-        <>
-            <div className="my-10 mx-16">
-                <div>
-                    <h2 className="font-semibold text-xl">Información del reporte</h2>
-                    <h3 className="text-sm text-alternGray">Información del reporte generado.</h3>
-                </div>
-
-                <ReportForm />
-
-            </div>
-        </>
-    )
-}
+const ReportsPage: React.FC = () => {
+  return (
+    <ListPage<ReportData, ReportFilters>
+      fetchDataFunction={getReports}
+      filterComponent={FilterMenuReports}
+      listItemComponent={ReportItem}
+      breadcrumbComponent={BreadcrumbReportsPage}
+      noItemsComponent={NoItemsComponent}
+      searchPlaceholder="Ingrese el número de reporte"
+      initialFilters={{ status: 0, startYear: 2023, endYear: 2025, page: 0 }}
+    />
+  );
+};
 
 export default ReportsPage;
