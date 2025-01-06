@@ -1,5 +1,5 @@
 import { useAuth } from "@/lib/auth/authContext";
-import { fetchWithAuth } from "./fecthWithAuth";
+import { fetchWithAuth } from "./fetchWithAuth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -143,6 +143,20 @@ export interface PolicyPlanTypeItem {
     planTitle: string;
 }
 
+export type ActivePoliciesResponse = ActivePolicyResponse[];
+
+export interface VechicleDataBrandModelColor {
+    Model: ModelDetails,
+    Color: ColorDetails
+}
+
+export interface ActivePolicyResponse {
+    serialNumber: string;
+    startDate: string;
+    yearsPolicy: number;
+    Vehicle: VechicleDataBrandModelColor;
+}
+
 export async function createPolicyData(policyData: PolicyCreateData): Promise<CreatePolicyResponse | null> {
     const response = await fetchWithAuth(`${API_URL}/policies/`, {
         method: 'POST',
@@ -166,10 +180,12 @@ export async function getPoliciesFromPage(data: DataPolicyPageRequest): Promise<
     const response = await fetchWithAuth(URL, {
         method: 'GET'
     });
+
     if (response.ok) {
         const values: PoliciesResponse = await response.json();
         return values;
     }
+
     return null;
 }
 
@@ -215,4 +231,21 @@ export async function cancelPolicy(serialNumber: any): Promise<number> {
         method: 'PUT'
     });
     return response.status;
+}
+
+export async function getAllActivePolicies(): Promise<ActivePoliciesResponse | null> {
+    const URL = `${API_URL}/policies/active`;
+        
+    const response = await fetchWithAuth(URL, {
+        method: 'GET'
+    });
+
+    if (response.ok) {
+        const values: ActivePoliciesResponse = await response.json();
+        return values;
+    }
+
+    console.log(response)
+    
+    return null;
 }

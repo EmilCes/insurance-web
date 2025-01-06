@@ -1,5 +1,4 @@
-import { UUID } from "crypto";
-import { fetchWithAuth } from "./fecthWithAuth";
+import { fetchWithAuth } from "./fetchWithAuth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -88,10 +87,12 @@ export async function getPolicyPlanData(id: string): Promise<PolicyPlanItem | nu
     const response = await fetchWithAuth(`${API_URL}/policy-plan/${id}`, {
         method: 'GET'
     });
+
     if (response.ok) {
         const values: PolicyPlanItem = await response.json();
         return values;
     }
+
     return null;
 }
 

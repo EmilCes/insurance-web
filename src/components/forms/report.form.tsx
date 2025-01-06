@@ -6,255 +6,530 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
-import { Checkbox } from "../ui/checkbox";
 import { Button } from "../ui/button";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { MapWrapper } from "@/app/(main)/dashboard/reports/create/mapWrapper";
+import ImageUpload from "@/app/(main)/dashboard/reports/create/imageUpload";
+import { ActivePolicyResponse, getAllActivePolicies } from "@/api/policy.api";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { useStatusPageContext } from "@/lib/statusPage/statusContext";
+import { ColorsVehicleResponse, getColorsVehicles } from "@/api/vehicle.api";
+import { BrandsVehicleResponse, getBrandsVehicles } from "@/api/brand.api";
+import React from "react";
+import { createReport, CreateReportData, DetailedReportData } from "@/api/reports.api";
+import { useRouter } from "next/navigation";
+import Loading from "../loading/Loading";
+import ErrorMessage from "../errorMessage/errorMessage";
+import { Separator } from "../ui/separator";
 
-/*
-const MapComponent = ({ onLocationSelected }: { onLocationSelected: (location: { latitude: number, longitude: number }) => void }) => {
-    const [viewport, setViewport] = useState({
-        latitude: 37.7749,
-        longitude: -122.4194,
-        zoom: 12,
-    });
 
-    const [showModal, setShowModal] = useState(false);
-    const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+const ReportForm = ({ mode = 'create', role, defaultValues }: { mode?: 'create' | 'view'; role: string, defaultValues?: DetailedReportData }) => {
 
-    const handleGeolocate = () => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    setUserLocation({ latitude, longitude });
-                    setViewport({ latitude, longitude, zoom: 14 });
-                    setShowModal(true); // Open modal to allow user to modify location
-                },
-                (error) => {
-                    console.error('Error getting location', error);
-                }
-            );
+    const { isLoading, setIsLoading, showMessageError, setShowMessageError } = useStatusPageContext();
+    const router = useRouter();
+
+    const [showMap, setShowMap] = useState(mode === 'view');
+    const [activePolicies, setActivePolicies] = useState<ActivePolicyResponse[]>([]);
+    const [colors, setColors] = useState<ColorsVehicleResponse>([]);
+    const [brands, setBrands] = useState<BrandsVehicleResponse>([]);
+
+    const isReadOnly = mode === 'view';
+    const imageUrls = defaultValues?.photographs.map(photo => photo.url) || [];
+
+    useEffect(() => {
+        setIsLoading(true);
+
+        try {
+            if (!isReadOnly) {
+                fetchActivePolicies();
+                fetchColors();
+                fetchBrands();
+            }
+        } catch (error) {
+            setIsLoading(false);
+            setShowMessageError(true);
+        }
+
+        setIsLoading(false)
+
+    }, []);
+
+    const fetchActivePolicies = async () => {
+        const activePolicies = await getAllActivePolicies();
+
+        if (activePolicies) {
+            setActivePolicies(activePolicies);
         } else {
-            alert("Geolocation is not supported by this browser.");
+            throw new Error("Error al recuperar las polizas vigentes");
         }
-    };
+    }
 
-    const handleAcceptLocation = () => {
-        if (userLocation) {
-            onLocationSelected(userLocation);
+    const fetchColors = async () => {
+        const colorsData = await getColorsVehicles();
+
+        if (colorsData) {
+            setColors(colorsData);
+        } else {
+            throw new Error("Error al recuperar los colores");
         }
-        setShowModal(false); // Close modal
-    };
+    }
 
-    return (
-        <>
-            <Button variant="outline" onClick={handleGeolocate}>
-                Obtener Ubicación
-            </Button>
+    const fetchBrands = async () => {
+        const brandsData = await getBrandsVehicles();
 
-            {showModal && (
-                <Modal onClose={() => setShowModal(false)}>
-                    <div className="w-full h-96">
-                        <ReactMapGL
-                            {...viewport}
-                            width="100%"
-                            height="100%"
-                            mapStyle="mapbox://styles/mapbox/streets-v11"
-                            onViewportChange={(nextViewport) => setViewport(nextViewport)}
-                            mapboxApiAccessToken={process.env.MAPBOX_API_KEY}
-                        >
-                            {userLocation && (
-                                <Marker latitude={userLocation.latitude} longitude={userLocation.longitude}>
-                                    <div className="bg-red-500 p-2 rounded-full" />
-                                </Marker>
-                            )}
-                            <GeolocateControl />
-                        </ReactMapGL>
-
-                        <div className="mt-4">
-                            <Button onClick={handleAcceptLocation}>Aceptar Ubicación</Button>
-                        </div>
-                    </div>
-                </Modal>
-            )}
-        </>
-    );
-};*/
-
-const ReportForm = () => {
+        if (brandsData) {
+            setBrands(brandsData);
+        } else {
+            throw new Error("Error al recuperar las marcas");
+        }
+    }
 
     const form = useForm<z.infer<typeof reportSchema>>({
-        resolver: zodResolver(reportSchema)
+        resolver: isReadOnly ? undefined : zodResolver(reportSchema),
+        defaultValues: defaultValues ? {
+            vehicle: defaultValues.vehicle.serialNumberVehicle,
+            location: {
+                latitude: parseFloat(defaultValues.latitude),
+                longitude: parseFloat(defaultValues.longitude)
+            },
+            involvedPeople: defaultValues.implicateParties.map(party => ({
+                name: party.name,
+                brand: party.brand,
+                color: party.color,
+                plates: party.plates
+            })),
+            images: []
+        } : {
+            location: {
+                latitude: 0,
+                longitude: 0
+            },
+            involvedPeople: [
+                {
+                    name: "",
+                    brandId: "",
+                    colorId: "",
+                    plates: ""
+                }
+            ],
+            images: []
+        }
     });
+
+    const onLocationSelect = useCallback((lat: number, lng: number) => {
+        form.setValue('location.latitude', lat);
+        form.setValue('location.longitude', lng);
+        console.log(lat, lng);
+    }, [form]);
 
     const { fields, append, remove } = useFieldArray({
         control: form.control,
-        name: "personas"
+        name: "involvedPeople"
     });
 
     async function onSubmit(values: z.infer<typeof reportSchema>) {
-        console.log(values);
+        setIsLoading(true);
+
+        const involvedPeopleWithDefaults = values.involvedPeople.map(person => ({
+            name: person.name || "",
+            brandId: parseInt(person.brandId!, 10) || 0,
+            colorId: parseInt(person.colorId!, 10) || 0,
+            plates: person.plates || ""
+        }));
+
+        const createReportData: CreateReportData = {
+            serialNumber: values.vehicle,
+            images: values.images,
+            location: values.location,
+            involvedPeople: involvedPeopleWithDefaults
+        }
+
+        try {
+            const response = await createReport(createReportData);
+
+            if (response && response.reportNumber) {
+                router.push(`/dashboard/reports/success?reportNumber=${response.reportNumber}`);
+            } else {
+                setShowMessageError(true);
+            }
+
+            setIsLoading(false);
+
+        } catch (error) {
+            setIsLoading(false);
+            setShowMessageError(true);
+            console.log('Error al crear el reporte: ', error);
+        }
+
+
     }
 
     return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-                <div className="flex space-x-8 my-6 items-stretch mb-8">
+        <>
 
-                    <div className="w-1/2 space-y-4 flex flex-col justify-between">
-                        <FormField
-                            control={form.control}
-                            name="vehicle"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Vehiculo</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Vehiculo" {...field} />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
+            {isLoading && <Loading />}
+            {showMessageError && <ErrorMessage />}
 
-                        <FormField
-                            control={form.control}
-                            name="images"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Imagenes del siniestro</FormLabel>
-                                    <FormControl>
-                                        <div className="p-4 border-lightGray border-[1px] rounded-md flex justify-center items-center h-52">
-                                            <Button
-                                                variant="outline"
-                                                onClick={() => append({ name: "", brand: "", color: "", plates: "" })}
-                                            >
-                                                Subir Imagen
-                                            </Button>
+            <div>
+                <h2 className="font-semibold text-xl">Información del reporte</h2>
+                <h3 className="text-sm text-alternGray">Información del reporte generado.</h3>
+            </div>
+
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)}>
+
+                    {
+                        (role === "Ajustador" && mode === "view") && (
+                            <>
+                                <div className="flex flex-col mt-4 mb-4">
+                                    <div className="flex space-x-8 mt-4">
+                                        <div className="w-1/3 space-y-4">
+                                            <div>
+                                                <h3 className="text-sm text-alternGray">Fecha del reporte</h3>
+                                                {defaultValues?.date}
+                                            </div>
+                                            <div>
+                                                <h3 className="text-sm text-alternGray">Nombre del conductor</h3>
+                                                {defaultValues?.driver.name}
+                                            </div>
+                                            <div>
+                                                <h3 className="text-sm text-alternGray">Email del conductor</h3>
+                                                {defaultValues?.driver.email}
+                                            </div>
+                                            <div>
+                                                <h3 className="text-sm text-alternGray">Teléfono del conductor</h3>
+                                                {defaultValues?.driver.phone}
+                                            </div>
+                                            <div>
+                                                <h3 className="text-sm text-alternGray">Número de licencia</h3>
+                                                {defaultValues?.driver.licenseNumber}
+                                            </div>
                                         </div>
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                    </div>
 
-                    <div className="w-1/2 flex flex-col flex-grow min-h-0">
-                        <FormField
-                            control={form.control}
-                            name="vehicle"
-                            render={({ field }) => (
-                                <FormItem className="flex-1">
-                                    <FormLabel>Ubicación</FormLabel>
-                                    <FormControl className="flex-1">
-                                        <div className="p-4 border-lightGray border-[1px] rounded-md flex justify-center items-center h-[90%]">
-                                            <Button
-                                                variant="outline"
-                                                onClick={() => append({ name: "", brand: "", color: "", plates: "" })}
-                                            >
-                                                Obtener Ubicación
-                                            </Button>
+                                        <div className="w-1/3 space-y-4">
+                                            <div>
+                                                <h3 className="text-sm text-alternGray">Placas</h3>
+                                                {defaultValues?.vehicle.plates}
+                                            </div>
+                                            <div>
+                                                <h3 className="text-sm text-alternGray">Marca del vehículo</h3>
+                                                {defaultValues?.vehicle.brand}
+                                            </div>
+                                            <div>
+                                                <h3 className="text-sm text-alternGray">Color del vehículo</h3>
+                                                {defaultValues?.vehicle.color}
+                                            </div>
+                                            <div>
+                                                <h3 className="text-sm text-alternGray">Número de serie</h3>
+                                                {defaultValues?.vehicle.serialNumberVehicle}
+                                            </div>
+                                            <div>
+                                                <h3 className="text-sm text-alternGray">Plan de póliza</h3>
+                                                {defaultValues?.policy.policyPlan.title}
+                                            </div>
+
+
                                         </div>
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                    </div>
-                </div>
 
-                <div className="flex flex-col">
-                    <div>
-                        <h2 className="font-semibold text-xl">Datos de conductores involucrados</h2>
-                        <h3 className="text-sm text-alternGray">Ingrese los datos de los conductores involucrados para agilizar el proceso.</h3>
+                                        <div className="w-1/3 space-y-4">
+                                            <div>
+                                                <h3 className="text-sm text-alternGray">Número de póliza</h3>
+                                                {defaultValues?.policy.serialNumber}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <Separator />
+                            </>
+
+                        )
+                    }
+
+                    <div className="flex space-x-8 my-6 items-stretch mb-8">
+
+                        <div className="w-1/2 space-y-4 flex flex-col justify-between">
+
+                            <FormField
+                                control={form.control}
+                                name="vehicle"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Poliza</FormLabel>
+                                        <FormControl>
+                                            {
+                                                isReadOnly ? (
+                                                    <div className="py-2">
+                                                        {
+                                                            defaultValues
+                                                                ? `${defaultValues.vehicle.brand} - ${defaultValues.vehicle.color} - ${defaultValues.vehicle.modelYear}`
+                                                                : ''
+                                                        }
+                                                    </div>
+                                                ) : (
+
+                                                    <Select disabled={isReadOnly} onValueChange={(value) => { { field.onChange(value); } }} value={field.value}>
+                                                        <SelectTrigger className="w-full">
+                                                            <SelectValue placeholder="Selecciona una poliza" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            {
+                                                                activePolicies.map((policy, id) => (
+                                                                    <React.Fragment key={id}>
+                                                                        <SelectItem value={policy.serialNumber}>{`${policy.Vehicle.Model.Brand.name} - ${policy.Vehicle.Color.vehicleColor} - ${policy.Vehicle.Model.year}`}</SelectItem>
+                                                                    </React.Fragment>
+                                                                ))
+                                                            }
+                                                        </SelectContent>
+                                                    </Select>
+
+                                                )
+                                            }
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="images"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Imagenes del siniestro</FormLabel>
+                                        <FormControl>
+                                            <div className="p-4 border-lightGray border-[1px] rounded-md flex justify-center items-center h-52">
+                                                <ImageUpload
+                                                    urls={imageUrls}
+                                                    readOnly={isReadOnly}
+                                                    onFilesChange={(files) => {
+                                                        form.setValue('images', files);
+                                                    }}
+                                                />
+                                            </div>
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
+                        <div className="w-1/2 flex flex-col flex-grow min-h-0">
+                            <FormField
+                                control={form.control}
+                                name="location"
+                                render={({ field }) => (
+                                    <FormItem className="flex-1">
+                                        <FormLabel>Ubicación</FormLabel>
+                                        <FormControl className="flex-1">
+                                            <div className="p-4 border-lightGray border-[1px] rounded-md flex justify-center items-center h-[90%]">
+                                                {showMap && (
+                                                    <MapWrapper
+                                                        onLocationSelect={onLocationSelect}
+                                                        initialLatitude={form.getValues('location.latitude')}
+                                                        initialLongitude={form.getValues('location.longitude')}
+                                                        readOnly={isReadOnly}
+                                                    />
+                                                )}
+
+                                                {!showMap && (
+                                                    <Button
+                                                        variant="outline"
+                                                        onClick={() => setShowMap(true)}
+                                                        className="absolute"
+                                                    >
+                                                        Obtener Ubicación
+                                                    </Button>
+                                                )}
+                                            </div>
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
                     </div>
 
-                    {fields.map((field, index) => (
-                        <div key={field.id} className="p-4 mt-4 border-lightGray border-[1px] rounded-lg">
-                            <h2 className="text-xl">Conductor #1{index + 1}</h2>
-                            <div className="flex space-x-8 mt-2">
-                                <div className="w-1/2 space-y-4">
-                                    <FormField
-                                        control={form.control}
-                                        name={`personas.${index}.name`}
-                                        render={({ field }) => (
+                    <div className="flex flex-col">
+                        <div>
+                            <h2 className="font-semibold text-xl">Datos de conductores involucrados</h2>
+                            <h3 className="text-sm text-alternGray">
+                                {isReadOnly ?
+                                    "Datos de conductores involucrados registrados."
+                                    : "Ingrese los datos de los conductores involucrados para agilizar el proceso. Incluye toda la información que tengas."}
+                            </h3>
+                        </div>
+
+                        {isReadOnly ? (
+                            defaultValues?.implicateParties.map((party, index) => (
+                                <div key={index} className="p-4 mt-4 border-lightGray border-[1px] rounded-lg">
+                                    <h2 className="text-xl">Conductor #{index + 1}</h2>
+                                    <div className="flex space-x-8 mt-2">
+                                        <div className="w-1/2 space-y-4">
                                             <FormItem>
                                                 <FormLabel>Nombre del conductor</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="Nombre" {...field} />
+                                                    <div className="py-2">
+                                                        {party.name}
+                                                    </div>
                                                 </FormControl>
                                             </FormItem>
-                                        )}
-                                    />
 
-                                    <FormField
-                                        control={form.control}
-                                        name={`personas.${index}.brand`}
-                                        render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Marca</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="Marca del vehiculo" {...field} />
+                                                    <div className="py-2">
+                                                        {party.brand}
+                                                    </div>
                                                 </FormControl>
                                             </FormItem>
-                                        )}
-                                    />
-                                </div>
+                                        </div>
 
-                                <div className="w-1/2 space-y-4">
-                                    <FormField
-                                        control={form.control}
-                                        name={`personas.${index}.color`}
-                                        render={({ field }) => (
+                                        <div className="w-1/2 space-y-4">
                                             <FormItem>
                                                 <FormLabel>Color</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="Color del vehiculo" {...field} />
+                                                    <div className="py-2">
+                                                        {party.color}
+                                                    </div>
                                                 </FormControl>
                                             </FormItem>
-                                        )}
-                                    />
 
-                                    <FormField
-                                        control={form.control}
-                                        name={`personas.${index}.plates`}
-                                        render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Placas</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="Placas" {...field} />
+                                                    <div className="py-2">
+                                                        {party.plates}
+                                                    </div>
                                                 </FormControl>
                                             </FormItem>
-                                        )}
-                                    />
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            ))
+                        ) : (
+                            <>
+                                {fields.map((item, index) => (
+                                    <div key={index} className="p-4 mt-4 border-lightGray border-[1px] rounded-lg">
+                                        <h2 className="text-xl">Conductor #{index + 1}</h2>
+                                        <div className="flex space-x-8 mt-2">
+                                            <div className="w-1/2 space-y-4">
+                                                <FormField
+                                                    control={form.control}
+                                                    name={`involvedPeople.${index}.name`}
+                                                    render={({ field: inputField }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Nombre del conductor</FormLabel>
+                                                            <FormControl>
+                                                                <Input
+                                                                    placeholder="Nombre"
+                                                                    name={inputField.name}
+                                                                    value={inputField.value}
+                                                                    onChange={inputField.onChange}
+                                                                    onBlur={inputField.onBlur}
+                                                                />
+                                                            </FormControl>
+                                                        </FormItem>
+                                                    )}
+                                                />
 
-                            <div className="flex items-center space-x-2 mt-4">
-                                <Checkbox id="anonymousDriver" />
-                                <label
-                                    htmlFor="anonymousDriver"
-                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                >
-                                    ¿Conductor anónimo?
-                                </label>
-                            </div>
-                        </div>
-                    ))}
+                                                <FormField
+                                                    control={form.control}
+                                                    name={`involvedPeople.${index}.brandId`}
+                                                    render={({ field: inputField }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Marca</FormLabel>
+                                                            <FormControl>
+                                                                <Select onValueChange={inputField.onChange} value={inputField.value}>
+                                                                    <SelectTrigger className="w-full">
+                                                                        <SelectValue placeholder="Selecciona una marca" />
+                                                                    </SelectTrigger>
+                                                                    <SelectContent>
+                                                                        {brands.map((brand) => (
+                                                                            <React.Fragment key={brand.idBrand}>
+                                                                                <SelectItem value={brand.idBrand + ""}>{brand.name}</SelectItem>
+                                                                            </React.Fragment>
+                                                                        ))}
+                                                                    </SelectContent>
+                                                                </Select>
+                                                            </FormControl>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
 
+                                            <div className="w-1/2 space-y-4">
+                                                <FormField
+                                                    control={form.control}
+                                                    name={`involvedPeople.${index}.colorId`}
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Color</FormLabel>
+                                                            <FormControl>
+                                                                <Select onValueChange={field.onChange} value={field.value}>
+                                                                    <SelectTrigger className="w-full">
+                                                                        <SelectValue placeholder="Seleccionar color" />
+                                                                    </SelectTrigger>
+                                                                    <SelectContent>
+                                                                        {colors.map((color) => (
+                                                                            <SelectItem key={color.idColor} value={color.idColor + ""}>{color.vehicleColor}</SelectItem>
+                                                                        ))}
+                                                                    </SelectContent>
+                                                                </Select>
+                                                            </FormControl>
+                                                        </FormItem>
+                                                    )}
+                                                />
 
-                    <div className="mt-4">
-                        <Button
-                            className="w-full"
-                            variant="outline"
-                            onClick={() => append({ name: "", brand: "", color: "", plates: "" })}
-                        >
-                            Agregar conductor
-                        </Button>
+                                                <FormField
+                                                    control={form.control}
+                                                    name={`involvedPeople.${index}.plates`}
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Placas</FormLabel>
+                                                            <FormControl>
+                                                                <Input
+                                                                    placeholder="Placas"
+                                                                    name={field.name}
+                                                                    value={field.value}
+                                                                    onChange={field.onChange}
+                                                                    onBlur={field.onBlur}
+                                                                />
+                                                            </FormControl>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                ))}
+
+                                <div className="mt-4">
+                                    <Button
+                                        disabled={isReadOnly}
+                                        type="button"
+                                        className="w-full"
+                                        variant="outline"
+                                        onClick={() => append({ name: "", brandId: "", colorId: "", plates: "" })}
+                                    >
+                                        Agregar conductor
+                                    </Button>
+                                </div>
+                            </>
+                        )}
+
                     </div>
-                </div>
 
-                <div className="mt-8 flex justify-end">
-                    <Button className="bg-darkBlue ml-auto w-1/4">Crear Reporte</Button>
-                </div>
-            </form>
-        </Form>
+                    {
+                        mode === 'create' && (
+                            <div className="mt-8 flex justify-end">
+                                <Button className="bg-darkBlue ml-auto w-1/4">Crear Reporte</Button>
+                            </div>
+                        )
+                    }
+
+                </form >
+            </Form >
+        </>
     )
 }
 

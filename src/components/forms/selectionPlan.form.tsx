@@ -115,7 +115,7 @@ const SelectionPlanForm = () => {
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Duración de la póliza</FormLabel>
-                                            <Select defaultValue={formPolicyData?.yearOfPolicy ? formPolicyData.yearOfPolicy + "" : "1"} onValueChange={(value) => { field.onChange(value); onTimeValueChanged(+value) }}>
+                                            <Select value={formPolicyData?.yearOfPolicy ? formPolicyData.yearOfPolicy + "" : "1"} onValueChange={(value) => { field.onChange(value); onTimeValueChanged(+value) }}>
                                                 <SelectTrigger className="w-full">
                                                     <SelectValue placeholder="Selecciona tipo" />
                                                 </SelectTrigger>
@@ -160,7 +160,7 @@ const SelectionPlanForm = () => {
                         <div className='grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-10'>
 
                             {policyPlans.map((plan) => (
-                                <div className='border-solid border rounded-lg border-stone-300 py-6 px-8'>
+                                <div key={plan.idPolicyPlan} className='border-solid border rounded-lg border-stone-300 py-6 px-8'>
                                     <h2 className='text-2xl font-semibold mb-4'>{plan.title}</h2>
                                     <p className="text-alternGray mb-8">{plan.description}</p>
 
