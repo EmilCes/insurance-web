@@ -7,9 +7,9 @@ const MenuDriver = () => {
             <h1 className="text-xl font-semibold text-alternGray mb-3">Reporte de siniestros</h1>
             <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <ItemMenu title="Levantar reporte" description='En caso de algún siniestro, registre un reporte con lo sucedido'
-                    icon='accident-icon' targetRoute='/dashboard'/>
+                    icon='accident-icon' targetRoute='/dashboard/reports/create'/>
                 <ItemMenu title="Historial de reportes" description='Consulte los reportes de siniestros emitidos previamente'
-                    icon='folder-icon' targetRoute='/dashboard'/>
+                    icon='folder-icon' targetRoute='/dashboard/reports'/>
             </section>
 
             <h1 className="text-xl font-semibold text-alternGray mb-3 mt-6">Pólizas de seguro</h1>
