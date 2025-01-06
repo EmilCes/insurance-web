@@ -21,7 +21,7 @@ const PaymentPolicySuccesful = ({ newPolicy }: { newPolicy: CreatePolicyResponse
                             <h4 className="text-alternGray text-center md:text-start">{newPolicy.planDescription}</h4>
                         </div>
                         <div className='flex justify-center my-auto'>
-                            <Button className='bg-darkBlue'
+                            <Button className='bg-darkBlue' 
                                 onClick={() => { router.push(`/dashboard/policies/${newPolicy.serialNumber}`) }}>
                                 Ver detalles póliza
                             </Button>
