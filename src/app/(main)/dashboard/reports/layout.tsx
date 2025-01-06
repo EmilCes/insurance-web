@@ -5,9 +5,9 @@ import { StatusPageProvider } from '@/lib/statusPage/statusContext';
 
 const layout = ({ children }: { children: React.ReactNode }) => {
     return (
-        <>
+        <div className="min-h-screen">
             <StatusPageProvider>
-                <TitleBar title='Mis pólizas'></TitleBar>
+                <TitleBar title='Mis reportes'></TitleBar>
 
                 <div className="flex justify-center items-center bg-white">
                     <div className="w-full m-0 p-0">
@@ -15,7 +15,8 @@ const layout = ({ children }: { children: React.ReactNode }) => {
                     </div>
                 </div>
             </StatusPageProvider>
-        </>
+
+        </div>
     )
 }
 

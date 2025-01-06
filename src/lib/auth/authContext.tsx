@@ -1,7 +1,7 @@
 // context/AuthContext.tsx
 "use client";
 
-import { authEvents } from "@/api/fecthWithAuth";
+import { authEvents } from "@/api/fetchWithAuth";
 import SessionExpired from "@/components/sessionExpired/sessionExpired";
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
@@ -33,27 +33,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [accountRole, setAccountRole] = useState<string>("");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      const roleToken = obtainRoleFromToken(token);
-      if (roleToken != null && roleToken.length > 0) {
-        setIsAuthenticated(true);
-        setAccountRole(roleToken);
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const roleToken = obtainRoleFromToken(token);
+        if (roleToken != null && roleToken.length > 0) {
+          setIsAuthenticated(true);
+          setAccountRole(roleToken);
+        }
       }
+      setIsLoading(false);
+
+      const handleUnauthorized = () => {
+        setSessionExpired(true);
+        logout();
+      };
+
+      authEvents.on("unauthorized", handleUnauthorized);
+
+      return () => {
+        authEvents.off("unauthorized", handleUnauthorized);
+      };
     }
-    setIsLoading(false);
-
-    const handleUnauthorized = () => {
-      setSessionExpired(true);
-      logout();
-    };
-
-    authEvents.on("unauthorized", handleUnauthorized);
-
-    return () => {
-      authEvents.off("unauthorized", handleUnauthorized);
-    };
-
   }, []);
 
   const login = (token: string) => {
@@ -89,6 +90,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     </AuthContext.Provider>
   );
 };
+
 
 
 export const useAuth = (): AuthContextType => {

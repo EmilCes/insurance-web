@@ -1,29 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "./authContext";
+import Loading from "@/components/loading/Loading";
 
-export default function isCorrectRole(Component: any, specficRoles: string) {
+export default function isCorrectRole(Component: any, specificRoles: string) {
     return function IsCorrectRole(props: any) {
-        const router = useRouter();
         const { role } = useAuth();
-        const [isCorrectRole, setIsCorrectRole] = useState(false);
+        const router = useRouter();
 
         useEffect(() => {
-            if (typeof window !== "undefined") {
-                const posibleRoles = specficRoles.split(",");
-                //De los roles posibles verifica si coincide
-                if (posibleRoles.indexOf(role) > -1) {
-                    setIsCorrectRole(true);
-                    return;
-                }
+            const possibleRoles = specificRoles.split(",");
+            if (!possibleRoles.includes(role)) {
                 router.push("/noauthorization");
             }
-        }, []);
+        }, [role, router]);
 
-        if (!isCorrectRole) {
-            return <></>;
+        if (!role) {
+            return <Loading />;
         }
 
         return <Component {...props} />;
