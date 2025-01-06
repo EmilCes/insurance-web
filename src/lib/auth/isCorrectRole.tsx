@@ -11,13 +11,15 @@ export default function isCorrectRole(Component: any, specficRoles: string) {
         const [isCorrectRole, setIsCorrectRole] = useState(false);
 
         useEffect(() => {
-            const posibleRoles = specficRoles.split(",");
-            //De los roles posibles verifica si coincide
-            if (posibleRoles.indexOf(role) > -1) {
-                setIsCorrectRole(true);
-                return;
+            if (typeof window !== "undefined") {
+                const posibleRoles = specficRoles.split(",");
+                //De los roles posibles verifica si coincide
+                if (posibleRoles.indexOf(role) > -1) {
+                    setIsCorrectRole(true);
+                    return;
+                }
+                router.push("/noauthorization");
             }
-            router.push("/noauthorization");
         }, []);
 
         if (!isCorrectRole) {
