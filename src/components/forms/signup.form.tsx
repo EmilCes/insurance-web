@@ -2,8 +2,9 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useState } from 'react';
 import { z } from "zod"
-
+import { checkEmailExists, checkLicenseExists, checkRfcExists } from "@/api/user.api";
 import { Button } from "@/components/ui/button"
 import {
     Form,
@@ -22,6 +23,8 @@ const SignUpForm = () => {
 
     const router = useRouter();
     const { userData, setUserData } = useUserContext();
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
 
     const form = useForm<z.infer<typeof signUpSchemaPersonalData>>({
         resolver: zodResolver(signUpSchemaPersonalData),
@@ -33,24 +36,67 @@ const SignUpForm = () => {
             rfc: "",
             email: "",
             phoneNumber: "",
-            password:"",
-            confirmPassword:""
+            password: "",
+            confirmPassword: ""
         }
     });
 
-    const onSubmit = (values: z.infer<typeof signUpSchemaPersonalData>) => {
-        setUserData({
-            firstName: values.firstName,
-            lastName: values.lastName,
-            birthDate: values.birthDate,
-            licenseNumber: values.licenseNumber,
-            rfc: values.rfc,
-            email: values.email,
-            phoneNumber: values.phoneNumber,
-            password: values.password
-        });
-        
-        router.push('/signUp/billingData/');
+    async function validateData(email: string, licenseNumber: string, rfc: string) {
+        let flag = true;
+
+        const emailResponse = await checkEmailExists(email);
+        const rfcResponse = await checkRfcExists(rfc);
+        const licenseResponse = await checkLicenseExists(licenseNumber);
+
+        if (emailResponse) {
+            form.setError("email", {
+                type: "manual",
+                message: "Este correo electrónico ya está registrado.",
+            });
+            flag = false;
+        }
+
+        if (rfcResponse) {
+            form.setError("rfc", {
+                type: "manual",
+                message: "Este RFC ya está registrado.",
+            });
+            flag = false;
+        }
+
+        if (licenseResponse) {
+            form.setError("licenseNumber", {
+                type: "manual",
+                message: "Este número de licencia ya está registrado.",
+            });
+            flag = false;
+        }
+
+        return flag;
+    }
+
+    async function onSubmit(values: z.infer<typeof signUpSchemaPersonalData>) {
+        try {
+            const isValid = validateData(values.email, values.licenseNumber, values.rfc); await checkEmailExists(values.email);
+            if (await isValid == true) {
+                setUserData({
+                    firstName: values.firstName,
+                    lastName: values.lastName,
+                    birthDate: values.birthDate,
+                    licenseNumber: values.licenseNumber,
+                    rfc: values.rfc,
+                    email: values.email,
+                    phoneNumber: values.phoneNumber,
+                    password: values.password
+                });
+
+                router.push('/signUp/billingData/');
+            }
+        } catch (err) {
+            console.log(err);
+            setErrorMessage('Hubo un problema al verificar el correo. Por favor, inténtalo de nuevo.');
+        }
+
     };
 
     return (

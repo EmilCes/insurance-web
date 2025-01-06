@@ -12,8 +12,8 @@ interface UserData {
     password?: string;
     address?: string;
     postalCode?: string;
-    state?: string;
-    municipality?: string;
+    stateId?: any;
+    municipalityId?: any;
     bankAccountNumber?: string;
     expirationDateBankAccount?: string
 }
@@ -46,8 +46,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
             address: undefined,
             password: undefined,
             postalCode: undefined,
-            state: undefined,
-            municipality: undefined,
+            stateId: undefined,
+            municipalityId: undefined,
             bankAccountNumber: undefined,
             expirationDateBankAccount: undefined,
         });
