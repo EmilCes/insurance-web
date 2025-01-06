@@ -12,7 +12,7 @@ const ReportsPage = () => {
                     <h3 className="text-sm text-alternGray">Información del reporte generado.</h3>
                 </div>
 
-                <ReportForm />
+                <ReportForm mode="create" role="Conductor"/>
 
             </div>
         </>
