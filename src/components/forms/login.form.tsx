@@ -41,7 +41,7 @@ const LoginForm = () => {
                 console.log("Error");
                 return;
             }
-
+            
             login(response.access_token);
             router.push('/dashboard');
 

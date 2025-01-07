@@ -14,13 +14,14 @@ import {
     FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import signUpBillinglDataSchema from "@/schemas/signUpBillingData";
+import signUpBillinglDataSchema from "@/schemas/signUpBillingData.schema.";
 import { UserProvider, useUserContext } from "@/lib/context/userSignUpContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { StateResponse, MunicipalityResponse } from "@/api/address.api";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { createUser, UserCreateData} from "@/api/user.api";
+import { createUser, UserCreateData } from "@/api/user.api";
+
 
 const BillingDataForm = () => {
     const { setIsLoading, showMessageError, setShowMessageError } = useStatusPageContext();
@@ -29,6 +30,8 @@ const BillingDataForm = () => {
     const [states, setStates] = useState<StateResponse>([]);
     const [municipalities, setMunicipalities] = useState<MunicipalityResponse>([]);
     const [allMunicipalities, setAllMunicipalities] = useState<MunicipalityResponse>([]);
+    const [isRegistered, setIsRegistered] = useState(false);
+    var submited = false;
 
     const form = useForm<z.infer<typeof signUpBillinglDataSchema>>({
         resolver: zodResolver(signUpBillinglDataSchema),
@@ -43,8 +46,10 @@ const BillingDataForm = () => {
     });
 
     const validateFormData = () => {
-        if (!userData.firstName || !userData.email) {
-            router.push('/signUp');
+        if (submited == false ) {
+            if (!userData.firstName || !userData.email) {
+                router.push('/signUp');
+            }
         }
     };
 
@@ -75,23 +80,26 @@ const BillingDataForm = () => {
             idMunicipality: userData.municipalityId || 0
         }
 
-        console.log(userCreateData);
-
-
-        try{
+        try {
             const response = await createUser(userCreateData);
 
-            if (response?.status == 201) {
-                router.push("/signIn/");
-                deleteUserData();
-            }else{
-                console.log("Error al crear usuario")
+            if (response?.status === 201) {
+                submited = true;
+                setIsRegistered(true);
+                setTimeout(() => {
+                    router.push("/signIn");
+                }, 3000);
+                setTimeout(()=>{
+                    deleteUserData();
+                }, 2900);
+            } else {
+                setShowMessageError(true);
             }
         } catch (error) {
             setShowMessageError(true);
             setIsLoading(false);
         }
-        
+
 
     };
 
@@ -112,7 +120,7 @@ const BillingDataForm = () => {
 
                 const municipalitiesData = await getMunicipalities();
                 if (municipalitiesData != null && municipalitiesData.length > 0) {
-                    setAllMunicipalities(municipalitiesData); // Guardamos todos los municipios
+                    setAllMunicipalities(municipalitiesData); 
                 } else {
                     throw new Error("Error al recuperar los municipios.");
                 }
@@ -132,7 +140,6 @@ const BillingDataForm = () => {
             return;
         }
 
-        // Filtramos los municipios usando la lista completa (allMunicipalities)
         const filteredMunicipalities = allMunicipalities.filter(
             (municipality) => municipality.idState === +value
         );
@@ -144,6 +151,13 @@ const BillingDataForm = () => {
 
     return (
         <Form {...form}>
+
+            {isRegistered && (
+                <div className="bg-green-500 text-white p-4 mb-4 text-center rounded-md font-semibold animate-fadeIn">
+                    ¡Te has registrado exitosamente! Redirigiendo a la página de inicio de sesión...
+                </div>
+            )}
+
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
                 <div className="grid grid-cols-2 gap-4">
                     <FormField
