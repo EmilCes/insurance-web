@@ -9,9 +9,11 @@ const signUpBillinglDataSchema = z.object({
     municipality: z.string()
         .min(1, "La colonia es obligatoria"),
     address: z.string()
-        .min(1, "La dirección es obligatoria"),
+        .min(1, "La dirección es obligatoria")
+        .max(30, "La direccion no puede ser mayor a 30 caracteres"),
     bankAccountNumber: z.string()
-        .min(1, "Debe ingresar su número de cuenta"),
+        .min(8, "El número debe tener minimo 8 dígitos")
+        .max(10, "El número no debe exceder los 15 dígitos"),
     expirationDateBankAccount: z.string()
         .min(1, "Debe ingresar la fecha de expiración"),
 })

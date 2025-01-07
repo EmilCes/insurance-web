@@ -85,7 +85,7 @@ export async function updateUser(email: string, updateUserData: UserUpdateData):
 }
 
 export async function createUser(userData: UserCreateData): Promise<CreateUserResponse | null> {
-    const response = await fetchWithAuth(`${API_URL}/users/`, {
+    const response = await fetchWithAuth(`${API_URL}/users`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
