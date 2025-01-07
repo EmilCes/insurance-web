@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -14,19 +14,19 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import { enable2fa, loginUser } from "@/api/login.api";
+import { enable2fa } from "@/api/login.api";
 import { useAuth } from "@/lib/auth/authContext";
-
+import { useState } from "react";
 
 const twoFaSchema = z.object({
     authCode: z.string().min(6, "El código debe tener al menos 6 caracteres"),
 });
 
-
 const TwoFactorForm = () => {
     const router = useRouter();
     const { login } = useAuth();
 
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const form = useForm<z.infer<typeof twoFaSchema>>({
         resolver: zodResolver(twoFaSchema),
@@ -45,15 +45,16 @@ const TwoFactorForm = () => {
 
             const valuesToSend = {
                 twoFactorAuthenticationCode: values.authCode,
-                email: email
+                email: email,
             };
 
             const result = await enable2fa(valuesToSend);
 
             if (result === null) {
-                console.log("Error");
+                setErrorMessage("El código de autenticación es incorrecto.");
                 return;
             } else {
+                setErrorMessage(null);
                 login(result.access_token);
                 localStorage.removeItem("otpauthUrl");
                 localStorage.removeItem("email");
@@ -85,7 +86,9 @@ const TwoFactorForm = () => {
                     )}
                 />
 
-                <br></br>
+                {errorMessage && (
+                    <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
+                )}
 
                 <Button
                     type="submit"
