@@ -27,6 +27,24 @@ interface ColorVehicleItem {
     vehicleColor: string;
 }
 
+export type VehiclesCurrentAllResponse = VehiclesCurrentItem[];
+
+export interface VehiclesCurrentItem {
+    idBrand: number;
+    idModel: number;
+    serialNumber: string;
+    idColor: number;
+    plates: string;
+    idType: number;
+    occupants: number;
+    idService: number;
+    brandName: string;
+    modelName: string;
+    colorName: string;
+    typeName: string;
+    serviceName: string;
+}
+
 
 export async function getColorsVehicles(): Promise<ColorsVehicleResponse | null> {
     const response = await fetchWithAuth(`${API_URL}/vehicles/colors`, {
@@ -74,4 +92,16 @@ export async function validatePlates(values: { plates: string }): Promise<Valida
         status: response.status
     };
     return vehiclePlates;
+}
+
+export async function getCurrentAllVehicles(): Promise<VehiclesCurrentAllResponse | null> {
+    const response = await fetchWithAuth(`${API_URL}/vehicles/currentAll`, {
+        method: 'GET'
+    });
+    
+    if (response.ok) {
+        const values: VehiclesCurrentAllResponse = await response.json();
+        return values;
+    }
+    return null;
 }
