@@ -101,7 +101,7 @@ export async function enable2fa(values: { twoFactorAuthenticationCode: string; e
 }
 
 
-export async function loginUser(values: { email: string; password: string, code: string }): Promise<LoginResponse | null> {
+export async function loginUser(values: { email: string; password: string, twoFactorAuthenticationCode: string }): Promise<LoginResponse | null> {
     try {
         const response = await fetch(`${API_URL}/auth/login`, {
             method: 'POST',

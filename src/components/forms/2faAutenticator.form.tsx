@@ -51,7 +51,7 @@ const TwoFactorFormAuthenticator = () => {
             const valuesToSend = {
                 email: email,
                 password: password,
-                code: values.authCode,
+                twoFactorAuthenticationCode: values.authCode,
             };
 
             const result = await loginUser(valuesToSend);
