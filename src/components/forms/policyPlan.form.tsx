@@ -195,7 +195,7 @@ const PolicyPlanForm: FC<PolicyPlanFormProps> = ({ idPolicyPlan }) => {
                             </FormItem>
                         )} />
 
-                        <br />
+                        <br className="hidden md:block" />
 
                         <FormField control={form.control} name="basePrice" render={({ field }) => (
                             <FormItem>
@@ -233,85 +233,83 @@ const PolicyPlanForm: FC<PolicyPlanFormProps> = ({ idPolicyPlan }) => {
                 <div className="bg-white p-6 rounded-lg shadow">
                     <h3 className="text-lg font-semibold mb-4">Servicios de póliza</h3>
                     <h3 className="text-alternGray">Ingrese los datos de los servicios que cubre el nuevo plan de póliza.</h3>
-                    <div className="gap-4 mb-6 border border-black-200 p-4 rounded">
-                        <div className="mt-6">
-                            <table className="w-full border-collapse border border-gray-300 mt-6">
-                                <thead>
-                                    <tr className="bg-gray-100">
-                                        <th className="border border-gray-300 px-4 py-2">Nombre</th>
-                                        <th className="border border-gray-300 px-4 py-2">Coste asegurado</th>
-                                        <th className="border border-gray-300 px-4 py-2">Es amparada</th>
-                                        <th className="border border-gray-300 px-4 py-2">Acciones</th>
+                    <div className="mb-6 border border-black-200 p-4 rounded overflow-auto max-h-96 max-w-full">
+                        <table className="w-full border-collapse border border-gray-300 min-w-[550px]">
+                            <thead>
+                                <tr className="bg-gray-100">
+                                    <th className="border border-gray-300 px-4 py-2 text-sm md:text-base">Nombre</th>
+                                    <th className="border border-gray-300 px-4 py-2 text-sm md:text-base">Coste asegurado</th>
+                                    <th className="border border-gray-300 px-4 py-2 text-sm md:text-base">Es amparada</th>
+                                    <th className="border border-gray-300 px-4 py-2 text-sm md:text-base">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {fields.map((service, index) => (
+                                    <tr key={service.id}>
+                                        <td className="border border-gray-300 px-4 py-2">
+                                            <FormField
+                                                control={form.control}
+                                                name={`service.${index}.name`}
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormControl>
+                                                            <Input placeholder="ex: Gastos Médicos Ocupantes" {...field} />
+                                                        </FormControl>
+                                                        <p className="text-red-500 text-sm">{form.formState.errors?.service?.[index]?.name?.message}</p>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </td>
+
+                                        <td className="border border-gray-300 px-4 py-2">
+                                            <FormField
+                                                control={form.control}
+                                                name={`service.${index}.coveredCost`}
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormControl>
+                                                            <Input type="number" placeholder="ex: 1625" {...field} />
+                                                        </FormControl>
+                                                        <p className="text-red-500 text-sm">{form.formState.errors?.service?.[index]?.coveredCost?.message}</p>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </td>
+
+                                        <td className="border border-gray-300 px-4 py-2 text-center">
+                                            <FormField
+                                                control={form.control}
+                                                name={`service.${index}.isCovered`}
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormControl>
+                                                            <Checkbox
+                                                                checked={field.value}
+                                                                onCheckedChange={(checked: boolean) => {
+                                                                    field.onChange(checked);
+                                                                    if (checked) {
+                                                                        form.setValue(`service.${index}.coveredCost`, 0);
+                                                                    }
+                                                                }}
+                                                            />
+                                                        </FormControl>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </td>
+
+                                        <td className="py-2 flex justify-center ">
+                                            <Button className="px-10 bg-red-500 text-white" onClick={() => remove(index)}>Eliminar</Button>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {fields.map((service, index) => (
-                                        <tr key={service.id}>
-                                            <td className="border border-gray-300 px-4 py-2">
-                                                <FormField
-                                                    control={form.control}
-                                                    name={`service.${index}.name`}
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormControl>
-                                                                <Input placeholder="ex: Gastos Médicos Ocupantes" {...field} />
-                                                            </FormControl>
-                                                            <p className="text-red-500 text-sm">{form.formState.errors?.service?.[index]?.name?.message}</p>
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </td>
-
-                                            <td className="border border-gray-300 px-4 py-2">
-                                                <FormField
-                                                    control={form.control}
-                                                    name={`service.${index}.coveredCost`}
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormControl>
-                                                                <Input type="number" placeholder="ex: 1625" {...field} />
-                                                            </FormControl>
-                                                            <p className="text-red-500 text-sm">{form.formState.errors?.service?.[index]?.coveredCost?.message}</p>
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </td>
-
-                                            <td className="border border-gray-300 px-4 py-2 text-center">
-                                                <FormField
-                                                    control={form.control}
-                                                    name={`service.${index}.isCovered`}
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormControl>
-                                                                <Checkbox
-                                                                    checked={field.value}
-                                                                    onCheckedChange={(checked: boolean) => {
-                                                                        field.onChange(checked);
-                                                                        if (checked) {
-                                                                            form.setValue(`service.${index}.coveredCost`, 0);
-                                                                        }
-                                                                    }}
-                                                                />
-                                                            </FormControl>
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </td>
-
-                                            <td className="py-2 flex justify-center ">
-                                                <Button className="px-10 bg-red-500 text-white" onClick={() => remove(index)}>Eliminar</Button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                            <br />
-                            <Button className="bg-green-500 text-white w-full" onClick={(e) => { e.preventDefault(); addService(); }}>Agregar otro servicio</Button>
-                            {form.formState.errors.service && form.formState.errors.service.message && (
-                                <p className="text-red-500 text-sm mt-4">{form.formState.errors.service.message}</p>
-                            )}
-                        </div>
+                                ))}
+                            </tbody>
+                        </table>
+                        <br />
+                        <Button className="bg-green-500 text-white w-full" onClick={(e) => { e.preventDefault(); addService(); }}>Agregar otro servicio</Button>
+                        {form.formState.errors.service && form.formState.errors.service.message && (
+                            <p className="text-red-500 text-sm mt-4">{form.formState.errors.service.message}</p>
+                        )}
                     </div>
                 </div>
                 <Button type="submit" className="bg-darkBlue text-white px-20 py-3 rounded-md float-right mr-1" style={{ marginBottom: '20px' }}>Guardar</Button>

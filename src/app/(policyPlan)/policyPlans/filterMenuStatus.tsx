@@ -26,9 +26,9 @@ const FilterMenuStatus = ({
     };
 
     return (
-        <div className="text-center">
-            <p className="text-lg font-semibold text-alternGray mb-4">Estado de póliza</p>
-            <div className="flex justify-center items-center space-x-4">
+        <div className="md:text-center grid grid-cols-3 md:grid-cols-1 mx-auto">
+            <p className="text-lg font-semibold text-alternGray">Estado de póliza</p>
+            <div className="flex md:justify-center md:items-center space-x-4 col-span-2 ">
                 <div className="flex items-center">
                     <Input
                         type="radio"
