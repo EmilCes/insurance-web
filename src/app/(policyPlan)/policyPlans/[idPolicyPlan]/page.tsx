@@ -1,9 +1,12 @@
 "use client"
 import { useState, useEffect } from "react";
-import TitleBar from "@/components/dashboard/TitleBar";
 import { Button } from "@/components/ui/button";
 import { deletePolicyPlan, getPolicyPlanStatusData, updatePolicyPlanStatusData } from "@/api/policyplan.api";
 import { useParams, useRouter } from "next/navigation";
+import isAuth from "@/lib/auth/isAuth";
+import isCorrectRole from "@/lib/auth/isCorrectRole";
+import BreadcrumbPoliciesPage from "../breadcrumbPolicies";
+import BreadcrumbPolicyPlanPage from "../breadcrumbPolicies";
 
 const PolicyPlanDetail = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -99,6 +102,8 @@ const PolicyPlanDetail = () => {
 
   return (
     <div className="p-0">
+      <BreadcrumbPolicyPlanPage id={idPolicyPlan}></BreadcrumbPolicyPlanPage>
+
       <div className="bg-white p-6 rounded-lg shadow">
         {errorMessage && <div className="text-red-500">{errorMessage}</div>}
 
@@ -187,4 +192,4 @@ const PolicyPlanDetail = () => {
   );
 };
 
-export default PolicyPlanDetail;
+export default isAuth(isCorrectRole(PolicyPlanDetail, "Administrador"))

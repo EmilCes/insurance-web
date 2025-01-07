@@ -1,7 +1,7 @@
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import React from 'react'
 
-const BreadcrumbPoliciesPage = ({ id }: { id: string | null }) => {
+const BreadcrumbPolicyPlanPage = ({ id }: { id: string | null }) => {
     return (
         <div className='bg-sky-100'>
             <div className="mx-auto w-full max-w-screen-lg py-1 ml-8 md:ml-20">
@@ -21,7 +21,7 @@ const BreadcrumbPoliciesPage = ({ id }: { id: string | null }) => {
                             </>) :
                             (<>
                                 <BreadcrumbItem>
-                                    <BreadcrumbLink href="/dashboard/policyPlans">Planes de póliza</BreadcrumbLink>
+                                    <BreadcrumbLink href="/policyPlans">Planes de póliza</BreadcrumbLink>
                                 </BreadcrumbItem>
 
                                 <BreadcrumbSeparator />
@@ -40,4 +40,4 @@ const BreadcrumbPoliciesPage = ({ id }: { id: string | null }) => {
     )
 }
 
-export default BreadcrumbPoliciesPage
+export default BreadcrumbPolicyPlanPage

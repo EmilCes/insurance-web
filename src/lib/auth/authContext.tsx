@@ -1,8 +1,8 @@
-// context/AuthContext.tsx
 "use client";
 
-import { authEvents } from "@/api/fecthWithAuth";
+import { authEvents } from "@/api/fetchWithAuth";
 import SessionExpired from "@/components/sessionExpired/sessionExpired";
+import { useRouter } from "next/navigation";
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
 
@@ -32,28 +32,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [sessionExpired, setSessionExpired] = useState<boolean>(false);
   const [accountRole, setAccountRole] = useState<string>("");
 
+  const router = useRouter();
+
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      const roleToken = obtainRoleFromToken(token);
-      if (roleToken != null && roleToken.length > 0) {
-        setIsAuthenticated(true);
-        setAccountRole(roleToken);
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const roleToken = obtainRoleFromToken(token);
+        if (roleToken != null && roleToken.length > 0) {
+          setIsAuthenticated(true);
+          setAccountRole(roleToken);
+        }
       }
+      
+      setIsLoading(false);
+
+      const handleUnauthorized = () => {
+        setSessionExpired(true);
+        logout();
+      };
+
+      authEvents.on("unauthorized", handleUnauthorized);
+
+      return () => {
+        authEvents.off("unauthorized", handleUnauthorized);
+      };
     }
-    setIsLoading(false);
-
-    const handleUnauthorized = () => {
-      setSessionExpired(true);
-      logout();
-    };
-
-    authEvents.on("unauthorized", handleUnauthorized);
-
-    return () => {
-      authEvents.off("unauthorized", handleUnauthorized);
-    };
-
   }, []);
 
   const login = (token: string) => {
@@ -69,6 +73,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem("token");
     setIsAuthenticated(false);
     setAccountRole("");
+    router.push("/signIn");
   };
 
   const value: AuthContextType = {
@@ -89,6 +94,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     </AuthContext.Provider>
   );
 };
+
 
 
 export const useAuth = (): AuthContextType => {

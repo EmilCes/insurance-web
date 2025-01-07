@@ -1,6 +1,4 @@
-import { Button } from "../ui/button";
-import { useAuth } from "@/lib/auth/authContext";
-import LogoutButton from "../ui/logout-button";
+import UserInfo from "../ui/logout-button";
 
 interface TitleBarProps {
     title: string;
@@ -21,7 +19,8 @@ const TitleBar = ({ title}: TitleBarProps) => {
             <h1 className="text-2xl font-bold px-6">
                 {title}
             </h1>
-            <LogoutButton/>
+
+            <UserInfo/>
         </div>
     );
 };

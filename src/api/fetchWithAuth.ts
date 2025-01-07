@@ -1,4 +1,4 @@
-import EventEmitter from "events";
+import EventEmitter from "eventemitter3";
 
 export const authEvents = new EventEmitter();
 
@@ -12,7 +12,6 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
 
     try {
         const response = await fetch(url, { ...options, headers });
-
         if (response.status === 401) {
             authEvents.emit("unauthorized");
             throw new Error("Unauthorized");
