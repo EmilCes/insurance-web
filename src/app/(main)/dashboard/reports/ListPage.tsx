@@ -8,6 +8,8 @@ import { useStatusPageContext } from '@/lib/statusPage/statusContext';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import { NetworkError, NotFoundError } from '@/lib/exceptions/errors';
+import { useAuth } from '@/lib/auth/authContext';
 
 interface ListPageProps<TItem, TFilters> {
   fetchDataFunction: (params: FetchDataParams<TFilters>) => Promise<FetchDataResult<TItem>>;
@@ -62,6 +64,7 @@ function ListPage<TItem, TFilters>({
   initialFilters,
 }: ListPageProps<TItem, TFilters>) {
   const { isLoading, setIsLoading, showMessageError, setShowMessageError } = useStatusPageContext();
+  const { role } = useAuth();
   const router = useRouter();
 
   const [pageNumber, setPageNumber] = useState<number>(0);
@@ -90,17 +93,24 @@ function ListPage<TItem, TFilters>({
       setTotalItems(response.pageInfo.totalItems ?? 0);
       setPageInfo(response.pageInfo ?? { totalItems: 0, totalPages: 0, currentPage: 0, itemsPerPage: 0 });
 
-      console.log("HELLO;", pageInfo)
-
       if (showMessageError) {
         setShowMessageError(false);
       }
     } catch (error) {
-      console.log(error);
-      setItemsList([]);
-      setPageInfo({ totalItems: 0, totalPages: 0, currentPage: 0, itemsPerPage: 0 });
-      setTotalItems(0);
-      setShowMessageError(true);
+
+      if (error instanceof NotFoundError) {
+        setItemsList([]);
+        setPageInfo({ totalItems: 0, totalPages: 0, currentPage: 0, itemsPerPage: 0 });
+        setTotalItems(0);
+      }
+
+      if (error instanceof NetworkError) {
+        setShowMessageError(true);
+        setItemsList([]);
+        setPageInfo({ totalItems: 0, totalPages: 0, currentPage: 0, itemsPerPage: 0 });
+        setTotalItems(0);
+      }
+
     } finally {
       setIsLoading(false);
     }
@@ -148,14 +158,19 @@ function ListPage<TItem, TFilters>({
                   Buscar
                 </Button>
 
-                <Button
-                  className=" bg-darkBlue w-28"
-                  onClick={() => {
-                    router.push('/dashboard/reports/create');
-                  }}
-                >
-                  Nuevo Reporte
-                </Button>
+                {
+                  role === "Conductor" && (
+                    <Button
+                      className=" bg-darkBlue w-28"
+                      onClick={() => {
+                        router.push('/dashboard/reports/create');
+                      }}
+                    >
+                      Nuevo Reporte
+                    </Button>
+                  )
+                }
+
               </div>
 
             </div>
@@ -165,7 +180,7 @@ function ListPage<TItem, TFilters>({
                 <h6 className='text-alternGray mb-2 ml-2'>
                   Mostrando {" "}
                   {pageInfo?.currentPage! * pageInfo?.itemsPerPage! + 1} - {" "}
-                  {Math.min(pageInfo?.currentPage! * pageInfo?.itemsPerPage! + pageInfo?.itemsPerPage!, pageInfo?.totalItems!)} 
+                  {Math.min(pageInfo?.currentPage! * pageInfo?.itemsPerPage! + pageInfo?.itemsPerPage!, pageInfo?.totalItems!)}
                   {" "}de {totalItems} resultados
                 </h6>
 

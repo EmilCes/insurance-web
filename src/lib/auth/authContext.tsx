@@ -1,8 +1,8 @@
-// context/AuthContext.tsx
 "use client";
 
 import { authEvents } from "@/api/fetchWithAuth";
 import SessionExpired from "@/components/sessionExpired/sessionExpired";
+import { useRouter } from "next/navigation";
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
 
@@ -32,6 +32,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [sessionExpired, setSessionExpired] = useState<boolean>(false);
   const [accountRole, setAccountRole] = useState<string>("");
 
+  const router = useRouter();
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("token");
@@ -42,6 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setAccountRole(roleToken);
         }
       }
+      
       setIsLoading(false);
 
       const handleUnauthorized = () => {
@@ -70,6 +73,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem("token");
     setIsAuthenticated(false);
     setAccountRole("");
+    router.push("/signIn");
   };
 
   const value: AuthContextType = {

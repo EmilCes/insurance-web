@@ -1,5 +1,6 @@
 import { FetchDataParams } from "@/app/(main)/dashboard/reports/ListPage";
 import { fetchWithAuth } from "./fetchWithAuth";
+import { NetworkError, NotFoundError } from "@/lib/exceptions/errors";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -191,23 +192,23 @@ export async function getReports(
         }
 
         const url = `${API_URL}/reports?${queryParams.toString()}`;
-        console.log(url);
         const response = await fetchWithAuth(url, {
             method: "GET",
         });
 
+        if (response.status === 404) {
+            throw new NotFoundError('Report not found');
+        }
+
         if (!response.ok) {
             const errorText = await response.text();
-            throw new Error(`HTTP Error ${response.status}: ${errorText}`);
+            throw new NetworkError(`HTTP Error ${response.status}: ${errorText}`);
         }
 
         const data: ReportsResponse = await response.json();
 
-        console.log(data);
-
         return data;
     } catch (error) {
-        console.error("Error fetching reports: ", error);
         throw error;
     }
 }
@@ -229,7 +230,6 @@ export async function getDetailedReport(
         const data: DetailedReportResponse = await response.json();
         return data.data;
     } catch (error) {
-        console.error("Error fetching detailed report: ", error);
         return null;
     }
 }
@@ -250,13 +250,13 @@ export async function updateReportDictum(
   
       if (!response.ok) {
         const errorText = await response.text();
-        console.error(`HTTP Error ${response.status}: ${errorText}`);
+        console.log(`HTTP Error ${response.status}: ${errorText}`);
         return false;
       }
   
       return true;
     } catch (error) {
-      console.error("Error updating report dictamen: ", error);
+      console.log("Error updating report dictamen: ", error);
       return false;
     }
   }

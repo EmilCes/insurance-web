@@ -1,17 +1,43 @@
+"use client"
 
 import { useAuth } from "@/lib/auth/authContext";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
+import { Button } from "./button";
+import { DropdownMenuRadioGroup, DropdownMenuRadioItem } from "./dropdown-menu";
+import Image from "next/image";
 
-const LogoutButton = () => {
-    const { logout } = useAuth();
+const UserInfo = () => {
+    const { logout, role } = useAuth();
 
     return (
-        <button
-            onClick={logout}
-            className="text-sm bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded mr-6"
-            >
-            Cerrar sesión
-        </button>
+        <div className="rounded-3xl text-white mr-8">
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <div className="flex flex-col ">
+                        <Button
+                            variant="outline"
+                            className="bg-transparent border-none"
+                        >
+                            <Image 
+                                src="/driver-icon.svg"
+                                alt="Icono de conductor"
+                                width={25}
+                                height={25}
+                            />
+                            Usuario {role}
+                        </Button>
+                        <h6>
+                        </h6>
+                    </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56 bg-white text-black rounded-sm">
+                    <DropdownMenuRadioGroup>
+                        <DropdownMenuRadioItem className="cursor-pointer" onClick={logout} value={""}>Cerrar sesión</DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </div>
     );
 };
 
-export default LogoutButton;
+export default UserInfo;
