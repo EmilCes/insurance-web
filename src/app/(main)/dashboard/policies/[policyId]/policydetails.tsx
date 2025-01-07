@@ -31,8 +31,8 @@ const PolicyDetailsPage = ({ policyData }: { policyData: PolicyDetails }) => {
                 </div>
 
                 <div className='border-solid border border-slate-400 rounded-lg py-6 md:py-8 px-6 md:px-8 mt-6'>
-                    <div className='grid md:grid-cols-4 gap-2 md:gap-14 px-2 w-4/5 mx-auto'>
-                        <div className='border-solid border-b border-slate-400 md:col-span-3 md:w-3/5'>
+                    <div className='grid md:grid-cols-4 gap-2 md:gap-14 px-2 w-4/5 md:w-full mx-auto'>
+                        <div className='border-solid border-b border-slate-400 md:col-span-3 md:w-4/5'>
                             <p className='text-base text-alternGray text-center'>ID: <span className='text-lg text-black font-semibold'>{policyData?.serialNumber}</span></p>
                         </div>
                         <div className='border-solid border-b border-slate-400 mx-2 md:w-auto'>

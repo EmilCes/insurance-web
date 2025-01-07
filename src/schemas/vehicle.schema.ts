@@ -4,7 +4,7 @@ const vehicleSchema = z.object({
     idBrand: z.coerce.
         number().positive(),
     idModel: z.coerce.
-        number().positive(),
+        number().positive("El modelo debe ser válido"),
     serialNumber: z
         .string().min(1, "El número serial debe tener al menos 1 caracteres")
         .max(50, "El número serial no debe exceder los 50 caracteres"),

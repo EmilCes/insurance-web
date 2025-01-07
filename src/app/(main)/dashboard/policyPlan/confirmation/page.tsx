@@ -107,7 +107,7 @@ const Confirmation = () => {
                         <div className='grid grid-cols-1 md:grid-cols-2 gap-10 mt-4'>
                             <div>
                                 <PaymentForm policyPlan={policyPlan} onPaymentSuccess={handlePaymentSuccess} accountInfo={accountInfo} />
-                                {showMessageError ? (<p className='text-red-600'>Ocurrió un error, por favor vuelva a intentar</p>) : (<></>)}
+                                {showMessageError ? (<p className='text-red-600 mx-auto text-center mt-4'>Ocurrió un error, por favor vuelva a intentar</p>) : (<></>)}
                             </div>
 
 

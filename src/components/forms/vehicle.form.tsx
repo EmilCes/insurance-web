@@ -118,9 +118,33 @@ const VehiculeForm = () => {
     setIsLoading(false);
   }
 
+  const checkModelSameBrand = (idModel : number, idBrand: number) => {
+    let modelValid = false;
+    brands.forEach(brand => {
+      if (brand.idBrand == idBrand) {
+        brand.Model.forEach(model => {
+          if(model.idModel == idModel){
+            modelValid = true;
+          }
+        })
+      }
+    })
+    return modelValid;
+  }
+
   async function onSubmit(values: z.infer<typeof vehicleSchema>) {
     try {
       setIsLoading(true);
+      const modelValid = checkModelSameBrand(values.idModel, values.idBrand)
+      if(!modelValid){
+        form.setError("idModel", {
+          type: "manual",
+          message: "Seleccione un modelo válido",
+        });
+        setIsLoading(false);
+        return;
+      }
+
       const response = await validatePlates(values);
       if (response.isValid) {
         setFormPolicyData({
@@ -195,7 +219,7 @@ const VehiculeForm = () => {
               <FormField
                 control={form.control}
                 name="idModel"
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem>
                     <FormLabel>Modelo</FormLabel>
                     <FormControl>
@@ -211,6 +235,11 @@ const VehiculeForm = () => {
                         </SelectContent>
                       </Select>
                     </FormControl>
+                    {fieldState.error && (
+                      <p className="text-red-500 text-sm mt-2">
+                        {fieldState.error.message}
+                      </p>
+                    )}
                   </FormItem>
                 )}
               />
