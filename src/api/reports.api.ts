@@ -33,6 +33,7 @@ export interface CreateReportData {
 }
 
 export interface VehicleInfo {
+    address: string;
     plates: string;
     modelYear: string;
     brand: string;
@@ -46,6 +47,25 @@ export interface ReportData {
     vehicle: VehicleInfo;
     policyPlan?: string;
 }
+
+export interface PendingReportData {
+    reportNumber: string;
+    description: string;
+    date: string;
+    latitude: string; // Modificar a string ya que el backend devuelve estos valores como strings
+    longitude: string; 
+    Driver: {
+        phone: string;
+        Account: {
+            name: string;
+        };
+    };
+    Vehicle: {
+        plates: string;
+    };
+}
+
+
 
 export interface PageInfo {
     totalItems: number;
@@ -260,3 +280,92 @@ export async function updateReportDictum(
       return false;
     }
   }
+
+  // Obtener reportes pendientes
+  export async function getPendingReports(): Promise<PendingReportData[]> {
+    try {
+        const url = `${API_URL}/reports?status=1`; // Endpoint para reportes pendientes
+        console.log("Request URL (getPendingReports):", url);
+
+        const response = await fetchWithAuth(url, { method: "GET" });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`HTTP Error ${response.status}: ${errorText}`);
+        }
+
+        // Ajuste para mapear la estructura de respuesta
+        const data: { data: PendingReportData[] } = await response.json();
+        return data.data;
+    } catch (error) {
+        console.error("Error fetching pending reports:", error);
+        throw error;
+    }
+}
+
+
+  // Obtener ajustadores disponibles
+  // Definición del tipo Adjuster
+    export interface Adjuster {
+        id: number;
+        name: string;
+        email: string;
+    }
+  
+  // Obtener ajustadores disponibles
+  export async function getAvailableAdjusters(): Promise<Adjuster[]> {
+    try {
+      const url = `${API_URL}/reports/available-adjusters`; // Endpoint para ajustadores disponibles
+      console.log("Request URL (getAvailableAdjusters):", url);
+  
+      const response = await fetchWithAuth(url, { method: "GET" });
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP Error ${response.status}: ${errorText}`);
+      }
+  
+      const data: Adjuster[] = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching available adjusters:", error);
+      throw error;
+    }
+  }
+  
+  
+  // Asignar ajustador a un reporte
+  export interface AssignAdjusterData {
+    reportNumber: string;
+    assignedEmployeeId: number;
+  }
+  
+  export async function assignAdjusterToReport(
+    assignData: AssignAdjusterData
+  ): Promise<boolean> {
+    try {
+      const url = `${API_URL}/reports/${assignData.reportNumber}/assign`;
+      console.log("Request URL (assignAdjusterToReport):", url);
+  
+      const response = await fetchWithAuth(url, {
+        method: "PUT", // Según el backend, el método es PUT
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          assignedEmployeeId: assignData.assignedEmployeeId,
+        }),
+      });
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP Error ${response.status}: ${errorText}`);
+      }
+  
+      return true;
+    } catch (error) {
+      console.error("Error assigning adjuster to report:", error);
+      return false;
+    }
+  }
+  
