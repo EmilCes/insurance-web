@@ -9,7 +9,7 @@ const MenuAdjuster = () => {
                 <section className="md:mr-2">
                     <h1 className="text-xl font-semibold text-alternGray mb-3">Reporte de siniestros</h1>
                     <ItemMenu title="Visualizar reportes" description='Visualice los reportes asignados y dictamine los faltantes'
-                        icon='folder-icon' targetRoute='/dashboard' />
+                        icon='folder-icon' targetRoute='/dashboard/reports' />
                 </section>
 
 

@@ -21,7 +21,6 @@ const LocationMap: React.FC<LocationMapProps> = ({ onLocationSelect, initialLati
 
   useEffect(() => {
     if (!map.current && mapContainer.current) {
-      // Inicializar mapa
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/streets-v11',
@@ -29,7 +28,6 @@ const LocationMap: React.FC<LocationMapProps> = ({ onLocationSelect, initialLati
         zoom: 9
       });
 
-      // Crear marcador arrastrable
       marker.current = new mapboxgl.Marker({
         draggable: !readOnly
       })
@@ -51,23 +49,20 @@ const LocationMap: React.FC<LocationMapProps> = ({ onLocationSelect, initialLati
               const { latitude, longitude } = position.coords;
 
               if (map.current) {
-                // Actualizar ubicación del mapa
                 map.current.flyTo({
                   center: [longitude, latitude],
                   zoom: 14
                 });
               }
 
-              // Actualizar marcador
               if (marker.current) {
                 marker.current.setLngLat([longitude, latitude]).addTo(map.current!);
               }
 
-              // Enviar ubicación al formulario
               onLocationSelect?.(latitude, longitude);
             },
             (error: GeolocationPositionError) => {
-              console.error("Error getting location:", error);
+              console.log("Error getting location:", error);
               alert("No se pudo obtener la ubicación. Por favor, verifica los permisos.");
             }
           );
@@ -88,7 +83,17 @@ const LocationMap: React.FC<LocationMapProps> = ({ onLocationSelect, initialLati
         map.current = null;
       }
     };
-  }, [onLocationSelect, initialLatitude, initialLongitude, readOnly]);
+  }, []);
+
+  useEffect(() => {
+    if (map.current && marker.current) {
+      const lat = initialLatitude || 40;
+      const lng = initialLongitude || -74.5;
+
+      marker.current.setLngLat([lng, lat]);
+      map.current.setCenter([lng, lat]);
+    }
+  }, [initialLatitude, initialLongitude]);
 
   return (
     <div

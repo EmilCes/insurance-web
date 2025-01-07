@@ -7,7 +7,7 @@ import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { MapWrapper } from "@/app/(main)/dashboard/reports/create/mapWrapper";
 import ImageUpload from "@/app/(main)/dashboard/reports/create/imageUpload";
 import { ActivePolicyResponse, getAllActivePolicies } from "@/api/policy.api";
@@ -116,11 +116,12 @@ const ReportForm = ({ mode = 'create', role, defaultValues }: { mode?: 'create' 
         }
     });
 
+    const formRef = useRef(form);
+
     const onLocationSelect = useCallback((lat: number, lng: number) => {
-        form.setValue('location.latitude', lat);
-        form.setValue('location.longitude', lng);
-        console.log(lat, lng);
-    }, [form]);
+        formRef.current.setValue('location.latitude', lat);
+        formRef.current.setValue('location.longitude', lng);
+    }, []);
 
     const { fields, append, remove } = useFieldArray({
         control: form.control,
@@ -129,6 +130,23 @@ const ReportForm = ({ mode = 'create', role, defaultValues }: { mode?: 'create' 
 
     async function onSubmit(values: z.infer<typeof reportSchema>) {
         setIsLoading(true);
+
+        const nonEmptyInvolvedPeople = values.involvedPeople.filter(person => {
+            return (
+                (person.name && person.name.trim() !== '') ||
+                (person.brandId && person.brandId !== '') ||
+                (person.colorId && person.colorId !== '') ||
+                (person.plates && person.plates.trim() !== '')
+            );
+        });
+
+        if (nonEmptyInvolvedPeople.length === 0) {
+            setIsLoading(false);
+            form.setError('involvedPeople', {
+                type: 'manual'
+            });
+            return;
+        }
 
         const involvedPeopleWithDefaults = values.involvedPeople.map(person => ({
             name: person.name || "",
@@ -152,8 +170,6 @@ const ReportForm = ({ mode = 'create', role, defaultValues }: { mode?: 'create' 
             } else {
                 setShowMessageError(true);
             }
-
-            setIsLoading(false);
 
         } catch (error) {
             setIsLoading(false);
@@ -408,8 +424,21 @@ const ReportForm = ({ mode = 'create', role, defaultValues }: { mode?: 'create' 
                         ) : (
                             <>
                                 {fields.map((item, index) => (
-                                    <div key={index} className="p-4 mt-4 border-lightGray border-[1px] rounded-lg">
+                                    <div key={index} className="p-4 mt-4 border-lightGray border-[1px] rounded-lg relative">
                                         <h2 className="text-xl">Conductor #{index + 1}</h2>
+                                        {
+                                            index !== 0 && (
+                                                <Button
+                                                    type="button"
+                                                    onClick={() => remove(index)}
+                                                    className="absolute top-2 right-2 text-red-500 bg-transparent hover:bg-red-500 hover:text-white"
+                                                >
+                                                    X
+                                                </Button>
+                                            )
+                                        }
+
+
                                         <div className="flex space-x-8 mt-2">
                                             <div className="w-1/2 space-y-4">
                                                 <FormField
@@ -417,7 +446,7 @@ const ReportForm = ({ mode = 'create', role, defaultValues }: { mode?: 'create' 
                                                     name={`involvedPeople.${index}.name`}
                                                     render={({ field: inputField }) => (
                                                         <FormItem>
-                                                            <FormLabel>Nombre del conductor</FormLabel>
+                                                            <FormLabel>Nombre del conductor ("Anónimo" si se desconoce)</FormLabel>
                                                             <FormControl>
                                                                 <Input
                                                                     placeholder="Nombre"
@@ -484,7 +513,7 @@ const ReportForm = ({ mode = 'create', role, defaultValues }: { mode?: 'create' 
                                                     name={`involvedPeople.${index}.plates`}
                                                     render={({ field }) => (
                                                         <FormItem>
-                                                            <FormLabel>Placas</FormLabel>
+                                                            <FormLabel>Placas ("XXXXXXX" si se desconoce)</FormLabel>
                                                             <FormControl>
                                                                 <Input
                                                                     placeholder="Placas"
@@ -503,17 +532,22 @@ const ReportForm = ({ mode = 'create', role, defaultValues }: { mode?: 'create' 
                                     </div>
                                 ))}
 
-                                <div className="mt-4">
-                                    <Button
-                                        disabled={isReadOnly}
-                                        type="button"
-                                        className="w-full"
-                                        variant="outline"
-                                        onClick={() => append({ name: "", brandId: "", colorId: "", plates: "" })}
-                                    >
-                                        Agregar conductor
-                                    </Button>
-                                </div>
+                                {
+                                    fields.length < 4 && (
+                                        <div className="mt-4">
+                                            <Button
+                                                disabled={isReadOnly}
+                                                type="button"
+                                                className="w-full"
+                                                variant="outline"
+                                                onClick={() => append({ name: "", brandId: "", colorId: "", plates: "" })}
+                                            >
+                                                Agregar conductor
+                                            </Button>
+                                        </div>
+                                    )
+                                }
+
                             </>
                         )}
 

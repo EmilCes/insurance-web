@@ -4,16 +4,17 @@ import LoginForm from "@/components/forms/login.form";
 import { useAuth } from "@/lib/auth/authContext";
 import Link from "next/link";
 import Image from "next/image";
-import { redirect } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const SignIn = () => {
 
     const { isAuthenticated } = useAuth();
+    const router = useRouter();
     
     useEffect(() => {
         if (isAuthenticated) {
-            return redirect('/dashboard');
+            router.push('/dashboard');
         }
     }, [isAuthenticated]);
 
