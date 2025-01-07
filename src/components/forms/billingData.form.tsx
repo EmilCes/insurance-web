@@ -46,7 +46,7 @@ const BillingDataForm = () => {
     });
 
     const validateFormData = () => {
-        if (submited == false ) {
+        if (submited == false) {
             if (!userData.firstName || !userData.email) {
                 router.push('/signUp');
             }
@@ -80,7 +80,7 @@ const BillingDataForm = () => {
                 setTimeout(() => {
                     router.push("/signIn");
                 }, 3000);
-                setTimeout(()=>{
+                setTimeout(() => {
                     deleteUserData();
                 }, 2900);
             } else {
@@ -111,7 +111,7 @@ const BillingDataForm = () => {
 
                 const municipalitiesData = await getMunicipalities();
                 if (municipalitiesData != null && municipalitiesData.length > 0) {
-                    setAllMunicipalities(municipalitiesData); 
+                    setAllMunicipalities(municipalitiesData);
                 } else {
                     throw new Error("Error al recuperar los municipios.");
                 }
@@ -142,152 +142,137 @@ const BillingDataForm = () => {
 
     return (
         <Form {...form}>
-
             {isRegistered && (
                 <div className="bg-green-500 text-white p-4 mb-4 text-center rounded-md font-semibold animate-fadeIn">
                     ¡Te has registrado exitosamente! Redirigiendo a la página de inicio de sesión...
                 </div>
             )}
 
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-                <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                        control={form.control}
-                        name="postalCode"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Código Postal</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        placeholder="Código Postal"
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <p className="text-red-500 text-sm">{form.formState.errors.postalCode?.message}</p>
-                            </FormItem>
-                        )}
-                    />
+            <div className="max-w-4xl mx-auto p-4">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                            control={form.control}
+                            name="postalCode"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Código Postal</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Código Postal" {...field} />
+                                    </FormControl>
+                                    <p className="text-red-500 text-sm">{form.formState.errors.postalCode?.message}</p>
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="state"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Estado</FormLabel>
+                                    <FormControl>
+                                        <Select
+                                            onValueChange={(value) => {
+                                                field.onChange(value);
+                                                onStateValueChanged(value);
+                                            }}
+                                            defaultValue={userData?.stateId ? userData.stateId + "" : undefined}>
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Selecciona un estado" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {states.map((state) => (
+                                                    <SelectItem key={state.idState} value={state.idState + ""}>
+                                                        {state.stateName}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </FormControl>
+                                    <p className="text-red-500 text-sm">{form.formState.errors.state?.message}</p>
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="bankAccountNumber"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Número de Cuenta Bancaria</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Número de Cuenta" {...field} />
+                                    </FormControl>
+                                    <p className="text-red-500 text-sm">{form.formState.errors.bankAccountNumber?.message}</p>
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="expirationDateBankAccount"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Fecha de Expiración</FormLabel>
+                                    <FormControl>
+                                        <Input type="month" placeholder="Fecha de Expiración" {...field} />
+                                    </FormControl>
+                                    <p className="text-red-500 text-sm">{form.formState.errors.expirationDateBankAccount?.message}</p>
+                                </FormItem>
+                            )}
+                        />
+                    </div>
 
                     <FormField
                         control={form.control}
-                        name="state"
+                        name="municipality"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Estado</FormLabel>
+                                <FormLabel>Municipio</FormLabel>
                                 <FormControl>
                                     <Select
-                                        onValueChange={(value) => {
-                                            field.onChange(value);
-                                            onStateValueChanged(value);
-                                        }}
-                                        defaultValue={userData?.stateId ? userData.stateId + "" : undefined}>
-
+                                        onValueChange={field.onChange}
+                                        defaultValue={userData?.municipalityId ? userData.municipalityId + "" : undefined}
+                                        disabled={municipalities.length === 0}>
                                         <SelectTrigger className="w-full">
-                                            <SelectValue placeholder="Selecciona un estado" />
+                                            <SelectValue placeholder="Selecciona un municipio" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {states.map((state) => (
-                                                <SelectItem key={state.idState} value={state.idState + ""}>
-                                                    {state.stateName}
+                                            {municipalities.map((municipality) => (
+                                                <SelectItem key={municipality.idMunicipality} value={municipality.idMunicipality + ""}>
+                                                    {municipality.municipalityName}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
                                 </FormControl>
-                                <p className="text-red-500 text-sm">{form.formState.errors.state?.message}</p>
+                                <p className="text-red-500 text-sm">{form.formState.errors.municipality?.message}</p>
                             </FormItem>
                         )}
                     />
 
                     <FormField
                         control={form.control}
-                        name="bankAccountNumber"
+                        name="address"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Número de Cuenta Bancaria</FormLabel>
+                                <FormLabel>Dirección</FormLabel>
                                 <FormControl>
-                                    <Input
-                                        placeholder="Número de Cuenta"
-                                        {...field}
-                                    />
+                                    <Input placeholder="Dirección" {...field} />
                                 </FormControl>
-                                <p className="text-red-500 text-sm">{form.formState.errors.bankAccountNumber?.message}</p>
+                                <p className="text-red-500 text-sm">{form.formState.errors.address?.message}</p>
                             </FormItem>
                         )}
                     />
 
-                    <FormField
-                        control={form.control}
-                        name="expirationDateBankAccount"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Fecha de Expiración</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        type="month"
-                                        placeholder="Fecha de Expiración"
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <p className="text-red-500 text-sm">{form.formState.errors.expirationDateBankAccount?.message}</p>
-                            </FormItem>
-                        )}
-                    />
-                </div>
-
-                <FormField
-                    control={form.control}
-                    name="municipality"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Municipio</FormLabel>
-                            <FormControl>
-                                <Select
-                                    onValueChange={field.onChange}
-                                    defaultValue={userData?.municipalityId ? userData.municipalityId + "" : undefined}
-                                    disabled={municipalities.length === 0} // Deshabilitar si no hay municipios
-                                >
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="Selecciona un municipio" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {municipalities.map((municipality) => (
-                                            <SelectItem key={municipality.idMunicipality} value={municipality.idMunicipality + ""}>{municipality.municipalityName}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </FormControl>
-                            <p className="text-red-500 text-sm">{form.formState.errors.municipality?.message}</p>
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="address"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Dirección</FormLabel>
-                            <FormControl>
-                                <Input
-                                    placeholder="Dirección"
-                                    {...field}
-                                />
-                            </FormControl>
-                            <p className="text-red-500 text-sm">{form.formState.errors.address?.message}</p>
-                        </FormItem>
-                    )}
-                />
-
-                <br />
-
-                <Button
-                    type="submit"
-                    className="w-full text-center flex justify-center mt-4 min-h-12 bg-darkBlue">
-                    Terminar registro
-                </Button>
-            </form>
+                    <Button
+                        type="submit"
+                        className="w-full text-center flex justify-center mt-4 min-h-12 bg-darkBlue md:w-auto">
+                        Terminar registro
+                    </Button>
+                </form>
+            </div>
         </Form>
     );
 };
