@@ -5,6 +5,8 @@
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import isCorrectRole from '@/lib/auth/isCorrectRole';
+import isAuth from '@/lib/auth/isAuth';
 
 const ReportSuccessPage = () => {
     const router = useRouter();
@@ -30,4 +32,4 @@ const ReportSuccessPage = () => {
     );
 };
 
-export default ReportSuccessPage;
+export default isAuth(isCorrectRole(ReportSuccessPage, "Conductor"));
