@@ -1,3 +1,5 @@
+"use client"
+
 import ReportForm from "@/components/forms/report.form";
 import BreadcrumbReportsPage from "../breadcrumReportsPage";
 import isCorrectRole from "@/lib/auth/isCorrectRole";

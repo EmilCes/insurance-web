@@ -1,5 +1,5 @@
 "use client"
-// BreadcrumbReportsPage.tsx
+
 import React from 'react';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 
@@ -11,7 +11,7 @@ interface BreadcrumbReportsPageProps {
 const BreadcrumbReportsPage: React.FC<BreadcrumbReportsPageProps> = ({ id, isCreating = false }) => {
   return (
     <div className='bg-sky-100'>
-      <div className="mx-auto w-full max-w-screen-lg py-1 ml-8 md:ml-20">
+      <div className="mx-auto max-w-screen-lg py-1 ml-8 md:ml-20">
         <Breadcrumb>
           <BreadcrumbList>
 
