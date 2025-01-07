@@ -3,16 +3,18 @@
 import DisplayUserData from "@/components/forms/userData.form";
 import TitleBar from "@/components/dashboard/TitleBar";
 import { StatusPageProvider } from "@/lib/statusPage/statusContext";
+import isAuth from "@/lib/auth/isAuth";
+import isCorrectRole from "@/lib/auth/isCorrectRole";
+import BreadcrumbUserPage from "./breadcrumbUser";
 
-const User = () => {
+const UserPage = () => {
     return (
         <div>
             <StatusPageProvider>
                 <TitleBar title="Mi cuenta" />
-
-                {/* Aquí cambiamos max-w-sm a w-full */}
+                <BreadcrumbUserPage />
                 <div className="flex justify-center items-center bg-white p-8">
-                    <div className="w-full">  {/* Elimina max-w-sm */}
+                    <div className="w-full">  
                         <br />
                         <DisplayUserData />
                         <br />
@@ -23,5 +25,5 @@ const User = () => {
     )
 }
 
+export default isAuth(isCorrectRole(UserPage, "Conductor"))
 
-export default User;

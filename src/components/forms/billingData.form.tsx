@@ -77,7 +77,7 @@ const BillingDataForm = () => {
             password: userData.password || "",
             postalCode: userData.postalCode || "",
             address: userData.address || "",
-            idMunicipality: userData.municipalityId || 0
+            idMunicipality: +userData.municipalityId || 0
         }
 
         try {

@@ -4,6 +4,9 @@ import ModifyUserForm from "@/components/forms/modifyUser.form";
 import TitleBar from "@/components/dashboard/TitleBar";
 import { StatusPageProvider } from "@/lib/statusPage/statusContext";
 import { UserProvider } from "@/lib/context/userSignUpContext";
+import isAuth from "@/lib/auth/isAuth";
+import isCorrectRole from "@/lib/auth/isCorrectRole";
+import BreadcrumbUserPage from "../breadcrumbUser";
 
 const ModifyUser = () => {
     return (
@@ -11,6 +14,7 @@ const ModifyUser = () => {
             <UserProvider>
                 <StatusPageProvider>
                     <TitleBar title="Mi cuenta" />
+                    <BreadcrumbUserPage isModifying/>
 
                     <div className="flex justify-center items-center bg-white p-8">
                         <div className="w-full">
@@ -26,4 +30,4 @@ const ModifyUser = () => {
 }
 
 
-export default ModifyUser;
+export default isAuth(isCorrectRole(ModifyUser, "Conductor"))

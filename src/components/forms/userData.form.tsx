@@ -58,150 +58,165 @@ const DisplayUserData = () => {
             <div className="space-y-4 w-full">
                 <h2 className="text-xl font-semibold">Datos de usuario</h2>
                 <Form{...form}>
-                    <div className="grid grid-cols-4 gap-4">
-                        <FormField
-                            name="firstName"
-                            render={() => (
-                                <FormItem>
-                                    <FormLabel>Nombre</FormLabel>
-                                    <FormControl>
-                                        <Input value={accountInfo?.name} readOnly />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            name="lastName"
-                            render={() => (
-                                <FormItem>
-                                    <FormLabel>Apellido</FormLabel>
-                                    <FormControl>
-                                        <Input value={accountInfo?.lastName} readOnly />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            name="birthDate"
-                            render={() => (
-                                <FormItem>
-                                    <FormLabel>Fecha de Nacimiento</FormLabel>
-                                    <FormControl>
-                                        <Input value={accountInfo?.datebirth} readOnly />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            name="licenseNumber"
-                            render={() => (
-                                <FormItem>
-                                    <FormLabel>Número de Licencia</FormLabel>
-                                    <FormControl>
-                                        <Input value={accountInfo?.licenseNumber} readOnly />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            name="rfc"
-                            render={() => (
-                                <FormItem>
-                                    <FormLabel>RFC</FormLabel>
-                                    <FormControl>
-                                        <Input value={accountInfo?.rfc} readOnly />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            name="email"
-                            render={() => (
-                                <FormItem>
-                                    <FormLabel>Correo Electrónico</FormLabel>
-                                    <FormControl>
-                                        <Input value={accountInfo?.email} readOnly />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            name="phoneNumber"
-                            render={() => (
-                                <FormItem>
-                                    <FormLabel>Número de Teléfono</FormLabel>
-                                    <FormControl>
-                                        <Input value={accountInfo?.phone} readOnly />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            name="address"
-                            render={() => (
-                                <FormItem>
-                                    <FormLabel>Dirección</FormLabel>
-                                    <FormControl>
-                                        <Input value={accountInfo?.address} readOnly />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            name="postalCode"
-                            render={() => (
-                                <FormItem>
-                                    <FormLabel>Código Postal</FormLabel>
-                                    <FormControl>
-                                        <Input value={accountInfo?.postalCode} readOnly />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            name="bankAccountNumber"
-                            render={() => (
-                                <FormItem>
-                                    <FormLabel>Número de Cuenta Bancaria</FormLabel>
-                                    <FormControl>
-                                        <Input value={accountInfo?.bankAccountNumber} readOnly />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            name="expirationDateBankAccount"
-                            render={() => (
-                                <FormItem>
-                                    <FormLabel>Vencimiento de Cuenta Bancaria</FormLabel>
-                                    <FormControl>
-                                        <Input value={accountInfo?.expirationDateBankAccount} readOnly />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            name="state"
-                            render={() => (
-                                <FormItem>
-                                    <FormLabel>Estado</FormLabel>
-                                    <FormControl>
-                                        <Input value={accountInfo?.state} readOnly />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            name="municipality"
-                            render={() => (
-                                <FormItem>
-                                    <FormLabel>Municipio</FormLabel>
-                                    <FormControl>
-                                        <Input value={accountInfo?.municipality} readOnly />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
+                    <div className="p-4 border-lightGray border-[1px] rounded-md">
+
+                        <div className="grid grid-cols-4 gap-4">
+                            <FormField
+                                name="firstName"
+                                render={() => (
+                                    <FormItem>
+                                        <FormLabel>Nombre</FormLabel>
+                                        <FormControl>
+                                            <Input value={accountInfo?.name} readOnly />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                name="lastName"
+                                render={() => (
+                                    <FormItem>
+                                        <FormLabel>Apellido</FormLabel>
+                                        <FormControl>
+                                            <Input value={accountInfo?.lastName} readOnly />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                name="birthDate"
+                                render={() => (
+                                    <FormItem>
+                                        <FormLabel>Fecha de Nacimiento</FormLabel>
+                                        <FormControl>
+                                            <Input value={accountInfo?.datebirth} readOnly />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                name="licenseNumber"
+                                render={() => (
+                                    <FormItem>
+                                        <FormLabel>Número de Licencia</FormLabel>
+                                        <FormControl>
+                                            <Input value={accountInfo?.licenseNumber} readOnly />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                name="rfc"
+                                render={() => (
+                                    <FormItem>
+                                        <FormLabel>RFC</FormLabel>
+                                        <FormControl>
+                                            <Input value={accountInfo?.rfc} readOnly />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                name="email"
+                                render={() => (
+                                    <FormItem>
+                                        <FormLabel>Correo Electrónico</FormLabel>
+                                        <FormControl>
+                                            <Input value={accountInfo?.email} readOnly />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                name="phoneNumber"
+                                render={() => (
+                                    <FormItem>
+                                        <FormLabel>Número de Teléfono</FormLabel>
+                                        <FormControl>
+                                            <Input value={accountInfo?.phone} readOnly />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
+                        <br />
+                        <hr className="h-0.5 bg-slate-400 mt-4 mb-4" />
+                        <br />
+
+                        <h2 className="text-xl font-semibold">Datos de pago</h2>
+
+                        <div className="p-4 border-lightGray border-[1px] rounded-md">
+                            <div className="grid grid-cols-4 gap-4">
+
+                                <FormField
+                                    name="address"
+                                    render={() => (
+                                        <FormItem>
+                                            <FormLabel>Dirección</FormLabel>
+                                            <FormControl>
+                                                <Input value={accountInfo?.address} readOnly />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    name="postalCode"
+                                    render={() => (
+                                        <FormItem>
+                                            <FormLabel>Código Postal</FormLabel>
+                                            <FormControl>
+                                                <Input value={accountInfo?.postalCode} readOnly />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    name="bankAccountNumber"
+                                    render={() => (
+                                        <FormItem>
+                                            <FormLabel>Número de Cuenta Bancaria</FormLabel>
+                                            <FormControl>
+                                                <Input value={accountInfo?.bankAccountNumber} readOnly />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    name="expirationDateBankAccount"
+                                    render={() => (
+                                        <FormItem>
+                                            <FormLabel>Vencimiento de Cuenta Bancaria</FormLabel>
+                                            <FormControl>
+                                                <Input value={accountInfo?.expirationDateBankAccount} readOnly />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    name="state"
+                                    render={() => (
+                                        <FormItem>
+                                            <FormLabel>Estado</FormLabel>
+                                            <FormControl>
+                                                <Input value={accountInfo?.state} readOnly />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    name="municipality"
+                                    render={() => (
+                                        <FormItem>
+                                            <FormLabel>Municipio</FormLabel>
+                                            <FormControl>
+                                                <Input value={accountInfo?.municipality} readOnly />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                        </div>
                     </div>
                 </Form>
 

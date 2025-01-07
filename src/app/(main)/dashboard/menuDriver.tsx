@@ -23,9 +23,9 @@ const MenuDriver = () => {
             <h1 className="text-xl font-semibold text-alternGray mb-3 mt-6">Otros</h1>
             <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <ItemMenu title="Llamada SOS" description='Realice una llamada de emergencia cuando ocurra un siniestro'
-                    icon='call-icon' targetRoute='/dashboard'/>
+                    icon='call-icon' targetRoute='tel:2281559281'/>
                 <ItemMenu title="Mi perfil" description='Consulte la información de su cuenta y los datos de su tarjeta registrada'
-                    icon='account-icon' targetRoute='/dashboard'/>
+                    icon='account-icon' targetRoute='/dashboard/user'/>
             </section>
         </>
     )

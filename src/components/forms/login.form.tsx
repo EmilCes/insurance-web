@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import loginSchema from "@/schemas/login.schema";
 import { useRouter } from "next/navigation";
-import { loginUser } from "@/api/login.api";
+import { generate2fa, is2faEnabled, loginUser } from "@/api/login.api";
 import { useAuth } from "@/lib/auth/authContext";
 
 
@@ -34,7 +34,27 @@ const LoginForm = () => {
 
     async function onSubmit(values: z.infer<typeof loginSchema>) {
         try {
-            console.log(values);
+
+            const authenticatorEnabled = await is2faEnabled(values.email);
+
+            if (authenticatorEnabled){
+                router.push('/authenticate')
+                localStorage.setItem('password', values.password);
+                localStorage.setItem('email', values.email)
+            } else{
+                const result = await generate2fa({
+                    email: values.email,
+                    password: values.password
+                });                
+
+                if (result) {
+                    localStorage.setItem('otpauthUrl', result.otpauthUrl);
+                    localStorage.setItem('email', values.email)
+
+                    router.push('/enable2fa');
+                } 
+            }
+/*
             const response = await loginUser(values);
 
             if (response === null) {
@@ -44,7 +64,7 @@ const LoginForm = () => {
             
             login(response.access_token);
             router.push('/dashboard');
-
+*/
 
         } catch (error: any) {
             console.log(error);
