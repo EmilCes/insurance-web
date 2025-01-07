@@ -7,6 +7,8 @@ import { getReports, ReportData, ReportFilters } from '@/api/reports.api';
 import BreadcrumbReportsPage from './breadcrumReportsPage';
 import ReportItem from './reportItem';
 import NoItemsComponent from './noItemsComponent';
+import isCorrectRole from '@/lib/auth/isCorrectRole';
+import isAuth from '@/lib/auth/isAuth';
 
 const ReportsPage: React.FC = () => {
   return (
@@ -22,4 +24,4 @@ const ReportsPage: React.FC = () => {
   );
 };
 
-export default ReportsPage;
+export default isAuth(isCorrectRole(ReportsPage, "Conductor,Ajustador"));

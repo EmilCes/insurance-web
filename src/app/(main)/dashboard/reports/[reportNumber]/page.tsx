@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { DetailedReportData, getDetailedReport, ReportData } from '@/api/reports.api';
+import { DetailedReportData, getDetailedReport } from '@/api/reports.api';
 import { useStatusPageContext } from '@/lib/statusPage/statusContext';
 import Loading from '@/components/loading/Loading';
 import ErrorMessage from '@/components/errorMessage/errorMessage';
@@ -10,6 +10,8 @@ import ReportForm from '@/components/forms/report.form';
 import BreadcrumbReportsPage from '../breadcrumReportsPage';
 import { useAuth } from '@/lib/auth/authContext';
 import DictumForm from '@/components/forms/dictum.from';
+import isCorrectRole from '@/lib/auth/isCorrectRole';
+import isAuth from '@/lib/auth/isAuth';
 
 const ReportDetailPage = () => {
     const { reportNumber } = useParams();
@@ -64,4 +66,4 @@ const ReportDetailPage = () => {
     );
 };
 
-export default ReportDetailPage;
+export default isAuth(isCorrectRole(ReportDetailPage, "Conductor,Ajustador"));
