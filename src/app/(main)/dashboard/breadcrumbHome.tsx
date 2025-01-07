@@ -4,7 +4,7 @@ import React from 'react'
 const BreadcrumbHome = () => {
     return (
         <nav className='bg-sky-100'>
-            <section className="mx-auto w-full max-w-screen-lg py-1 ml-8 md:ml-20">
+            <section className="mx-auto max-w-screen-lg py-1 ml-8 md:ml-20">
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>

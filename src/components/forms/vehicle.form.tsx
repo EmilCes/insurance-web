@@ -201,10 +201,19 @@ const VehiculeForm = () => {
 
       } else {
         if (response.status == 409) {
-          form.setError("plates", {
-            type: "manual",
-            message: "Las placas ingresadas ya están registradas y tienen una póliza vigente. Puede comprar otra póliza para este vehículo un mes antes de que se venza",
-          });
+          const vehicle = currentVehicles.find((vehicle) => vehicle.plates === values.plates);
+          if (vehicle == null) {
+            form.setError("plates", {
+              type: "manual",
+              message: "No puede registrar estas placas",
+            });
+          }else{
+            form.setError("plates", {
+              type: "manual",
+              message: "Las placas ingresadas ya están registradas y tienen una póliza vigente. Puede comprar otra póliza para este vehículo un mes antes de que se venza",
+            });
+          }
+
         }
         setIsLoading(false);
       }
@@ -231,7 +240,7 @@ const VehiculeForm = () => {
 
             <p className="text-alternGray text-sm mb-2">Si ha registrado a su vehículo previamente seleccionelo:</p>
             <Select onValueChange={(value) => { changeCurrentVehicleData(value) }}
-              defaultValue={isPreviousSelected ? (formPolicyData?.plates ? formPolicyData.plates: "1") : "1"}>
+              defaultValue={isPreviousSelected ? (formPolicyData?.plates ? formPolicyData.plates : "1") : "1"}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Selecciona un vehículo previo" />
               </SelectTrigger>
@@ -239,8 +248,8 @@ const VehiculeForm = () => {
                 <SelectItem key={1} value={"1"}>{"Sin vehículo previo"}</SelectItem>
                 {currentVehicles?.map((vehicle) => (
                   <SelectItem key={vehicle.plates} value={vehicle.plates}>{"Placas: " + vehicle.plates +
-                     "; Marca: " + vehicle.brandName + "; Modelo: " + vehicle.modelName + "; Color: " + vehicle.colorName +
-                     "; Tipo: " + vehicle.typeName + "; Ocupantes: " + vehicle.occupants + "; Servicio: " + vehicle.serviceName}</SelectItem>
+                    "; Marca: " + vehicle.brandName + "; Modelo: " + vehicle.modelName + "; Color: " + vehicle.colorName +
+                    "; Tipo: " + vehicle.typeName + "; Ocupantes: " + vehicle.occupants + "; Servicio: " + vehicle.serviceName}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
