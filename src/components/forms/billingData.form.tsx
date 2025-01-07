@@ -54,20 +54,11 @@ const BillingDataForm = () => {
     };
 
     async function onSubmit(values: z.infer<typeof signUpBillinglDataSchema>) {
-        setUserData({
-            postalCode: values.postalCode,
-            stateId: values.state,
-            municipalityId: values.municipality,
-            address: values.address,
-            bankAccountNumber: values.bankAccountNumber,
-            expirationDateBankAccount: values.expirationDateBankAccount
-        });
-
 
         const userCreateData: UserCreateData = {
             rfc: userData.rfc || "",
-            bankAccountNumber: userData.bankAccountNumber || "",
-            expirationDateBankAccount: userData.expirationDateBankAccount || "",
+            bankAccountNumber: values.bankAccountNumber || "",
+            expirationDateBankAccount: values.expirationDateBankAccount || "",
             licenseNumber: userData.licenseNumber || "",
             phone: userData.phoneNumber || "",
             name: userData.firstName || "",
@@ -75,9 +66,9 @@ const BillingDataForm = () => {
             datebirth: userData.birthDate || "",
             email: userData.email || "",
             password: userData.password || "",
-            postalCode: userData.postalCode || "",
-            address: userData.address || "",
-            idMunicipality: +userData.municipalityId || 0
+            postalCode: values.postalCode || "",
+            address: values.address || "",
+            idMunicipality: +values.municipality || 0
         }
 
         try {
