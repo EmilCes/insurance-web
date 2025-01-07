@@ -90,8 +90,6 @@ const BillingDataForm = () => {
             setShowMessageError(true);
             setIsLoading(false);
         }
-
-
     };
 
     useEffect(() => {

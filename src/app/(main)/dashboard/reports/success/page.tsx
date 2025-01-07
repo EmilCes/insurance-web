@@ -22,7 +22,6 @@ const ReportSuccessPage = () => {
             <p className="mt-2">
                 Por favor, guarde este número para futuras referencias.
             </p>
-            {/* Puedes agregar un botón para volver a la lista de reportes o al dashboard */}
             <div className="mt-8">
                 <Button onClick={() => router.push('/dashboard/reports')} className="bg-darkBlue">
                     Ver mis reportes
