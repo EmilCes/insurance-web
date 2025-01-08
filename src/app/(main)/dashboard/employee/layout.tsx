@@ -2,11 +2,11 @@
 import React from "react";
 import TitleBar from "@/components/dashboard/TitleBar";
 
-const layout = ({ children }: { children: React.ReactNode }) => {
+const Layout = ({ children, title }: { children: React.ReactNode; title: string }) => {
   return (
     <div className="min-h-screen">
-      {/* Título para el módulo de empleados */}
-      <TitleBar title="Registro de empleados"></TitleBar>
+      {/* Título dinámico */}
+      <TitleBar title={title}></TitleBar>
 
       {/* Contenido dinámico */}
       <div className="flex justify-center items-center bg-white">
@@ -16,4 +16,4 @@ const layout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default layout;
+export default Layout;

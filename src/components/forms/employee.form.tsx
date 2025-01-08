@@ -1,10 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { registerEmployee } from "@/api/employee.api";
+import { registerEmployee, updateEmployee, getEmployeeInfo } from "@/api/employee.api";
 
-const EmployeeForm = () => {
+interface EmployeeFormProps {
+  isEditMode?: boolean;
+  employeeId?: number; // Se usa para identificar al empleado a modificar
+}
+
+const EmployeeForm: React.FC<EmployeeFormProps> = ({ isEditMode = false, employeeId }) => {
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -25,6 +30,43 @@ const EmployeeForm = () => {
   });
 
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  // Cargar datos iniciales en modo edición
+  useEffect(() => {
+    if (isEditMode && employeeId) {
+      const fetchEmployeeInfo = async () => {
+        try {
+          const employeeData = await getEmployeeInfo(employeeId); // Llamar al backend
+          console.log("Employee data fetched:", employeeData); // Agrega un log para verificar
+          setFormData({
+            ...formData,
+            name: employeeData.name || "",
+            lastName: employeeData.lastName || "",
+            dateOfBirth: employeeData.dateOfBirth
+              ? new Date(employeeData.dateOfBirth).toISOString().split("T")[0]
+              : "",
+            email: employeeData.email || "",
+            postalCode: employeeData.postalCode || "",
+            address: employeeData.address || "",
+            idMunicipality: employeeData.idMunicipality?.toString() || "",
+            employeeNumber: employeeData.employeeNumber?.toString() || "",
+            idEmployeeType: employeeData.idEmployeeType?.toString() || "",
+            password: "", // No cargar la contraseña por seguridad
+          });
+        } catch (error) {
+          console.error("Error fetching employee info:", error); // Agrega un log para errores
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "No se pudo cargar la información del empleado.",
+          });
+        }
+      };
+  
+      fetchEmployeeInfo();
+    }
+  }, [isEditMode, employeeId]);
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -72,36 +114,48 @@ const EmployeeForm = () => {
         ...formData,
         dateOfBirth: new Date(formData.dateOfBirth).toISOString(),
         idMunicipality: parseInt(formData.idMunicipality),
-        idEmployeeType: parseInt(formData.idEmployeeType),
-        employeeNumber: parseInt(formData.employeeNumber),
       };
 
-      await registerEmployee(requestData);
+      if (isEditMode && employeeId) {
+        // Actualizar empleado
+        await updateEmployee(employeeId, requestData);
+        setSuccessMessage("El empleado fue actualizado con éxito.");
+        toast({
+          title: "Éxito",
+          description: "El empleado fue actualizado con éxito.",
+        });
+      } else {
+        // Registrar empleado
+        await registerEmployee({
+          ...requestData,
+          employeeNumber: parseInt(formData.employeeNumber),
+          idEmployeeType: parseInt(formData.idEmployeeType),
+        });
+        setSuccessMessage("El empleado fue registrado con éxito.");
+        toast({
+          title: "Éxito",
+          description: "El empleado fue registrado con éxito.",
+        });
 
-      setSuccessMessage("El empleado fue registrado con éxito.");
-      toast({
-        title: "Éxito",
-        description: "El empleado fue registrado con éxito.",
-      });
-
-      // Limpiar el formulario después del envío
-      setFormData({
-        name: "",
-        lastName: "",
-        dateOfBirth: "",
-        email: "",
-        password: "",
-        postalCode: "",
-        address: "",
-        idMunicipality: "",
-        employeeNumber: "",
-        idEmployeeType: "",
-      });
+        // Limpiar el formulario después del envío
+        setFormData({
+          name: "",
+          lastName: "",
+          dateOfBirth: "",
+          email: "",
+          password: "",
+          postalCode: "",
+          address: "",
+          idMunicipality: "",
+          employeeNumber: "",
+          idEmployeeType: "",
+        });
+      }
     } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Error al registrar el empleado.",
+        description: error.message || "Error al procesar el formulario.",
       });
     }
   };
@@ -202,7 +256,6 @@ const EmployeeForm = () => {
               value={formData.password}
               onChange={handleChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              required
             />
             {errors.password && (
               <p className="mt-2 text-sm text-red-600">{errors.password}</p>
@@ -261,47 +314,79 @@ const EmployeeForm = () => {
           </div>
 
           {/* Tipo de empleado */}
-          <div>
-            <label htmlFor="idEmployeeType" className="block text-sm font-medium text-gray-700">
-              Tipo de empleado
-            </label>
-            <select
-              name="idEmployeeType"
-              id="idEmployeeType"
-              value={formData.idEmployeeType}
-              onChange={handleChange}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              required
-            >
-              <option value="">Seleccione un tipo</option>
-              <option value="1">Administrador</option>
-              <option value="2">Ejecutivo de asistencia</option>
-              <option value="3">Ajustador</option>
-            </select>
-          </div>
+          {isEditMode ? (
+            <div>
+              <label htmlFor="idEmployeeType" className="block text-sm font-medium text-gray-700">
+                Tipo de empleado
+              </label>
+              <input
+                type="text"
+                name="idEmployeeType"
+                id="idEmployeeType"
+                value={formData.idEmployeeType}
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-gray-100"
+                disabled
+              />
+            </div>
+          ) : (
+            <div>
+              <label htmlFor="idEmployeeType" className="block text-sm font-medium text-gray-700">
+                Tipo de empleado
+              </label>
+              <select
+                name="idEmployeeType"
+                id="idEmployeeType"
+                value={formData.idEmployeeType}
+                onChange={handleChange}
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                required
+              >
+                <option value="">Seleccione un tipo</option>
+                <option value="1">Administrador</option>
+                <option value="2">Ejecutivo de asistencia</option>
+                <option value="3">Ajustador</option>
+              </select>
+            </div>
+          )}
 
           {/* Número de empleado */}
-          <div>
-            <label htmlFor="employeeNumber" className="block text-sm font-medium text-gray-700">
-              Número de empleado
-            </label>
-            <input
-              type="number"
-              name="employeeNumber"
-              id="employeeNumber"
-              value={formData.employeeNumber}
-              onChange={handleChange}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              required
-            />
-          </div>
+          {isEditMode ? (
+            <div>
+              <label htmlFor="employeeNumber" className="block text-sm font-medium text-gray-700">
+                Número de empleado
+              </label>
+              <input
+                type="text"
+                name="employeeNumber"
+                id="employeeNumber"
+                value={formData.employeeNumber}
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-gray-100"
+                disabled
+              />
+            </div>
+          ) : (
+            <div>
+              <label htmlFor="employeeNumber" className="block text-sm font-medium text-gray-700">
+                Número de empleado
+              </label>
+              <input
+                type="number"
+                name="employeeNumber"
+                id="employeeNumber"
+                value={formData.employeeNumber}
+                onChange={handleChange}
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                required
+              />
+            </div>
+          )}
         </div>
 
         <button
           type="submit"
           className="mt-6 w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
         >
-          Registrar
+          {isEditMode ? "Actualizar" : "Registrar"}
         </button>
       </form>
     </div>
