@@ -49,7 +49,7 @@ const DictumForm: React.FC<DictamenFormProps> = ({
             const response = await updateReportDictum(defaultValues.reportNumber!, { result: values.dictamen });
 
             if (response) {
-                router.refresh();
+                window.location.reload();
             } else {
                 setShowMessageError(true);
             }
