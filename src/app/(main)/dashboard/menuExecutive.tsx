@@ -12,12 +12,6 @@ const MenuExecutive = () => {
                         icon='report-icon' targetRoute='/dashboard/reports/assign' />
                 </section>
 
-
-                <section className="ml:mr-2">
-                    <h1 className="text-xl font-semibold text-alternGray mb-3">Cuenta</h1>
-                    <ItemMenu title="Mi perfil" description='Consulte la información de su cuenta'
-                        icon='account-icon' targetRoute='/dashboard' />
-                </section>
             </div>
         </>
     )
