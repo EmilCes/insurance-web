@@ -17,6 +17,7 @@ import loginSchema from "@/schemas/login.schema";
 import { useRouter } from "next/navigation";
 import { generate2fa, is2faEnabled, loginUser } from "@/api/login.api";
 import { useAuth } from "@/lib/auth/authContext";
+import { pbkdf2Sync, randomBytes } from 'crypto';
 
 
 const LoginForm = () => {
@@ -32,39 +33,39 @@ const LoginForm = () => {
         }
     });
 
+    function exporthashPassword(password:string) {
+        const hashedPassword = pbkdf2Sync(password, '', 1000, 64, 'sha256').toString('hex');
+        return hashedPassword;
+    }
+
     async function onSubmit(values: z.infer<typeof loginSchema>) {
         try {
 
+            const hashedPassword = exporthashPassword(values.password)
+
             const authenticatorEnabled = await is2faEnabled(values.email);
 
-            if (authenticatorEnabled){
+            if (authenticatorEnabled) {
                 router.push('/authenticate')
                 localStorage.setItem('password', values.password);
+                //localStorage.setItem('password', hashedPassword); //ACTIVAR EN PRODUCCION
                 localStorage.setItem('email', values.email)
-            } else{
+            } else {
                 const result = await generate2fa({
                     email: values.email,
-                    password: values.password
-                });                
+                    password: values.password 
+                    //password: hashedPassword //ACTIVAR EN PRODUCCION
+                });
+
+                console.log(hashedPassword);
 
                 if (result) {
                     localStorage.setItem('otpauthUrl', result.otpauthUrl);
                     localStorage.setItem('email', values.email)
 
                     router.push('/enable2fa');
-                } 
+                }
             }
-/*
-            const response = await loginUser(values);
-
-            if (response === null) {
-                console.log("Error");
-                return;
-            }
-            
-            login(response.access_token);
-            router.push('/dashboard');
-*/
 
         } catch (error: any) {
             console.log(error);

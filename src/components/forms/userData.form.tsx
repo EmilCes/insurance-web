@@ -30,7 +30,22 @@ const DisplayUserData = () => {
     };
 
     const form = useForm<z.infer<typeof userDataSchema>>({
-        resolver: zodResolver(userDataSchema)
+        resolver: zodResolver(userDataSchema),
+        defaultValues: {
+            firstName: '',
+            lastName: '',
+            birthDate: '',
+            licenseNumber: '',
+            rfc: '',
+            email: '',
+            phoneNumber: '',
+            address: '',
+            postalCode: '',
+            bankAccountNumber: '',
+            expirationDateBankAccount: '',
+            state: '',
+            municipality: '',
+        },
     });
 
     useEffect(() => {
@@ -52,15 +67,14 @@ const DisplayUserData = () => {
 
     return (
         <div>
-            {isLoading ? (<Loading></Loading>) : (<></>)}
-            {showMessageError ? (<ErrorMessage></ErrorMessage>) : (<></>)}
+            {isLoading ? <Loading /> : <></>}
+            {showMessageError ? <ErrorMessage /> : <></>}
 
             <div className="space-y-4 w-full">
                 <h2 className="text-xl font-semibold">Datos de usuario</h2>
-                <Form{...form}>
+                <Form {...form}>
                     <div className="p-4 border-lightGray border-[1px] rounded-md">
-
-                        <div className="grid grid-cols-4 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             <FormField
                                 name="firstName"
                                 render={() => (
@@ -140,15 +154,12 @@ const DisplayUserData = () => {
                             />
                         </div>
 
-                        <br />
                         <hr className="h-0.5 bg-slate-400 mt-4 mb-4" />
-                        <br />
 
                         <h2 className="text-xl font-semibold">Datos de pago</h2>
 
                         <div className="p-4 border-lightGray border-[1px] rounded-md">
-                            <div className="grid grid-cols-4 gap-4">
-
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                 <FormField
                                     name="address"
                                     render={() => (
@@ -220,17 +231,11 @@ const DisplayUserData = () => {
                     </div>
                 </Form>
 
-                <br />
-                <div className="flex">
-                    <Button
-                        onClick={handleEditClick}
-                        className="w-1/4 mt-4 bg-blue-500 text-white ml-auto"
-                    >
+                <div className="flex justify-end">
+                    <Button onClick={handleEditClick} className="mt-4 bg-blue-500 text-white">
                         Editar Datos
                     </Button>
                 </div>
-
-
             </div>
         </div>
     );

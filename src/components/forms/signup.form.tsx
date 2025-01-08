@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input"
 import signUpSchemaPersonalData from "@/schemas/signUpPersonalData.schema";
 import { UserProvider, useUserContext } from "@/lib/context/userSignUpContext";
 import { useRouter } from "next/navigation";
+import { pbkdf2Sync, randomBytes } from 'crypto';
 
 
 const SignUpForm = () => {
@@ -25,6 +26,10 @@ const SignUpForm = () => {
     const { userData, setUserData } = useUserContext();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+    function exporthashPassword(password:string) {
+        const hashedPassword = pbkdf2Sync(password, '', 1000, 64, 'sha256').toString('hex');
+        return hashedPassword;
+    }
 
     const form = useForm<z.infer<typeof signUpSchemaPersonalData>>({
         resolver: zodResolver(signUpSchemaPersonalData),
@@ -77,6 +82,8 @@ const SignUpForm = () => {
 
     async function onSubmit(values: z.infer<typeof signUpSchemaPersonalData>) {
         try {
+            const hashedPassword = exporthashPassword(values.password)
+
             const isValid = validateData(values.email, values.licenseNumber, values.rfc); await checkEmailExists(values.email);
             if (await isValid == true) {
                 setUserData({
@@ -88,6 +95,7 @@ const SignUpForm = () => {
                     email: values.email,
                     phoneNumber: values.phoneNumber,
                     password: values.password
+                    //password: hashedPassword //ACTIVAR EN PRODUCCIÓN
                 });
 
                 router.push('/signUp/billingData/');

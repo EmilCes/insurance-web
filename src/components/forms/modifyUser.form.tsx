@@ -169,7 +169,7 @@ const ModifyUser = () => {
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(handleSaveClick)} className="space-y-2">
                         <div className="p-4 border-lightGray border-[1px] rounded-md">
-                            <div className="grid grid-cols-4 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                 <FormField name="firstName" render={() => (
                                     <FormItem>
                                         <FormLabel>Nombre</FormLabel>
@@ -227,7 +227,7 @@ const ModifyUser = () => {
                                     </FormItem>
                                 )} />
                             </div>
-                        </div >
+                        </div>
 
                         <br />
                         <hr className="h-0.5 bg-slate-400 mt-4 mb-4" />
@@ -235,7 +235,7 @@ const ModifyUser = () => {
 
                         <h2 className="text-xl font-semibold">Datos de pago</h2>
                         <div className="p-4 border-lightGray border-[1px] rounded-md">
-                            <div className="grid grid-cols-4 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                 <FormField name="address" render={() => (
                                     <FormItem>
                                         <FormLabel>Dirección</FormLabel>
@@ -277,7 +277,6 @@ const ModifyUser = () => {
                                         </FormItem>
                                     )}
                                 />
-
                                 <FormField
                                     control={form.control}
                                     name="state"
@@ -291,7 +290,6 @@ const ModifyUser = () => {
                                                         onStateValueChanged(value);
                                                     }}
                                                     defaultValue={""}>
-
                                                     <SelectTrigger className="w-full">
                                                         <SelectValue placeholder="Selecciona un estado" />
                                                     </SelectTrigger>
@@ -340,13 +338,13 @@ const ModifyUser = () => {
 
                         <br />
                         <div className="flex justify-end">
-                            <Button type="submit" className="bg-darkBlue ml-auto w-1/4">Guardar Cambios</Button>
+                            <Button type="submit" className="bg-darkBlue ml-auto w-full sm:w-1/2 lg:w-1/4">Guardar Cambios</Button>
                         </div>
-
                     </form>
                 </Form>
             </div>
         </div>
+
     );
 };
 
