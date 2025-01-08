@@ -112,7 +112,7 @@ const PolicyPlanForm: FC<PolicyPlanFormProps> = ({ idPolicyPlan }) => {
 
     function validateCoveredCost(policyData: any) {
         let isValid = true;
-        for (let [index, service] of policyData.service.entries()) {
+        for (const [index, service] of policyData.service.entries()) {
             if (service.isCovered && service.coveredCost !== 0) {
                 form.setError(`service.${index}.coveredCost`, {
                     type: "manual",

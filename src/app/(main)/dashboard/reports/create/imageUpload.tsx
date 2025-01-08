@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, X, Upload } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from 'next/image';
 
 interface ImageUploadProps {
   value?: string[];
@@ -15,8 +16,6 @@ interface ImageUploadProps {
 }
 
 export default function ImageUpload({
-  value = [],
-  onChange,
   onFilesChange,
   disabled,
   urls = [],
@@ -26,9 +25,6 @@ export default function ImageUpload({
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
 
-  // Determinar las imágenes a mostrar
-  // En modo de lectura, usamos las URLs proporcionadas
-  // En modo de creación, usamos las previsualizaciones de los archivos seleccionados
   const images = readOnly ? urls : previews;
 
   const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,7 +41,6 @@ export default function ImageUpload({
       return;
     }
 
-    // Crear URLs de previsualización
     const newPreviews = selectedFiles.map(file => URL.createObjectURL(file));
 
     setFiles(prev => [...prev, ...selectedFiles]);
@@ -56,7 +51,6 @@ export default function ImageUpload({
   const removeImage = useCallback((index: number) => {
     setFiles(prev => prev.filter((_, i) => i !== index));
     setPreviews(prev => {
-      // Liberar URL de previsualización
       URL.revokeObjectURL(prev[index]);
       return prev.filter((_, i) => i !== index);
     });
@@ -78,7 +72,6 @@ export default function ImageUpload({
   };
 
   useEffect(() => {
-    // Reset currentIndex si el número de imágenes cambia
     if (currentIndex >= images.length) {
       setCurrentIndex(0);
     }
@@ -91,7 +84,7 @@ export default function ImageUpload({
           <div className="relative w-full h-full">
             <img
               src={images[currentIndex]}
-              alt={`Imagen ${currentIndex + 1}`}
+              alt='Imagenes del reporte'
               className="w-full h-full object-contain"
             />
             {!readOnly && (

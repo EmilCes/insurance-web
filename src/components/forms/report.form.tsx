@@ -426,7 +426,7 @@ const ReportForm = ({ mode = 'create', role, defaultValues }: { mode?: 'create' 
                                                     name={`involvedPeople.${index}.name`}
                                                     render={({ field: inputField }) => (
                                                         <FormItem>
-                                                            <FormLabel>Nombre del conductor ("Anónimo" si se desconoce)</FormLabel>
+                                                            <FormLabel>Nombre del conductor (&quot;Anónimo&quot; si se desconoce)</FormLabel>
                                                             <FormControl>
                                                                 <Input
                                                                     className="w-full"
@@ -496,7 +496,7 @@ const ReportForm = ({ mode = 'create', role, defaultValues }: { mode?: 'create' 
                                                     name={`involvedPeople.${index}.plates`}
                                                     render={({ field }) => (
                                                         <FormItem>
-                                                            <FormLabel>Placas ("XXXXXXX" si se desconoce)</FormLabel>
+                                                            <FormLabel>Placas (&quot;XXXXXXX&quot; si se desconoce)</FormLabel>
                                                             <FormControl>
                                                                 <Input
                                                                     className="w-full"
