@@ -8,8 +8,10 @@ import {
   assignAdjusterToReport 
 } from "@/api/reports.api";
 import { ReportCard } from "./reportCard";
+import isAuth from "@/lib/auth/isAuth"; // Verificar autenticación
+import isCorrectRole from "@/lib/auth/isCorrectRole"; // Verificar rol
 
-export default function AssignAdjusterPage() {
+function AssignAdjusterPage() {
   const [reports, setReports] = useState<PendingReportData[]>([]);
   const [adjusters, setAdjusters] = useState<{ id: number; name: string }[]>([]);
   const [loading, setLoading] = useState(true);
@@ -97,3 +99,6 @@ export default function AssignAdjusterPage() {
     </div>
   );
 }
+
+// Restringir acceso únicamente al rol "Ejecutivo de asistencia"
+export default isAuth(isCorrectRole(AssignAdjusterPage, "Ejecutivo de asistencia"));
