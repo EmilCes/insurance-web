@@ -19,7 +19,6 @@ const DashboardPage = () => {
       <TitleBar title="Accidentes UViales" />
       <BreadcrumbHome />
       <main className="mt-5 mb-8 mx-10 md:mx-16">
-        <UserInfo role={role}/>
         
         { role === "Conductor" ? <MenuDriver/> : <></>}
         { role === "Ajustador" ? <MenuAdjuster/> : <></>}

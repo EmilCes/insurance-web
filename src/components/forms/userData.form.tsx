@@ -23,7 +23,7 @@ import userDataSchema from "@/schemas/userData.schema";
 const DisplayUserData = () => {
     const router = useRouter();
     const { isLoading, showMessageError, setShowMessageError, setIsLoading } = useStatusPageContext();
-    const [accountInfo, setAccountInfo] = useState<userDataResponse>();
+    const [accountInfo, setAccountInfo] = useState<userDataResponse | null>(null);
 
     const handleEditClick = () => {
         router.push('user/modify/');
@@ -50,10 +50,26 @@ const DisplayUserData = () => {
 
     useEffect(() => {
         const fetchPlans = async () => {
+            setIsLoading(true);
             try {
                 const accountInfoData = await getUserData();
                 if (accountInfoData != null) {
                     setAccountInfo(accountInfoData);
+                    form.reset({
+                        firstName: accountInfoData.name || '',
+                        lastName: accountInfoData.lastName || '',
+                        birthDate: accountInfoData.datebirth || '',
+                        licenseNumber: accountInfoData.licenseNumber || '',
+                        rfc: accountInfoData.rfc || '',
+                        email: accountInfoData.email || '',
+                        phoneNumber: accountInfoData.phone || '',
+                        address: accountInfoData.address || '',
+                        postalCode: accountInfoData.postalCode || '',
+                        bankAccountNumber: accountInfoData.bankAccountNumber || '',
+                        expirationDateBankAccount: accountInfoData.expirationDateBankAccount || '',
+                        state: accountInfoData.state || '',
+                        municipality: accountInfoData.municipality || '',
+                    });
                 } else {
                     throw new Error("Error al recuperar datos usuario");
                 }
@@ -63,91 +79,98 @@ const DisplayUserData = () => {
             setIsLoading(false);
         };
         fetchPlans();
-    }, []);
+    }, [form, setIsLoading, setShowMessageError]);
 
     return (
         <div>
-            {isLoading ? <Loading /> : <></>}
-            {showMessageError ? <ErrorMessage /> : <></>}
+            {isLoading && <Loading />}
+            {showMessageError && <ErrorMessage />}
 
             <div className="space-y-4 w-full">
                 <h2 className="text-xl font-semibold">Datos de usuario</h2>
                 <Form {...form}>
                     <div className="p-4 border-lightGray border-[1px] rounded-md">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                            {/* Nombre */}
                             <FormField
                                 name="firstName"
-                                render={() => (
+                                render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Nombre</FormLabel>
                                         <FormControl>
-                                            <Input value={accountInfo?.name} readOnly />
+                                            <Input {...field} readOnly />
                                         </FormControl>
                                     </FormItem>
                                 )}
                             />
+                            {/* Apellido */}
                             <FormField
                                 name="lastName"
-                                render={() => (
+                                render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Apellido</FormLabel>
                                         <FormControl>
-                                            <Input value={accountInfo?.lastName} readOnly />
+                                            <Input {...field} readOnly />
                                         </FormControl>
                                     </FormItem>
                                 )}
                             />
+                            {/* Fecha de Nacimiento */}
                             <FormField
                                 name="birthDate"
-                                render={() => (
+                                render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Fecha de Nacimiento</FormLabel>
                                         <FormControl>
-                                            <Input value={accountInfo?.datebirth} readOnly />
+                                            <Input {...field} readOnly />
                                         </FormControl>
                                     </FormItem>
                                 )}
                             />
+                            {/* Número de Licencia */}
                             <FormField
                                 name="licenseNumber"
-                                render={() => (
+                                render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Número de Licencia</FormLabel>
                                         <FormControl>
-                                            <Input value={accountInfo?.licenseNumber} readOnly />
+                                            <Input {...field} readOnly />
                                         </FormControl>
                                     </FormItem>
                                 )}
                             />
+                            {/* RFC */}
                             <FormField
                                 name="rfc"
-                                render={() => (
+                                render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>RFC</FormLabel>
                                         <FormControl>
-                                            <Input value={accountInfo?.rfc} readOnly />
+                                            <Input {...field} readOnly />
                                         </FormControl>
                                     </FormItem>
                                 )}
                             />
+                            {/* Correo Electrónico */}
                             <FormField
                                 name="email"
-                                render={() => (
+                                render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Correo Electrónico</FormLabel>
                                         <FormControl>
-                                            <Input value={accountInfo?.email} readOnly />
+                                            <Input {...field} readOnly />
                                         </FormControl>
                                     </FormItem>
                                 )}
                             />
+                            {/* Número de Teléfono */}
                             <FormField
                                 name="phoneNumber"
-                                render={() => (
+                                render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Número de Teléfono</FormLabel>
                                         <FormControl>
-                                            <Input value={accountInfo?.phone} readOnly />
+                                            <Input {...field} readOnly />
                                         </FormControl>
                                     </FormItem>
                                 )}
@@ -160,68 +183,74 @@ const DisplayUserData = () => {
 
                         <div className="p-4 border-lightGray border-[1px] rounded-md">
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                {/* Dirección */}
                                 <FormField
                                     name="address"
-                                    render={() => (
+                                    render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Dirección</FormLabel>
                                             <FormControl>
-                                                <Input value={accountInfo?.address} readOnly />
+                                                <Input {...field} readOnly />
                                             </FormControl>
                                         </FormItem>
                                     )}
                                 />
+                                {/* Código Postal */}
                                 <FormField
                                     name="postalCode"
-                                    render={() => (
+                                    render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Código Postal</FormLabel>
                                             <FormControl>
-                                                <Input value={accountInfo?.postalCode} readOnly />
+                                                <Input {...field} readOnly />
                                             </FormControl>
                                         </FormItem>
                                     )}
                                 />
+                                {/* Número de Cuenta Bancaria */}
                                 <FormField
                                     name="bankAccountNumber"
-                                    render={() => (
+                                    render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Número de Cuenta Bancaria</FormLabel>
                                             <FormControl>
-                                                <Input value={accountInfo?.bankAccountNumber} readOnly />
+                                                <Input {...field} readOnly />
                                             </FormControl>
                                         </FormItem>
                                     )}
                                 />
+                                {/* Vencimiento de Cuenta Bancaria */}
                                 <FormField
                                     name="expirationDateBankAccount"
-                                    render={() => (
+                                    render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Vencimiento de Cuenta Bancaria</FormLabel>
                                             <FormControl>
-                                                <Input value={accountInfo?.expirationDateBankAccount} readOnly />
+                                                <Input {...field} readOnly />
                                             </FormControl>
                                         </FormItem>
                                     )}
                                 />
+                                {/* Estado */}
                                 <FormField
                                     name="state"
-                                    render={() => (
+                                    render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Estado</FormLabel>
                                             <FormControl>
-                                                <Input value={accountInfo?.state} readOnly />
+                                                <Input {...field} readOnly />
                                             </FormControl>
                                         </FormItem>
                                     )}
                                 />
+                                {/* Municipio */}
                                 <FormField
                                     name="municipality"
-                                    render={() => (
+                                    render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Municipio</FormLabel>
                                             <FormControl>
-                                                <Input value={accountInfo?.municipality} readOnly />
+                                                <Input {...field} readOnly />
                                             </FormControl>
                                         </FormItem>
                                     )}

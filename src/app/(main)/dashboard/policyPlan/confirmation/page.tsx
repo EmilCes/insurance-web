@@ -11,7 +11,6 @@ import ProgressInPolicyForm from '../progresspolicyform';
 import PaymentPolicySuccesful from './paymentsuccesful';
 import isAuth from '@/lib/auth/isAuth';
 import { useStatusPageContext } from '@/lib/statusPage/statusContext';
-import ErrorMessage from '@/components/errorMessage/errorMessage';
 import { BrandModelItem, getBrandModelData } from '@/api/brand.api';
 import { CreatePolicyResponse } from '@/api/policy.api';
 import { getBankNumberUser, UserBankAccountResponse } from '@/api/user.api';
@@ -74,8 +73,8 @@ const Confirmation = () => {
                 } else {
                     throw new Error("Error al recuperar el plan de póliza");
                 }
-              
-                if(showMessageError){
+
+                if (showMessageError) {
                     setShowMessageError(false);
                 }
             } catch (error) {
@@ -106,7 +105,12 @@ const Confirmation = () => {
 
                         <div className='grid grid-cols-1 md:grid-cols-2 gap-10 mt-4'>
                             <div>
-                                <PaymentForm policyPlan={policyPlan} onPaymentSuccess={handlePaymentSuccess} accountInfo={accountInfo} />
+                                {
+                                    !isLoading && policyPlan && accountInfo && (
+                                        <PaymentForm policyPlan={policyPlan} onPaymentSuccess={handlePaymentSuccess} accountInfo={accountInfo} />
+
+                                    )
+                                }
                                 {showMessageError ? (<p className='text-red-600 mx-auto text-center mt-4'>Ocurrió un error, por favor vuelva a intentar</p>) : (<></>)}
                             </div>
 

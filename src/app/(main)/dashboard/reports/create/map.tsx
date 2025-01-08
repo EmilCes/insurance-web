@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl, { Map, Marker } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-// Tipo para las props del componente
 interface LocationMapProps {
   onLocationSelect?: (latitude: number, longitude: number) => void;
   initialLatitude?: number;
