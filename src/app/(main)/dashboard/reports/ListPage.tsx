@@ -1,4 +1,4 @@
-// ListPage.tsx
+/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 "use client"
 
 import React, { useEffect, useState } from 'react';

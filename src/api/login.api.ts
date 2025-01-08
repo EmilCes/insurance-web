@@ -13,7 +13,7 @@ export interface Enable2fa {
     otpauthUrl: string;
 }
 
-export async function is2faEnabled(email: string): Promise<Boolean | null> {
+export async function is2faEnabled(email: string): Promise<boolean | null> {
     try{
         const response = await fetch(`${API_URL}/auth/2fa/enabled`, {
             method: 'POST',
@@ -33,7 +33,7 @@ export async function is2faEnabled(email: string): Promise<Boolean | null> {
             throw new Error(errorData.message || 'Failed to login');
         }
 
-        const data: Boolean = await response.json();
+        const data: boolean = await response.json();
 
         return data;
     } catch (error) {

@@ -9,7 +9,7 @@ const MenuExecutive = () => {
                 <section className="md:mr-2">
                     <h1 className="text-xl font-semibold text-alternGray mb-3">Reporte de siniestros</h1>
                     <ItemMenu title="Asignación de ajustadores" description='Asignación de un ajustador a los reportes de siniestros nuevos'
-                        icon='report-icon' targetRoute='/dashboard' />
+                        icon='report-icon' targetRoute='/dashboard/reports/assign' />
                 </section>
 
 

@@ -4,7 +4,7 @@ import React from 'react'
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
 
-const ErrorMessage = () => {
+const ErrorMessage = ({ customTitle = "", customMessage = "" }: { customTitle?: string, customMessage?: string }) => {
     const router = useRouter();
     const sadImage = '/sad-icon.svg';
 
@@ -23,12 +23,16 @@ const ErrorMessage = () => {
                                 height: "60px"
                             }}
                         ></div>
-                        <h1 className='text-red-900 text-2xl font-semibold text-center mb-2'>¡Algo salió mal!</h1>
-                        <h3 className='w-4/5 m-auto text-lg text-center mb-2'>Ha ocurrido un error con nuestro servidor, por favor intente otra vez más tarde</h3>
+                        <h1 className='text-red-900 text-2xl font-semibold text-center mb-2'>
+                            {customTitle || "¡Algo salió mal!"}
+                        </h1>
+                        <h3 className='w-4/5 m-auto text-lg text-center mb-2'>
+                            {customMessage || "Ha ocurrido un error con nuestro servidor, por favor intente otra vez más tarde"}
+                        </h3>
                     </div>
 
                     <div className='px-6 md:flex'>
-                        
+
                         <Button
                             className="mt-2 mx-auto md:w-1/3 text-center flex justify-center min-h-8 bg-white text-alternGray border border-alternGray hover:text-white"
                             onClick={() => router.push("/dashboard")}>

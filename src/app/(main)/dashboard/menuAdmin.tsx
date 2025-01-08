@@ -18,7 +18,7 @@ const MenuAdmin = () => {
                 <section className="md:mr-2">
                     <h1 className="text-xl font-semibold text-alternGray mb-3">Empleados</h1>
                     <ItemMenu title="Administrar empleados" description='Consultar los empleados registrados en el sistema'
-                        icon='employee-icon' targetRoute='/dashboard' />
+                        icon='employee-icon' targetRoute='/dashboard/employee/register' />
                 </section>
             </div>
 

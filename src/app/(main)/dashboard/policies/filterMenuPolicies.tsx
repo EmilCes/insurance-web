@@ -55,14 +55,12 @@ const FilterMenuPolicies = ({ isAlwaysEmpty, policyPlanTypes, changeTypePolicies
                         className="appearance-none w-4 h-4 p-0 mt-0.5 rounded-full border-darkBlue checked:bg-darkBlue checked:border-darkBlue cursor-pointer" />
                     <label className='ml-2'>Todos</label>
                 </div>
-                {!isAlwaysEmpty && policyPlanTypes?.map((type) => (
-                    <>
-                        <div className='flex mb-1'>
+                {!isAlwaysEmpty && policyPlanTypes?.map((type, index) => (
+                        <div key={index} className='flex mb-1'>
                             <Input type='radio' name='typePolicy' onChange={() => changeTypePoliciesResults(type.planTitle)}
                                 className="appearance-none w-4 h-4 p-0 mt-0.5 rounded-full border-darkBlue checked:bg-darkBlue checked:border-darkBlue cursor-pointer" />
                             <label className='ml-2'>{type.planTitle}</label>
                         </div>
-                    </>
                 ))}
 
                 <hr className="h-0.5 bg-slate-400 mt-4 mb-4"></hr>

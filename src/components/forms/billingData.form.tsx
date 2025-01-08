@@ -31,7 +31,7 @@ const BillingDataForm = () => {
     const [municipalities, setMunicipalities] = useState<MunicipalityResponse>([]);
     const [allMunicipalities, setAllMunicipalities] = useState<MunicipalityResponse>([]);
     const [isRegistered, setIsRegistered] = useState(false);
-    var submited = false;
+    let submited = false;
 
     const form = useForm<z.infer<typeof signUpBillinglDataSchema>>({
         resolver: zodResolver(signUpBillinglDataSchema),

@@ -153,8 +153,8 @@ const PoliciesList = () => {
                   <h6 className='text-alternGray mb-2 ml-2'>Mostrando {(pageNumber * numberOfPoliciesPerPage) - (numberOfPoliciesPerPage - 1)}-
                     {pageNumber * numberOfPoliciesPerPage + ((totalPolicies - (pageNumber * numberOfPoliciesPerPage)) < 0 ? (totalPolicies - (pageNumber * numberOfPoliciesPerPage)) : 0)} de {totalPolicies} resultados</h6>
 
-                  {policiesList?.map((policyItem) => (
-                    <PolicyItem policyItem={policyItem}></PolicyItem>
+                  {policiesList?.map((policyItem, index) => (
+                    <PolicyItem key={index} policyItem={policyItem}></PolicyItem>
                   ))}
 
                   <div className="flex items-center justify-center space-x-4">

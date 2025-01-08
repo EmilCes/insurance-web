@@ -23,8 +23,7 @@ import {
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Loading from "../loading/Loading";
-import { FormPolicyProvider, useFormPolicyContext } from "@/lib/context/formPolicyContext";
+import { useFormPolicyContext } from "@/lib/context/formPolicyContext";
 import ProgressInPolicyForm from "@/app/(main)/dashboard/policyPlan/progresspolicyform";
 import { useStatusPageContext } from "@/lib/statusPage/statusContext";
 import { ColorsVehicleResponse, getColorsVehicles, getCurrentAllVehicles, getServicesVehicles, getTypesVehicles, ServicesVehicleResponse, TypeVehicleResponse, validatePlates, VehiclesCurrentAllResponse } from "@/api/vehicle.api";
@@ -47,11 +46,11 @@ const VehiculeForm = () => {
     defaultValues: {
       idBrand: formPolicyData.idBrand ? formPolicyData.idBrand : undefined,
       idModel: formPolicyData.idModel ? formPolicyData.idModel : 0,
-      serialNumber: formPolicyData.series ? formPolicyData.series : undefined,
+      serialNumber: formPolicyData.series ? formPolicyData.series : "",
       idColor: formPolicyData.idColor ? formPolicyData.idColor : undefined,
       plates: formPolicyData.plates ? formPolicyData.plates : "",
       idType: formPolicyData.idType ? formPolicyData.idType : undefined,
-      occupants: formPolicyData.occupants ? formPolicyData.occupants : undefined,
+      occupants: formPolicyData.occupants ? formPolicyData.occupants : 0,
       idService: formPolicyData.idService ? formPolicyData.idService : undefined
     }
   });

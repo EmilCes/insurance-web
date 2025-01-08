@@ -36,7 +36,7 @@ const PlansPolicyList = () => {
         };
         setDataPolicyPageRequest(dataPolicyPageRequest);
         setPageNumber(0);
-        let policyPlanTypesResponse = await getPolicyPlanPages(dataPolicyPageRequest);
+        const policyPlanTypesResponse = await getPolicyPlanPages(dataPolicyPageRequest);
         if (policyPlanTypesResponse) {
           console.log(policyPlanTypesResponse);
           setPlanPolicyResponse(policyPlanTypesResponse);
@@ -64,8 +64,8 @@ const PlansPolicyList = () => {
           page: newPageNumberValue,
           status: dataPolicyPageRequest?.status,
         };
-        console.log("data " + data.status)
-        let policyPlanTypesResponse = await getPolicyPlanPages(data);
+
+        const policyPlanTypesResponse = await getPolicyPlanPages(data);
         if (policyPlanTypesResponse) {
           if (policyPlanTypesResponse.length > 0) {
             setPlanPolicyResponse(policyPlanTypesResponse);
